@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>maze</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel=stylesheet href="css/base.css"/>
+</head>
+<body>
+
+<script src="js/Three.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/Stats.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script src="js/THREEx.KeyboardState.js"></script>
+<script src="js/THREEx.FullScreen.js"></script>
+<script src="js/THREEx.WindowResize.js"></script>
+
+<script type='text/javascript' src='js/DAT.GUI.min.js'></script>
+<script>
+    //迷宫生成
+    function Maze(col, row, start, end) {
+        this.col = col;
+        this.row = row;
+        this.start = start;
+        this.end = end;
+    }
+    // 向下取整，生成随机数
+    Maze.prototype.random = function (k) {
+        return Math.floor(Math.random() * k);
+    };
+    Maze.prototype.generate = function () {
+        this.mazeDataArray = [];
+        for (var i = 0; i < 2 * this.col + 1; i++) {
+            var arr = [];
+            for (var j = 0; j < 2 * this.row + 1; j++) {
+                // 设置墙和初始格子
+                if (i % 2 !== 1 || j % 2 !== 1) {
+                    arr.push({
+                        value: 0,
+                        x: j,
+                        y: i
+                    });
+                } else {
+                    arr.push({
+                        value: 1,
+                        isVisited: false,
+                        x: j,
+                        y: i
+                    });
+                }
+            }
+            this.mazeDataArray[i] = arr;
+        }
+        // 随机选择一点作为 currentNode
+        var currentNode = this.mazeDataArray[2 * this.random(this.row) + 1][2 * this.random(this.col) + 1];
+        currentNode.isVisited = true;
+        // 访问过的节点列表
+        var visitedList = [];
+        visitedList.push(currentNode);
+        // 循环以下操作，直到所有的格子都被访问到。
+        while (currentNode.isVisited) {
+            // 得到当前访问格子的四周（上下左右）的格子
+            var upNode = this.mazeDataArray[currentNode.y - 2] ? this.mazeDataArray[currentNode.y - 2][currentNode.x] : {isVisited: true};
+            var rightNode = this.mazeDataArray[currentNode.x + 2] ? this.mazeDataArray[currentNode.y][currentNode.x + 2] : {isVisited: true};
+            var downNode = this.mazeDataArray[currentNode.y + 2] ? this.mazeDataArray[currentNode.y + 2][currentNode.x] : {isVisited: true};
+            var leftNode = this.mazeDataArray[currentNode.x - 2] ? this.mazeDataArray[currentNode.y][currentNode.x - 2] : {isVisited: true};
+
+            var neighborArray = [];
+            if (!upNode.isVisited) {
+                neighborArray.push(upNode);
+            }
+            if (!rightNode.isVisited) {
+                neighborArray.push(rightNode);
+            }
+            if (!downNode.isVisited) {
+                neighborArray.push(downNode);
+            }
+            if (!leftNode.isVisited) {
+                neighborArray.push(leftNode);
+            }
+            // 在这些格子中随机选择一个没有在访问列表中的格子，
+            // 如果找到，则把该格子和当前访问的格子中间的墙打通(置为0)，
+            if (neighborArray.length !== 0) { // 如果找到
+                var neighborNode = neighborArray[this.random(neighborArray.length)];
+                this.mazeDataArray[(neighborNode.y + currentNode.y) / 2][(neighborNode.x + currentNode.x) / 2].value = 1;
+                neighborNode.isVisited = true;
+                visitedList.push(neighborNode);
+                currentNode = neighborNode;
+            } else {
+                // 把该格子作为当前访问的格子，并放入访问列表。
+                // 如果周围所有的格子都已经访问过，则从已访问的列表中，随机选取一个作为当前访问的格子。
+                currentNode = visitedList[this.random(visitedList.length)];
+                if (!currentNode) {
+                    // visitedList为空时 跳出循环
+                    break;
+                }
+                currentNode.isVisited = true;
+                // 从 visitedList 中删除随机出来的当前节点
+                var tempArr = [];
+                visitedList.forEach(function(item){
+                    if (item !== currentNode) {
+                        tempArr.push(item);
+                    }
+                });
+                visitedList = tempArr;
+            }
+        }
+        this.mazeDataArray[this.start[0]][this.start[1]]={
+            x:this.start[0],
+            y:this.start[1],
+            value:1
+        };
+        this.mazeDataArray[this.end[0]][this.end[1]]={
+            x:this.end[0],
+            y:this.end[1],
+            value:1};
+    };
+</script>
+
+<div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
+<script>
+    //////////
+    // MAIN //
+    //////////
+
+    var container, scene, camera, renderer, stats, controls;;
+    var keyboard = new THREEx.KeyboardState();
+    var clock = new THREE.Clock();
+    var MovingCube;
+    var barrier = [];
+    var mouseEn = false;
+    var totAngle = 0;
+    var count = 0
+    init();
+
+    animate();
+
+    ///////////////
+    // FUNCTIONS //
+    ///////////////
+
+    function init()
+    {
+        ///////////
+        // SCENE //
+        ///////////
+        scene = new THREE.Scene();
+
+        ////////////
+        // CAMERA //
+        ////////////
+        var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+        var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+        camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+        scene.add(camera);
+        camera.position.set(-2800,50,-2800);
+        camera.lookAt(scene.position);
+
+        //////////////
+        // RENDERER //
+        //////////////
+        if ( Detector.webgl )
+            renderer = new THREE.WebGLRenderer( {antialias:true} );
+        else
+            renderer = new THREE.CanvasRenderer();
+
+        renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        container = document.getElementById( 'ThreeJS' );
+        container.appendChild( renderer.domElement );
+
+        ////////////
+        // EVENTS //
+        ////////////
+
+        THREEx.WindowResize(renderer, camera);
+        THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
+
+        //////////////
+        // CONTROLS //
+        //////////////
+
+        controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+        ///////////
+        // STATS //
+        ///////////
+
+        stats = new Stats();
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.bottom = '0px';
+        stats.domElement.style.zIndex = 100;
+        container.appendChild( stats.domElement );
+
+        ///////////
+        // LIGHT //
+        ///////////
+
+        var light = new THREE.PointLight(0xffffff);
+        light.position.set(0,250,0);
+
+        ///////////
+        //  MAZE //
+        ///////////
+
+        var maze = new Maze(10, 10, [1, 1], [19, 19]);;
+        maze.generate();
+        var x = -3000, y = 150, z = -3000;
+        var geometry = new THREE.CubeGeometry(300,300,300);
+        var material;
+        var cube;
+        for(var i = 0; i <= 20; i++) {
+            for (var j = 0; j <= 20; j++) {
+                if ((0 === i && 0 === j) || (20 === i && 20 === j) || (1 === i && 0 === j) || (0 === i && 1 === j) || (20 === i && 19 === j) || (19 === i && 20 === j))
+                {
+                    material = new THREE.MeshBasicMaterial({color: 0xFF0000});
+                    cube = new THREE.Mesh(geometry, material);
+                    cube.position.set(x, y, z);
+                    barrier.push({
+                        x1 : x - 150,
+                        y1 : z - 150,
+                        x2 : x + 150,
+                        y2 : z + 150
+                    });
+                    scene.add(cube);
+                }
+                if (maze.mazeDataArray[i][j].value !== 1) {
+                    material = new THREE.MeshBasicMaterial({color: 0x000000});
+                    cube = new THREE.Mesh(geometry, material);
+                    cube.position.set(x, y, z);
+                    barrier.push({
+                        x1 : x - 150,
+                        y1 : z - 150,
+                        x2 : x + 150,
+                        y2 : z + 150
+                    });
+                    scene.add(cube);
+                }
+                x += 300;
+            }
+            z += 300;
+            x = -3000;
+        }
+        barrier.forEach(function (item) {
+           console.log(item.x1, item.y1, item.x2, item.y2);
+        });
+        //////////////
+        //  SPHERE  //
+        /////////////
+
+        var sphereGeometry = new THREE.SphereGeometry( 50, 32, 16 );
+        var sphereMaterial = new THREE.MeshBasicMaterial( {color: 0x0000FF} );
+        MovingCube = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        MovingCube.position.set(-2700,100,-2700);
+        scene.add(MovingCube);
+
+        ///////////
+        // FLOOR //
+        ///////////
+
+        var floorTexture = new THREE.ImageUtils.loadTexture( 'images/grass.jpg' );
+        floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+        floorTexture.repeat.set( 10, 10 );
+        var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+        var floorGeometry = new THREE.PlaneGeometry(10000, 10000, 1, 1);
+        var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        floor.position.y = -0.5;
+        floor.rotation.x = Math.PI / 2;
+        scene.add(floor);
+
+        /////////
+        // GUI //
+        /////////
+
+        var gui = new dat.GUI();
+
+        var parameters =
+            {
+               mv : false
+            };
+        var folder1 = gui.addFolder('Cheat');
+        var mvGUI = folder1.add( parameters, 'mv' ).name("cheat").listen();
+        mvGUI.onChange( function(value) {
+            mouseEn = value;
+        });
+        folder1.open();
+        gui.open();
+    }
+
+    function animate()
+    {
+        requestAnimationFrame( animate );
+        render();
+        update();
+    }
+
+    function update()
+    {
+        var delta = clock.getDelta();
+        var moveDistance = 400 * delta; // 400 pixels per second
+        var rotateAngle = Math.PI / 2 * delta;
+        var tmpx = MovingCube.position.x;
+        var tmpy = MovingCube.position.y;
+        var tmpz = MovingCube.position.z;
+        // local transformations
+        if ( keyboard.pressed("W") )
+            MovingCube.translateZ( -moveDistance );
+        if ( keyboard.pressed("S") )
+            MovingCube.translateZ(  moveDistance );
+        if ( keyboard.pressed("Q") )
+            MovingCube.translateX( -moveDistance );
+        if ( keyboard.pressed("E") )
+            MovingCube.translateX(  moveDistance );
+        var x1 = MovingCube.position.x - 50;
+        var y1 = MovingCube.position.z - 50;
+        var x2 = MovingCube.position.x + 50;
+        var y2 = MovingCube.position.z + 50;
+        var tag = 0;
+        barrier.forEach(function (item) {
+            var tmpx1 = Math.max(item.x1, x1);
+            var tmpy1 = Math.max(item.y1, y1);
+            var tmpx2 = Math.min(item.x2, x2);
+            var tmpy2 = Math.min(item.y2, y2);
+            if((tmpx1 < tmpx2) && (tmpy1 < tmpy2))
+            {
+                tag = 1;
+            }
+        });
+        if(tag === 1)
+        {
+            MovingCube.position.set(tmpx, tmpy, tmpz);
+        }
+
+        if((MovingCube.position.x > 2500 && MovingCube.position.z > 2500)|| mouseEn === true)
+        {
+            count ++;
+            if (count === 1)
+            {
+                MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -totAngle);
+                camera.position.set(0,8000,0);
+                camera.lookAt(scene.position);
+            }
+            controls.update();
+        }
+        else if(tag === 0)
+        {
+            if(count !== 0)
+            {
+                count = 0;
+                MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
+            }
+            if ( keyboard.pressed("A") ) {
+                totAngle += rotateAngle;
+                MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
+            }
+            if ( keyboard.pressed("D") ) {
+                totAngle -= rotateAngle;
+                MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
+            }
+            var relativeCameraOffset = new THREE.Vector3(0,50,200);
+            var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
+            camera.position.x = cameraOffset.x;
+            camera.position.y = cameraOffset.y;
+            camera.position.z = cameraOffset.z;
+            camera.lookAt(MovingCube.position);
+        }
+        stats.update();
+    }
+
+    function render()
+    {
+        renderer.render( scene, camera );
+    }
+
+</script>
+</body>
+</html>
