@@ -9,12 +9,15 @@
 <body>
 
 <script src="js/Three.js"></script>
+<script src="js/Three89.js"></script>
 <script src="js/Detector.js"></script>
 <script src="js/Stats.js"></script>
 <script src="js/OrbitControls.js"></script>
 <script src="js/THREEx.KeyboardState.js"></script>
 <script src="js/THREEx.FullScreen.js"></script>
 <script src="js/THREEx.WindowResize.js"></script>
+<script src="js/OBJLoader.js"></script>
+<script src="js/MTLLoader.js"></script>
 
 <script type='text/javascript' src='js/DAT.GUI.min.js'></script>
 <script>
@@ -118,6 +121,7 @@
     };
 </script>
 
+
 <div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
 <script>
     //////////
@@ -131,7 +135,13 @@
     var barrier = [];
     var mouseEn = false;
     var totAngle = 0;
-    var count = 0
+    var count = 0;
+    var maze;
+    // var objFile = ['1_Grass_1.obj','1_Grass_2.obj','1_Grass_3.obj','1_Grass_4.obj','1_Grass_5.obj','1_Grass_6.obj','2_Grass_1.obj','2_Grass_2.obj','3_Grass_1.obj','3_Grass_2.obj','1_Flagging_1.obj','1_Flagging_2.obj','1_Flagging_3.obj','1_Flagging_4.obj','2_Flagging_1.obj','2_Flagging_2.obj','1_Mud_1.obj','1_Mud_2.obj','1_Mud_3.obj','1_Mud_4.obj','3_Mud_1.obj','3_Mud_2.obj'];
+    var objFile = ['1_Grass_1.obj','1_Grass_2.obj','1_Grass_3.obj','1_Grass_4.obj','1_Grass_5.obj','1_Grass_6.obj','2_Grass_1.obj','2_Grass_2.obj','3_Grass_1.obj','3_Grass_2.obj'];
+    var floorObj = [];
+    var wallFile = ['Mount_1.obj','Mount_2.obj','Mount_3.obj','BudBuilding_1.obj','BudBuilding_2.obj','BudBuilding_3.obj','RockMid_1.obj','RockMid_2.obj','RockMid_3.obj'];
+    var wallObj = [];
     init();
 
     animate();
@@ -139,6 +149,151 @@
     ///////////////
     // FUNCTIONS //
     ///////////////
+
+    // Randomly generate the floor.
+    function floorGenerate()
+    {
+        if(objFile.length==0){
+            for(var i = 0; i < 24; i++)
+            {
+                for (var j = 0; j < 24; j++) {
+                    var block = floorObj[Math.floor(Math.random()*floorObj.length)];
+                    block.position.set(-3300 + 300 * i,-680,-3300 + 300 * j);
+                    scene.add(block.clone());
+                }
+            }
+            return;
+        }
+        var file = objFile.shift();
+        var mtlFile;
+        var mtlLoader = new THREE.MTLLoader();
+
+        mtlLoader.setTexturePath('ExportedObj/');
+        mtlLoader.setPath('ExportedObj/');
+        if(file.charAt(2) == 'G') mtlFile = 'Grass.mtl';
+        else if(file.charAt(2) == 'F') mtlFile = 'Flagging.mtl';
+        else if(file.charAt(2) == 'M') mtlFile = 'Mud.mtl';
+        mtlLoader.load(mtlFile, function(materials) {
+            materials.preload();
+            var objLoader = new THREE.OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.setPath('ExportedObj/');
+            objLoader.load(file, function(object) {
+                if(file.charAt(0)=='1')object.scale.x = object.scale.z = 5000;
+                else if(file.charAt(0)=='2')object.scale.x = object.scale.z = 2500;
+                else if(file.charAt(0)=='3')object.scale.x = object.scale.z = 5000/3;
+                object.scale.y = 5000;
+                object.position.set(-2700 + 300 * objFile.length,-680,-2700);
+                floorObj.push(object);
+                floorGenerate();
+            });
+        });
+    }
+
+    // Generate the wall.
+    var x = -3000, y = 30, z = -3000;
+    function wallGenerate()
+    {
+        if(wallFile.length==0){
+            for(var i = 0; i <= 20; i++) {
+                for (var j = 0; j <= 20; j++) {
+                    if ((0 === i && 0 === j) || (20 === i && 20 === j) || (1 === i && 0 === j) || (0 === i && 1 === j) || (20 === i && 19 === j) || (19 === i && 20 === j))
+                    {
+                        barrier.push({
+                            x1 : x - 150,
+                            y1 : z - 150,
+                            x2 : x + 150,
+                            y2 : z + 150
+                        });
+                        var block = wallObj[Math.floor(Math.random()*3)];
+                        block.position.set(x,y,z);
+                        scene.add(block.clone());
+                    }
+                    else if (i==0 || j == 0 || i == 20 || j == 20)
+                    {
+                        barrier.push({
+                            x1 : x - 150,
+                            y1 : z - 150,
+                            x2 : x + 150,
+                            y2 : z + 150
+                        });
+                        var block = wallObj[4];
+                        if(j == 0 || j == 20) block.rotation.y = Math.PI/2;
+                        else block.rotation.y = 0;
+                        block.position.set(x,y,z);
+                        scene.add(block.clone());
+                    }
+                    else if (maze.mazeDataArray[i][j].value !== 1) {
+                        barrier.push({
+                            x1 : x - 150,
+                            y1 : z - 150,
+                            x2 : x + 150,
+                            y2 : z + 150
+                        });
+                        if(i >= 1 && i <= 19 && j<=18 && j >= 1 && maze.mazeDataArray[i][j+1].value !== 1 && Math.random() > 0.5){
+                            barrier.push({
+                                x1 : x + 150,
+                                y1 : z - 150,
+                                x2 : x + 450,
+                                y2 : z + 150
+                            });
+                            maze.mazeDataArray[i][j+1].value = 1;
+                            var block = wallObj[Math.floor(Math.random()*3)+6];
+                            block.position.set(x+150,y,z);
+                            scene.add(block.clone());
+                        }
+                        else if(i >= 1 && i <= 18 && j<=19 && j >= 1 && maze.mazeDataArray[i+1][j].value !== 1 && Math.random() > 0.5){
+                            barrier.push({
+                                x1 : x - 150,
+                                y1 : z + 150,
+                                x2 : x + 150,
+                                y2 : z + 450
+                            });
+                            maze.mazeDataArray[i+1][j].value = 1;
+                            var block = wallObj[Math.floor(Math.random()*3)+6];
+                            block.position.set(x,y,z+150);
+                            block.rotation.y = Math.PI/2;
+                            scene.add(block.clone());
+                            block.rotation.y = 0;
+                        }
+                        else{
+                            var block = wallObj[Math.floor(Math.random()*6)];
+                            block.position.set(x,y,z);
+                            scene.add(block.clone());
+                        }
+                        maze.mazeDataArray[i][j].value = 1;
+
+                    }
+                    x += 300;
+                }
+                z += 300;
+                x = -3000;
+            }
+            return;
+        }
+        var file = wallFile.shift();
+        var mtlFile;
+        var mtlLoader = new THREE.MTLLoader();
+
+        mtlLoader.setTexturePath('ExportedObj/');
+        mtlLoader.setPath('ExportedObj/');
+        if(file.charAt(0) == 'M') mtlFile = 'Mount.mtl';
+        else if(file.charAt(0) == 'R') mtlFile = 'RockMid.mtl';
+        else if(file.charAt(0) == 'B') mtlFile = 'BudBuilding_'+ file.charAt(12) + '.mtl';
+        mtlLoader.load(mtlFile, function(materials) {
+            materials.preload();
+            var objLoader = new THREE.OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.setPath('ExportedObj/');
+            objLoader.load(file, function(object) {
+                if(file.charAt(0)=='M' || file.charAt(0)=='B')object.scale.x = 1500;
+                else if(file.charAt(0)=='R')object.scale.x = 1500*1.3;
+                object.scale.y = object.scale.z = 1500;
+                wallObj.push(object);
+                wallGenerate();
+            });
+        });
+    }
 
     function init()
     {
@@ -195,55 +350,72 @@
         ///////////
         // LIGHT //
         ///////////
-
         var light = new THREE.PointLight(0xffffff);
-        light.position.set(0,250,0);
+        light.position.set(0,10000,0);       
+        var light_1 = new THREE.PointLight(0xffffff);
+        light_1.position.set(-7000,10000,-7000);
+        var light_2 = new THREE.PointLight(0xffffff);
+        light_2.position.set(7000,10000,7000);
+        var light_3 = new THREE.DirectionalLight(0xffffff, 1);
+        light_3.position.set(1,0.5,0);
+        scene.add(light_3);
+        var light_4 = new THREE.DirectionalLight(0xffffff, 1);
+        light_4.position.set(-1,0.5,0);
+        scene.add(light_4);
+        var light_5 = new THREE.DirectionalLight(0xffffff, 1);
+        light_5.position.set(0,0.5,1);
+        scene.add(light_5);
+        var light_6 = new THREE.DirectionalLight(0xffffff, 1);
+        light_6.position.set(0,0.5,-1);
+        scene.add(light_6);
+        // scene.add(light_2);
 
         ///////////
         //  MAZE //
         ///////////
 
-        var maze = new Maze(10, 10, [1, 1], [19, 19]);;
+        maze = new Maze(10, 10, [1, 1], [19, 19]);;
         maze.generate();
-        var x = -3000, y = 150, z = -3000;
-        var geometry = new THREE.CubeGeometry(300,300,300);
-        var material;
-        var cube;
-        for(var i = 0; i <= 20; i++) {
-            for (var j = 0; j <= 20; j++) {
-                if ((0 === i && 0 === j) || (20 === i && 20 === j) || (1 === i && 0 === j) || (0 === i && 1 === j) || (20 === i && 19 === j) || (19 === i && 20 === j))
-                {
-                    material = new THREE.MeshBasicMaterial({color: 0xFF0000});
-                    cube = new THREE.Mesh(geometry, material);
-                    cube.position.set(x, y, z);
-                    barrier.push({
-                        x1 : x - 150,
-                        y1 : z - 150,
-                        x2 : x + 150,
-                        y2 : z + 150
-                    });
-                    scene.add(cube);
-                }
-                if (maze.mazeDataArray[i][j].value !== 1) {
-                    material = new THREE.MeshBasicMaterial({color: 0x000000});
-                    cube = new THREE.Mesh(geometry, material);
-                    cube.position.set(x, y, z);
-                    barrier.push({
-                        x1 : x - 150,
-                        y1 : z - 150,
-                        x2 : x + 150,
-                        y2 : z + 150
-                    });
-                    scene.add(cube);
-                }
-                x += 300;
-            }
-            z += 300;
-            x = -3000;
-        }
-        barrier.forEach(function (item) {
-           console.log(item.x1, item.y1, item.x2, item.y2);
-        });
+        // var x = -3000, y = 150, z = -3000;
+        // var geometry = new THREE.CubeGeometry(300,300,300);
+        // var material;
+        // var cube;
+        // for(var i = 0; i <= 20; i++) {
+        //     for (var j = 0; j <= 20; j++) {
+        //         if ((0 === i && 0 === j) || (20 === i && 20 === j) || (1 === i && 0 === j) || (0 === i && 1 === j) || (20 === i && 19 === j) || (19 === i && 20 === j))
+        //         {
+        //             material = new THREE.MeshBasicMaterial({color: 0xFF0000});
+        //             cube = new THREE.Mesh(geometry, material);
+        //             cube.position.set(x, y, z);
+        //             barrier.push({
+        //                 x1 : x - 150,
+        //                 y1 : z - 150,
+        //                 x2 : x + 150,
+        //                 y2 : z + 150
+        //             });
+        //             scene.add(cube);
+        //         }
+        //         if (maze.mazeDataArray[i][j].value !== 1) {
+        //             material = new THREE.MeshBasicMaterial({color: 0x000000});
+        //             cube = new THREE.Mesh(geometry, material);
+        //             cube.position.set(x, y, z);
+        //             barrier.push({
+        //                 x1 : x - 150,
+        //                 y1 : z - 150,
+        //                 x2 : x + 150,
+        //                 y2 : z + 150
+        //             });
+        //             scene.add(cube);
+        //         }
+        //         x += 300;
+        //     }
+        //     z += 300;
+        //     x = -3000;
+        // }
+        wallGenerate();
+        // barrier.forEach(function (item) {
+        //    console.log(item.x1, item.y1, item.x2, item.y2);
+        // });
         //////////////
         //  SPHERE  //
         /////////////
@@ -258,13 +430,17 @@
         // FLOOR //
         ///////////
 
+
+        floorGenerate();
+
+
         var floorTexture = new THREE.ImageUtils.loadTexture( 'images/grass.jpg' );
         floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
         floorTexture.repeat.set( 10, 10 );
         var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
         var floorGeometry = new THREE.PlaneGeometry(10000, 10000, 1, 1);
         var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        floor.position.y = -0.5;
+        floor.position.y = -80;
         floor.rotation.x = Math.PI / 2;
         scene.add(floor);
 
@@ -289,9 +465,9 @@
 
     function animate()
     {
-        requestAnimationFrame( animate );
         render();
         update();
+        requestAnimationFrame( animate );
     }
 
     function update()
@@ -311,10 +487,10 @@
             MovingCube.translateX( -moveDistance );
         if ( keyboard.pressed("E") )
             MovingCube.translateX(  moveDistance );
-        var x1 = MovingCube.position.x - 50;
-        var y1 = MovingCube.position.z - 50;
-        var x2 = MovingCube.position.x + 50;
-        var y2 = MovingCube.position.z + 50;
+        var x1 = MovingCube.position.x - 30;
+        var y1 = MovingCube.position.z - 30;
+        var x2 = MovingCube.position.x + 30;
+        var y2 = MovingCube.position.z + 30;
         var tag = 0;
         barrier.forEach(function (item) {
             var tmpx1 = Math.max(item.x1, x1);
@@ -357,12 +533,12 @@
                 totAngle -= rotateAngle;
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
             }
-            var relativeCameraOffset = new THREE.Vector3(0,50,200);
+            var relativeCameraOffset = new THREE.Vector3(0,100,200);
             var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
             camera.position.x = cameraOffset.x;
             camera.position.y = cameraOffset.y;
             camera.position.z = cameraOffset.z;
-            camera.lookAt(MovingCube.position);
+            camera.lookAt(new THREE.Vector3(MovingCube.position.x,MovingCube.position.y + 30,MovingCube.position.z));
         }
         stats.update();
     }
@@ -371,6 +547,7 @@
     {
         renderer.render( scene, camera );
     }
+
 
 </script>
 </body>
