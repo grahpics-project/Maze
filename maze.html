@@ -34,9 +34,9 @@
     };
     Maze.prototype.generate = function () {
         this.mazeDataArray = [];
-        for (let i = 0; i < 2 * this.col + 1; i++) {
-            let arr = [];
-            for (let j = 0; j < 2 * this.row + 1; j++) {
+        for (var i = 0; i < 2 * this.col + 1; i++) {
+            var arr = [];
+            for (var j = 0; j < 2 * this.row + 1; j++) {
                 // 设置墙和初始格子
                 if (i % 2 !== 1 || j % 2 !== 1) {
                     arr.push({
@@ -56,20 +56,20 @@
             this.mazeDataArray[i] = arr;
         }
         // 随机选择一点作为 currentNode
-        let currentNode = this.mazeDataArray[2 * this.random(this.row) + 1][2 * this.random(this.col) + 1];
+        var currentNode = this.mazeDataArray[2 * this.random(this.row) + 1][2 * this.random(this.col) + 1];
         currentNode.isVisited = true;
         // 访问过的节点列表
-        let visitedList = [];
+        var visitedList = [];
         visitedList.push(currentNode);
         // 循环以下操作，直到所有的格子都被访问到。
         while (currentNode.isVisited) {
             // 得到当前访问格子的四周（上下左右）的格子
-            let upNode = this.mazeDataArray[currentNode.y - 2] ? this.mazeDataArray[currentNode.y - 2][currentNode.x] : {isVisited: true};
-            let rightNode = this.mazeDataArray[currentNode.x + 2] ? this.mazeDataArray[currentNode.y][currentNode.x + 2] : {isVisited: true};
-            let downNode = this.mazeDataArray[currentNode.y + 2] ? this.mazeDataArray[currentNode.y + 2][currentNode.x] : {isVisited: true};
-            let leftNode = this.mazeDataArray[currentNode.x - 2] ? this.mazeDataArray[currentNode.y][currentNode.x - 2] : {isVisited: true};
+            var upNode = this.mazeDataArray[currentNode.y - 2] ? this.mazeDataArray[currentNode.y - 2][currentNode.x] : {isVisited: true};
+            var rightNode = this.mazeDataArray[currentNode.x + 2] ? this.mazeDataArray[currentNode.y][currentNode.x + 2] : {isVisited: true};
+            var downNode = this.mazeDataArray[currentNode.y + 2] ? this.mazeDataArray[currentNode.y + 2][currentNode.x] : {isVisited: true};
+            var leftNode = this.mazeDataArray[currentNode.x - 2] ? this.mazeDataArray[currentNode.y][currentNode.x - 2] : {isVisited: true};
 
-            let neighborArray = [];
+            var neighborArray = [];
             if (!upNode.isVisited) {
                 neighborArray.push(upNode);
             }
@@ -85,7 +85,7 @@
             // 在这些格子中随机选择一个没有在访问列表中的格子，
             // 如果找到，则把该格子和当前访问的格子中间的墙打通(置为0)，
             if (neighborArray.length !== 0) { // 如果找到
-                let neighborNode = neighborArray[this.random(neighborArray.length)];
+                var neighborNode = neighborArray[this.random(neighborArray.length)];
                 this.mazeDataArray[(neighborNode.y + currentNode.y) / 2][(neighborNode.x + currentNode.x) / 2].value = 1;
                 neighborNode.isVisited = true;
                 visitedList.push(neighborNode);
@@ -100,7 +100,7 @@
                 }
                 currentNode.isVisited = true;
                 // 从 visitedList 中删除随机出来的当前节点
-                let tempArr = [];
+                var tempArr = [];
                 visitedList.forEach(function(item){
                     if (item !== currentNode) {
                         tempArr.push(item);
@@ -122,28 +122,26 @@
 </script>
 
 
-<div id="ThreeJS" style="position: absolute; left:0; top:0">
-    <a style="display: none" id="screenshot"></a>
-</div>
+<div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
 <script>
     //////////
     // MAIN //
     //////////
 
-    let container, scene, camera, renderer, stats, controls;
-    let keyboard = new THREEx.KeyboardState();
-    let clock = new THREE.Clock();
-    let MovingCube;
-    let barrier = [];
-    let mouseEn = false;
-    let totAngle = 0;
-    let count = 0;
-    let maze;
-    // let objFile = ['1_Grass_1.obj','1_Grass_2.obj','1_Grass_3.obj','1_Grass_4.obj','1_Grass_5.obj','1_Grass_6.obj','2_Grass_1.obj','2_Grass_2.obj','3_Grass_1.obj','3_Grass_2.obj','1_Flagging_1.obj','1_Flagging_2.obj','1_Flagging_3.obj','1_Flagging_4.obj','2_Flagging_1.obj','2_Flagging_2.obj','1_Mud_1.obj','1_Mud_2.obj','1_Mud_3.obj','1_Mud_4.obj','3_Mud_1.obj','3_Mud_2.obj'];
-    let objFile = ['1_Grass_1.obj','1_Grass_2.obj','1_Grass_3.obj','1_Grass_4.obj','1_Grass_5.obj','1_Grass_6.obj','2_Grass_1.obj','2_Grass_2.obj','3_Grass_1.obj','3_Grass_2.obj'];
-    let floorObj = [];
-    let wallFile = ['Mount_1.obj','Mount_2.obj','Mount_3.obj','BudBuilding_1.obj','BudBuilding_2.obj','BudBuilding_3.obj','RockMid_1.obj','RockMid_2.obj','RockMid_3.obj'];
-    let wallObj = [];
+    var container, scene, camera, renderer, stats, controls;;
+    var keyboard = new THREEx.KeyboardState();
+    var clock = new THREE.Clock();
+    var MovingCube;
+    var barrier = [];
+    var mouseEn = false;
+    var totAngle = 0;
+    var count = 0;
+    var maze;
+    // var objFile = ['1_Grass_1.obj','1_Grass_2.obj','1_Grass_3.obj','1_Grass_4.obj','1_Grass_5.obj','1_Grass_6.obj','2_Grass_1.obj','2_Grass_2.obj','3_Grass_1.obj','3_Grass_2.obj','1_Flagging_1.obj','1_Flagging_2.obj','1_Flagging_3.obj','1_Flagging_4.obj','2_Flagging_1.obj','2_Flagging_2.obj','1_Mud_1.obj','1_Mud_2.obj','1_Mud_3.obj','1_Mud_4.obj','3_Mud_1.obj','3_Mud_2.obj'];
+    var objFile = ['1_Grass_1.obj','1_Grass_2.obj','1_Grass_3.obj','1_Grass_4.obj','1_Grass_5.obj','1_Grass_6.obj','2_Grass_1.obj','2_Grass_2.obj','3_Grass_1.obj','3_Grass_2.obj'];
+    var floorObj = [];
+    var wallFile = ['Mount_1.obj','Mount_2.obj','Mount_3.obj','BudBuilding_1.obj','BudBuilding_2.obj','BudBuilding_3.obj','RockMid_1.obj','RockMid_2.obj','RockMid_3.obj'];
+    var wallObj = [];
     init();
 
     animate();
@@ -155,35 +153,35 @@
     // Randomly generate the floor.
     function floorGenerate()
     {
-        if(objFile.length === 0){
-            for(let i = 0; i < 24; i++)
+        if(objFile.length==0){
+            for(var i = 0; i < 24; i++)
             {
-                for (let j = 0; j < 24; j++) {
-                    let block = floorObj[Math.floor(Math.random()*floorObj.length)];
+                for (var j = 0; j < 24; j++) {
+                    var block = floorObj[Math.floor(Math.random()*floorObj.length)];
                     block.position.set(-3300 + 300 * i,-680,-3300 + 300 * j);
                     scene.add(block.clone());
                 }
             }
-            return;
+            return
         }
-        let file = objFile.shift();
-        let mtlFile;
-        let mtlLoader = new THREE.MTLLoader();
+        var file = objFile.shift();
+        var mtlFile;
+        var mtlLoader = new THREE.MTLLoader();
 
         mtlLoader.setTexturePath('ExportedObj/');
         mtlLoader.setPath('ExportedObj/');
-        if(file.charAt(2) === 'G') mtlFile = 'Grass.mtl';
-        else if(file.charAt(2) === 'F') mtlFile = 'Flagging.mtl';
-        else if(file.charAt(2) === 'M') mtlFile = 'Mud.mtl';
+        if(file.charAt(2) == 'G') mtlFile = 'Grass.mtl';
+        else if(file.charAt(2) == 'F') mtlFile = 'Flagging.mtl';
+        else if(file.charAt(2) == 'M') mtlFile = 'Mud.mtl';
         mtlLoader.load(mtlFile, function(materials) {
             materials.preload();
-            let objLoader = new THREE.OBJLoader();
+            var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
             objLoader.setPath('ExportedObj/');
             objLoader.load(file, function(object) {
-                if(file.charAt(0) === '1')object.scale.x = object.scale.z = 5000;
-                else if(file.charAt(0) === '2')object.scale.x = object.scale.z = 2500;
-                else if(file.charAt(0) === '3')object.scale.x = object.scale.z = 5000/3;
+                if(file.charAt(0)=='1')object.scale.x = object.scale.z = 5000;
+                else if(file.charAt(0)=='2')object.scale.x = object.scale.z = 2500;
+                else if(file.charAt(0)=='3')object.scale.x = object.scale.z = 5000/3;
                 object.scale.y = 5000;
                 object.position.set(-2700 + 300 * objFile.length,-680,-2700);
                 floorObj.push(object);
@@ -193,12 +191,12 @@
     }
 
     // Generate the wall.
-    let x = -3000, y = 30, z = -3000;
+    var x = -3000, y = 30, z = -3000;
     function wallGenerate()
     {
-        if(wallFile.length === 0){
-            for(let i = 0; i <= 20; i++) {
-                for (let j = 0; j <= 20; j++) {
+        if(wallFile.length==0){
+            for(var i = 0; i <= 20; i++) {
+                for (var j = 0; j <= 20; j++) {
                     if ((0 === i && 0 === j) || (20 === i && 20 === j) || (1 === i && 0 === j) || (0 === i && 1 === j) || (20 === i && 19 === j) || (19 === i && 20 === j))
                     {
                         barrier.push({
@@ -207,11 +205,11 @@
                             x2 : x + 150,
                             y2 : z + 150
                         });
-                        let block = wallObj[Math.floor(Math.random()*3)];
+                        var block = wallObj[Math.floor(Math.random()*3)];
                         block.position.set(x,y,z);
                         scene.add(block.clone());
                     }
-                    else if (i === 0 || j === 0 || i === 20 || j === 20)
+                    else if (i==0 || j == 0 || i == 20 || j == 20)
                     {
                         barrier.push({
                             x1 : x - 150,
@@ -219,8 +217,8 @@
                             x2 : x + 150,
                             y2 : z + 150
                         });
-                        let block = wallObj[4];
-                        if(j === 0 || j === 20) block.rotation.y = Math.PI/2;
+                        var block = wallObj[4];
+                        if(j == 0 || j == 20) block.rotation.y = Math.PI/2;
                         else block.rotation.y = 0;
                         block.position.set(x,y,z);
                         scene.add(block.clone());
@@ -240,7 +238,7 @@
                                 y2 : z + 150
                             });
                             maze.mazeDataArray[i][j+1].value = 1;
-                            let block = wallObj[Math.floor(Math.random()*3)+6];
+                            var block = wallObj[Math.floor(Math.random()*3)+6];
                             block.position.set(x+150,y,z);
                             scene.add(block.clone());
                         }
@@ -252,14 +250,14 @@
                                 y2 : z + 450
                             });
                             maze.mazeDataArray[i+1][j].value = 1;
-                            let block = wallObj[Math.floor(Math.random()*3)+6];
+                            var block = wallObj[Math.floor(Math.random()*3)+6];
                             block.position.set(x,y,z+150);
                             block.rotation.y = Math.PI/2;
                             scene.add(block.clone());
                             block.rotation.y = 0;
                         }
                         else{
-                            let block = wallObj[Math.floor(Math.random()*6)];
+                            var block = wallObj[Math.floor(Math.random()*6)];
                             block.position.set(x,y,z);
                             scene.add(block.clone());
                         }
@@ -273,23 +271,23 @@
             }
             return;
         }
-        let file = wallFile.shift();
-        let mtlFile;
-        let mtlLoader = new THREE.MTLLoader();
+        var file = wallFile.shift();
+        var mtlFile;
+        var mtlLoader = new THREE.MTLLoader();
 
         mtlLoader.setTexturePath('ExportedObj/');
         mtlLoader.setPath('ExportedObj/');
-        if(file.charAt(0) === 'M') mtlFile = 'Mount.mtl';
-        else if(file.charAt(0) === 'R') mtlFile = 'RockMid.mtl';
-        else if(file.charAt(0) === 'B') mtlFile = 'BudBuilding_'+ file.charAt(12) + '.mtl';
+        if(file.charAt(0) == 'M') mtlFile = 'Mount.mtl';
+        else if(file.charAt(0) == 'R') mtlFile = 'RockMid.mtl';
+        else if(file.charAt(0) == 'B') mtlFile = 'BudBuilding_'+ file.charAt(12) + '.mtl';
         mtlLoader.load(mtlFile, function(materials) {
             materials.preload();
-            let objLoader = new THREE.OBJLoader();
+            var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
             objLoader.setPath('ExportedObj/');
             objLoader.load(file, function(object) {
-                if(file.charAt(0) === 'M' || file.charAt(0) === 'B')object.scale.x = 1500;
-                else if(file.charAt(0) === 'R')object.scale.x = 1500*1.3;
+                if(file.charAt(0)=='M' || file.charAt(0)=='B')object.scale.x = 1500;
+                else if(file.charAt(0)=='R')object.scale.x = 1500*1.3;
                 object.scale.y = object.scale.z = 1500;
                 wallObj.push(object);
                 wallGenerate();
@@ -307,18 +305,18 @@
         ////////////
         // CAMERA //
         ////////////
-        let SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
-        let VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+        var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+        var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
         camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
         scene.add(camera);
-        camera.position.set(-2800,200,-2800);
+        camera.position.set(-2800,50,-2800);
         camera.lookAt(scene.position);
 
         //////////////
         // RENDERER //
         //////////////
         if ( Detector.webgl )
-            renderer = new THREE.WebGLRenderer( {antialias:true, preserveDrawingBuffer:true } );
+            renderer = new THREE.WebGLRenderer( {antialias:true} );
         else
             renderer = new THREE.CanvasRenderer();
 
@@ -352,41 +350,80 @@
         ///////////
         // LIGHT //
         ///////////
-        let light = new THREE.PointLight(0xffffff);
-        light.position.set(0,10000,0);
-        let light_1 = new THREE.PointLight(0xffffff);
+        var light = new THREE.PointLight(0xffffff);
+        light.position.set(0,10000,0);       
+        var light_1 = new THREE.PointLight(0xffffff);
         light_1.position.set(-7000,10000,-7000);
-        let light_2 = new THREE.PointLight(0xffffff);
+        var light_2 = new THREE.PointLight(0xffffff);
         light_2.position.set(7000,10000,7000);
-        let light_3 = new THREE.DirectionalLight(0xffffff, 1);
+        var light_3 = new THREE.DirectionalLight(0xffffff, 1);
         light_3.position.set(1,0.5,0);
         scene.add(light_3);
-        let light_4 = new THREE.DirectionalLight(0xffffff, 1);
+        var light_4 = new THREE.DirectionalLight(0xffffff, 1);
         light_4.position.set(-1,0.5,0);
         scene.add(light_4);
-        let light_5 = new THREE.DirectionalLight(0xffffff, 1);
+        var light_5 = new THREE.DirectionalLight(0xffffff, 1);
         light_5.position.set(0,0.5,1);
         scene.add(light_5);
-        let light_6 = new THREE.DirectionalLight(0xffffff, 1);
+        var light_6 = new THREE.DirectionalLight(0xffffff, 1);
         light_6.position.set(0,0.5,-1);
         scene.add(light_6);
-        scene.add(light_2);
+        // scene.add(light_2);
 
         ///////////
         //  MAZE //
         ///////////
 
-        maze = new Maze(10, 10, [1, 1], [19, 19]);
+        maze = new Maze(10, 10, [1, 1], [19, 19]);;
         maze.generate();
+        // var x = -3000, y = 150, z = -3000;
+        // var geometry = new THREE.CubeGeometry(300,300,300);
+        // var material;
+        // var cube;
+        // for(var i = 0; i <= 20; i++) {
+        //     for (var j = 0; j <= 20; j++) {
+        //         if ((0 === i && 0 === j) || (20 === i && 20 === j) || (1 === i && 0 === j) || (0 === i && 1 === j) || (20 === i && 19 === j) || (19 === i && 20 === j))
+        //         {
+        //             material = new THREE.MeshBasicMaterial({color: 0xFF0000});
+        //             cube = new THREE.Mesh(geometry, material);
+        //             cube.position.set(x, y, z);
+        //             barrier.push({
+        //                 x1 : x - 150,
+        //                 y1 : z - 150,
+        //                 x2 : x + 150,
+        //                 y2 : z + 150
+        //             });
+        //             scene.add(cube);
+        //         }
+        //         if (maze.mazeDataArray[i][j].value !== 1) {
+        //             material = new THREE.MeshBasicMaterial({color: 0x000000});
+        //             cube = new THREE.Mesh(geometry, material);
+        //             cube.position.set(x, y, z);
+        //             barrier.push({
+        //                 x1 : x - 150,
+        //                 y1 : z - 150,
+        //                 x2 : x + 150,
+        //                 y2 : z + 150
+        //             });
+        //             scene.add(cube);
+        //         }
+        //         x += 300;
+        //     }
+        //     z += 300;
+        //     x = -3000;
+        // }
         wallGenerate();
+        // barrier.forEach(function (item) {
+        //    console.log(item.x1, item.y1, item.x2, item.y2);
+        // });
         //////////////
         //  SPHERE  //
         /////////////
 
-        let sphereGeometry = new THREE.SphereGeometry( 50, 32, 16 );
-        let sphereMaterial = new THREE.MeshBasicMaterial( {color: 0x0000FF} );
+        var sphereGeometry = new THREE.SphereGeometry( 50, 32, 16 );
+        var sphereMaterial = new THREE.MeshBasicMaterial( {color: 0x0000FF} );
         MovingCube = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        MovingCube.position.set(-2700,50,-2700);
+        MovingCube.position.set(-2700,100,-2700);
         scene.add(MovingCube);
 
         ///////////
@@ -397,46 +434,162 @@
         floorGenerate();
 
 
-        let floorTexture = new THREE.ImageUtils.loadTexture( 'images/grass.jpg' );
+        var floorTexture = new THREE.ImageUtils.loadTexture( 'images/grass.jpg' );
         floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
         floorTexture.repeat.set( 10, 10 );
-        let floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
-        let floorGeometry = new THREE.PlaneGeometry(10000, 10000, 1, 1);
-        let floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+        var floorGeometry = new THREE.PlaneGeometry(10000, 10000, 1, 1);
+        var floor = new THREE.Mesh(floorGeometry, floorMaterial);
         floor.position.y = -80;
         floor.rotation.x = Math.PI / 2;
         scene.add(floor);
+        
+        /////////
+        // SKY //
+        /////////
+        var imagePrefix = "images/";
+        var directions = ["sky0", "sky1", "sky2", "sky3", "sky4", "sky5"];
+        var imageSuffix = ".png";
+        var skyGeometry = new THREE.CubeGeometry(8000, 2000, 8000);
+        var materialArray = [];
 
+        for (var i = 0; i < 6; i++)
+            materialArray.push(new THREE.MeshBasicMaterial({
+                map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
+                side: THREE.BackSide
+            }));
+        var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
+        var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
+        scene.add(skyBox);
+
+        ///////////
+        // CLOUD //
+        ///////////
+        var mtlLoader = new THREE.MTLLoader();  
+        mtlLoader.setBaseUrl('ExportedObj/');  
+        mtlLoader.setPath('ExportedObj/');  
+        mtlLoader.load('cloud.mtl', function(materials) {  
+            materials.preload();  
+  
+            var objLoader = new THREE.OBJLoader();  
+            objLoader.setMaterials( materials );  
+            objLoader.setPath( 'ExportedObj/' );  
+            objLoader.load( 'cloud.obj', function (object) {  
+                object.position.set(-1050, 750, 700);
+                object.scale.x=object.scale.z=10;
+                object.scale.y=4;
+                scene.add(object);  
+  
+            }); 
+            
+            
+            objLoader.load( 'cloud.obj', function (object) {  
+                object.position.set(-500, 750, 1750);
+                object.scale.x=10;
+                object.scale.z=8;
+                object.scale.y=4;
+                object.rotation.y=60;
+                scene.add(object);  
+  
+            });  
+            
+            objLoader.load( 'cloud1.obj', function (object) {  
+                object.position.set(450, 750, 950);
+                object.scale.x=object.scale.z=16;
+                object.scale.y=8;
+                object.rotation.y=0;
+                scene.add(object);  
+  
+            });
+            
+             objLoader.load( 'cloud1.obj', function (object) {  
+                object.position.set(-1700, 750, 1550);
+                object.scale.x=object.scale.z=16;
+                object.scale.y=8;
+                object.rotation.y=0;
+                scene.add(object);  
+  
+            });
+            
+            objLoader.load( 'cloud2.obj', function (object) {  
+                object.position.set(-800, 750, 1200);
+                object.scale.x=object.scale.z=10;
+                object.scale.y=4;
+                object.rotation.y=0;
+                scene.add(object);  
+  
+            });
+            
+            objLoader.load( 'cloud2.obj', function (object) {  
+                object.position.set(-900, 750, -1700);
+                object.scale.x=object.scale.z=10;
+                object.scale.y=4;
+                object.rotation.y=0;
+                scene.add(object);  
+  
+            });   
+            
+            objLoader.load( 'cloud2.obj', function (object) {  
+                object.position.set(-2100, 750, 400);
+                object.scale.x=object.scale.z=10;
+                object.scale.y=4;
+                object.rotation.y=0;
+                scene.add(object);  
+  
+            });
+            
+            objLoader.load( 'cloud2.obj', function (object) {  
+                object.position.set(-1500, 750, 150);
+                object.scale.x=object.scale.z=10;
+                object.scale.y=4;
+                object.rotation.y=0;
+                scene.add(object);  
+  
+            });
+            
+            objLoader.load( 'cloud2.obj', function (object) {  
+                object.position.set(-700, 750, 300);
+                object.scale.x=object.scale.z=10;
+                object.scale.y=4;
+                object.rotation.y=0;
+                scene.add(object);  
+  
+            });
+            objLoader.load( 'cloud2.obj', function (object) {  
+                object.position.set(0, 750, 0);
+                object.scale.x=object.scale.z=10;
+                object.scale.y=4;
+                object.rotation.y=50;
+                scene.add(object);  
+  
+            });
+            
+            objLoader.load( 'cloud2.obj', function (object) {  
+                object.position.set(550, 750, 150);
+                object.scale.x=object.scale.z=10;
+                object.scale.y=4;
+                object.rotation.y=-50;
+                scene.add(object);  
+  
+            });  
+        }); 
         /////////
         // GUI //
         /////////
 
-        let gui = new dat.GUI();
-        let parameters =
+        var gui = new dat.GUI();
+
+        var parameters =
             {
-               mv : false,
-                Screenshot : () =>
-                {
-                    if(!renderer) return;
-                    let img = renderer.domElement.toDataURL('image/png');
-                    let link = document.getElementById("screenshot");
-                    link.href = img.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
-                    link.setAttribute("download","screenshot.png");
-                    link.click();
-                }
+               mv : false
             };
-        let folder1 = gui.addFolder('Cheat');
-        let mvGUI = folder1.add( parameters, 'mv' ).name("cheat").listen();
+        var folder1 = gui.addFolder('Cheat');
+        var mvGUI = folder1.add( parameters, 'mv' ).name("cheat").listen();
         mvGUI.onChange( function(value) {
             mouseEn = value;
         });
         folder1.open();
-        let tools = gui.addFolder('Tools');
-        tools.add( parameters, 'Screenshot' );
-        tools.open();
         gui.open();
-
-
     }
 
     function animate()
@@ -448,33 +601,31 @@
 
     function update()
     {
-        let delta = clock.getDelta();
-        let moveDistance = 400 * delta; // 400 pixels per second
-        let rotateAngle = Math.PI / 2 * delta;
-        let tmpx = MovingCube.position.x;
-        let tmpy = MovingCube.position.y;
-        let tmpz = MovingCube.position.z;
+        var delta = clock.getDelta();
+        var moveDistance = 400 * delta; // 400 pixels per second
+        var rotateAngle = Math.PI / 2 * delta;
+        var tmpx = MovingCube.position.x;
+        var tmpy = MovingCube.position.y;
+        var tmpz = MovingCube.position.z;
+        // local transformations
         if ( keyboard.pressed("W") )
             MovingCube.translateZ( -moveDistance );
         if ( keyboard.pressed("S") )
             MovingCube.translateZ(  moveDistance );
-        if((MovingCube.position.x > 2500 && MovingCube.position.z > 2500)|| mouseEn === true)
-        {
-            if (keyboard.pressed("A"))
-                MovingCube.translateX(-moveDistance);
-            if (keyboard.pressed("D"))
-                MovingCube.translateX(moveDistance);
-        }
-        let x1 = MovingCube.position.x - 30;
-        let y1 = MovingCube.position.z - 30;
-        let x2 = MovingCube.position.x + 30;
-        let y2 = MovingCube.position.z + 30;
-        let tag = 0;
+        if ( keyboard.pressed("Q") )
+            MovingCube.translateX( -moveDistance );
+        if ( keyboard.pressed("E") )
+            MovingCube.translateX(  moveDistance );
+        var x1 = MovingCube.position.x - 30;
+        var y1 = MovingCube.position.z - 30;
+        var x2 = MovingCube.position.x + 30;
+        var y2 = MovingCube.position.z + 30;
+        var tag = 0;
         barrier.forEach(function (item) {
-            let tmpx1 = Math.max(item.x1, x1);
-            let tmpy1 = Math.max(item.y1, y1);
-            let tmpx2 = Math.min(item.x2, x2);
-            let tmpy2 = Math.min(item.y2, y2);
+            var tmpx1 = Math.max(item.x1, x1);
+            var tmpy1 = Math.max(item.y1, y1);
+            var tmpx2 = Math.min(item.x2, x2);
+            var tmpy2 = Math.min(item.y2, y2);
             if((tmpx1 < tmpx2) && (tmpy1 < tmpy2))
             {
                 tag = 1;
@@ -484,6 +635,7 @@
         {
             MovingCube.position.set(tmpx, tmpy, tmpz);
         }
+
         if((MovingCube.position.x > 2500 && MovingCube.position.z > 2500)|| mouseEn === true)
         {
             count ++;
@@ -502,11 +654,6 @@
                 count = 0;
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
             }
-            let relativeCameraOffset = new THREE.Vector3(0,100,200);
-            let cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
-            camera.position.x = cameraOffset.x;
-            camera.position.y = cameraOffset.y;
-            camera.position.z = cameraOffset.z;
             if ( keyboard.pressed("A") ) {
                 totAngle += rotateAngle;
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
@@ -515,7 +662,12 @@
                 totAngle -= rotateAngle;
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
             }
-            camera.lookAt(new THREE.Vector3(MovingCube.position.x,MovingCube.position.y+100,MovingCube.position.z));
+            var relativeCameraOffset = new THREE.Vector3(0,100,200);
+            var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
+            camera.position.x = cameraOffset.x;
+            camera.position.y = cameraOffset.y;
+            camera.position.z = cameraOffset.z;
+            camera.lookAt(new THREE.Vector3(MovingCube.position.x,MovingCube.position.y + 30,MovingCube.position.z));
         }
         stats.update();
     }
