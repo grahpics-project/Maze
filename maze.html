@@ -153,7 +153,7 @@
     // Randomly generate the floor.
     function floorGenerate()
     {
-        if(objFile.length==0){
+        if(objFile.length === 0){
             for(var i = 0; i < 24; i++)
             {
                 for (var j = 0; j < 24; j++) {
@@ -170,18 +170,18 @@
 
         mtlLoader.setTexturePath('ExportedObj/');
         mtlLoader.setPath('ExportedObj/');
-        if(file.charAt(2) == 'G') mtlFile = 'Grass.mtl';
-        else if(file.charAt(2) == 'F') mtlFile = 'Flagging.mtl';
-        else if(file.charAt(2) == 'M') mtlFile = 'Mud.mtl';
+        if(file.charAt(2) === 'G') mtlFile = 'Grass.mtl';
+        else if(file.charAt(2) === 'F') mtlFile = 'Flagging.mtl';
+        else if(file.charAt(2) === 'M') mtlFile = 'Mud.mtl';
         mtlLoader.load(mtlFile, function(materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
             objLoader.setPath('ExportedObj/');
             objLoader.load(file, function(object) {
-                if(file.charAt(0)=='1')object.scale.x = object.scale.z = 5000;
-                else if(file.charAt(0)=='2')object.scale.x = object.scale.z = 2500;
-                else if(file.charAt(0)=='3')object.scale.x = object.scale.z = 5000/3;
+                if(file.charAt(0) === '1')object.scale.x = object.scale.z = 5000;
+                else if(file.charAt(0) === '2')object.scale.x = object.scale.z = 2500;
+                else if(file.charAt(0) === '3')object.scale.x = object.scale.z = 5000/3;
                 object.scale.y = 5000;
                 object.position.set(-2700 + 300 * objFile.length,-680,-2700);
                 floorObj.push(object);
@@ -194,7 +194,7 @@
     var x = -3000, y = 30, z = -3000;
     function wallGenerate()
     {
-        if(wallFile.length==0){
+        if(wallFile.length === 0){
             for(var i = 0; i <= 20; i++) {
                 for (var j = 0; j <= 20; j++) {
                     if ((0 === i && 0 === j) || (20 === i && 20 === j) || (1 === i && 0 === j) || (0 === i && 1 === j) || (20 === i && 19 === j) || (19 === i && 20 === j))
@@ -209,7 +209,7 @@
                         block.position.set(x,y,z);
                         scene.add(block.clone());
                     }
-                    else if (i==0 || j == 0 || i == 20 || j == 20)
+                    else if (i === 0 || j === 0 || i === 20 || j === 20)
                     {
                         barrier.push({
                             x1 : x - 150,
@@ -217,8 +217,8 @@
                             x2 : x + 150,
                             y2 : z + 150
                         });
-                        var block = wallObj[4];
-                        if(j == 0 || j == 20) block.rotation.y = Math.PI/2;
+                        block = wallObj[4];
+                        if(j === 0 || j === 20) block.rotation.y = Math.PI/2;
                         else block.rotation.y = 0;
                         block.position.set(x,y,z);
                         scene.add(block.clone());
@@ -238,7 +238,7 @@
                                 y2 : z + 150
                             });
                             maze.mazeDataArray[i][j+1].value = 1;
-                            var block = wallObj[Math.floor(Math.random()*3)+6];
+                            block = wallObj[Math.floor(Math.random()*3)+6];
                             block.position.set(x+150,y,z);
                             scene.add(block.clone());
                         }
@@ -250,14 +250,14 @@
                                 y2 : z + 450
                             });
                             maze.mazeDataArray[i+1][j].value = 1;
-                            var block = wallObj[Math.floor(Math.random()*3)+6];
+                            block = wallObj[Math.floor(Math.random()*3)+6];
                             block.position.set(x,y,z+150);
                             block.rotation.y = Math.PI/2;
                             scene.add(block.clone());
                             block.rotation.y = 0;
                         }
                         else{
-                            var block = wallObj[Math.floor(Math.random()*6)];
+                            block = wallObj[Math.floor(Math.random()*6)];
                             block.position.set(x,y,z);
                             scene.add(block.clone());
                         }
@@ -277,17 +277,17 @@
 
         mtlLoader.setTexturePath('ExportedObj/');
         mtlLoader.setPath('ExportedObj/');
-        if(file.charAt(0) == 'M') mtlFile = 'Mount.mtl';
-        else if(file.charAt(0) == 'R') mtlFile = 'RockMid.mtl';
-        else if(file.charAt(0) == 'B') mtlFile = 'BudBuilding_'+ file.charAt(12) + '.mtl';
+        if(file.charAt(0) === 'M') mtlFile = 'Mount.mtl';
+        else if(file.charAt(0) === 'R') mtlFile = 'RockMid.mtl';
+        else if(file.charAt(0) === 'B') mtlFile = 'BudBuilding_'+ file.charAt(12) + '.mtl';
         mtlLoader.load(mtlFile, function(materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
             objLoader.setPath('ExportedObj/');
             objLoader.load(file, function(object) {
-                if(file.charAt(0)=='M' || file.charAt(0)=='B')object.scale.x = 1500;
-                else if(file.charAt(0)=='R')object.scale.x = 1500*1.3;
+                if(file.charAt(0) === 'M' || file.charAt(0) === 'B')object.scale.x = 1500;
+                else if(file.charAt(0) === 'R')object.scale.x = 1500*1.3;
                 object.scale.y = object.scale.z = 1500;
                 wallObj.push(object);
                 wallGenerate();
@@ -374,48 +374,9 @@
         //  MAZE //
         ///////////
 
-        maze = new Maze(10, 10, [1, 1], [19, 19]);;
+        maze = new Maze(10, 10, [1, 1], [19, 19]);
         maze.generate();
-        // var x = -3000, y = 150, z = -3000;
-        // var geometry = new THREE.CubeGeometry(300,300,300);
-        // var material;
-        // var cube;
-        // for(var i = 0; i <= 20; i++) {
-        //     for (var j = 0; j <= 20; j++) {
-        //         if ((0 === i && 0 === j) || (20 === i && 20 === j) || (1 === i && 0 === j) || (0 === i && 1 === j) || (20 === i && 19 === j) || (19 === i && 20 === j))
-        //         {
-        //             material = new THREE.MeshBasicMaterial({color: 0xFF0000});
-        //             cube = new THREE.Mesh(geometry, material);
-        //             cube.position.set(x, y, z);
-        //             barrier.push({
-        //                 x1 : x - 150,
-        //                 y1 : z - 150,
-        //                 x2 : x + 150,
-        //                 y2 : z + 150
-        //             });
-        //             scene.add(cube);
-        //         }
-        //         if (maze.mazeDataArray[i][j].value !== 1) {
-        //             material = new THREE.MeshBasicMaterial({color: 0x000000});
-        //             cube = new THREE.Mesh(geometry, material);
-        //             cube.position.set(x, y, z);
-        //             barrier.push({
-        //                 x1 : x - 150,
-        //                 y1 : z - 150,
-        //                 x2 : x + 150,
-        //                 y2 : z + 150
-        //             });
-        //             scene.add(cube);
-        //         }
-        //         x += 300;
-        //     }
-        //     z += 300;
-        //     x = -3000;
-        // }
         wallGenerate();
-        // barrier.forEach(function (item) {
-        //    console.log(item.x1, item.y1, item.x2, item.y2);
-        // });
         //////////////
         //  SPHERE  //
         /////////////
