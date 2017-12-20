@@ -21,11 +21,6 @@
 
 <script type='text/javascript' src='js/DAT.GUI.min.js'></script>
 <script>
-    function downloadimg() {
-        if(!renderer) return;
-        let img = renderer.domElement.toDataURL('image/png');
-        document.getElementById("screen").href = img.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
-    }
     //迷宫生成
     function Maze(col, row, start, end) {
         this.col = col;
@@ -128,7 +123,7 @@
 
 
 <div id="ThreeJS" style="position: absolute; left:0px; top:0px">
-    <a href="#" id = "screen" onclick="downloadimg()" download = "test.png">download!</a>
+    <a style="display: none" id="screenshot"></a>
 </div>
 <script>
     //////////
@@ -417,10 +412,18 @@
         /////////
 
         var gui = new dat.GUI();
-
         var parameters =
             {
-               mv : false
+               mv : false,
+                Screenshot : function()
+                {
+                    if(!renderer) return;
+                    var img = renderer.domElement.toDataURL('image/png');
+                    let link = document.getElementById("screenshot");
+                    link.href = img.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+                    link.setAttribute("download","screenshot.png");
+                    link.click();
+                }
             };
         var folder1 = gui.addFolder('Cheat');
         var mvGUI = folder1.add( parameters, 'mv' ).name("cheat").listen();
@@ -428,7 +431,12 @@
             mouseEn = value;
         });
         folder1.open();
+        let tools = gui.addFolder('Tools');
+        tools.add( parameters, 'Screenshot' );
+        tools.open();
         gui.open();
+
+
     }
 
     function animate()
