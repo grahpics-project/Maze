@@ -309,7 +309,7 @@
         var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
         camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
         scene.add(camera);
-        camera.position.set(-2800,50,-2800);
+        camera.position.set(-2800,200,-2800);
         camera.lookAt(scene.position);
 
         //////////////
@@ -351,7 +351,7 @@
         // LIGHT //
         ///////////
         var light = new THREE.PointLight(0xffffff);
-        light.position.set(0,10000,0);       
+        light.position.set(0,10000,0);
         var light_1 = new THREE.PointLight(0xffffff);
         light_1.position.set(-7000,10000,-7000);
         var light_2 = new THREE.PointLight(0xffffff);
@@ -368,7 +368,7 @@
         var light_6 = new THREE.DirectionalLight(0xffffff, 1);
         light_6.position.set(0,0.5,-1);
         scene.add(light_6);
-        // scene.add(light_2);
+        scene.add(light_2);
 
         ///////////
         //  MAZE //
@@ -384,7 +384,7 @@
         var sphereGeometry = new THREE.SphereGeometry( 50, 32, 16 );
         var sphereMaterial = new THREE.MeshBasicMaterial( {color: 0x0000FF} );
         MovingCube = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        MovingCube.position.set(-2700,100,-2700);
+        MovingCube.position.set(-2700,50,-2700);
         scene.add(MovingCube);
 
         ///////////
@@ -439,15 +439,17 @@
         var tmpx = MovingCube.position.x;
         var tmpy = MovingCube.position.y;
         var tmpz = MovingCube.position.z;
-        // local transformations
         if ( keyboard.pressed("W") )
             MovingCube.translateZ( -moveDistance );
         if ( keyboard.pressed("S") )
             MovingCube.translateZ(  moveDistance );
-        if ( keyboard.pressed("Q") )
-            MovingCube.translateX( -moveDistance );
-        if ( keyboard.pressed("E") )
-            MovingCube.translateX(  moveDistance );
+        if((MovingCube.position.x > 2500 && MovingCube.position.z > 2500)|| mouseEn === true)
+        {
+            if (keyboard.pressed("A"))
+                MovingCube.translateX(-moveDistance);
+            if (keyboard.pressed("D"))
+                MovingCube.translateX(moveDistance);
+        }
         var x1 = MovingCube.position.x - 30;
         var y1 = MovingCube.position.z - 30;
         var x2 = MovingCube.position.x + 30;
@@ -467,7 +469,6 @@
         {
             MovingCube.position.set(tmpx, tmpy, tmpz);
         }
-
         if((MovingCube.position.x > 2500 && MovingCube.position.z > 2500)|| mouseEn === true)
         {
             count ++;
@@ -486,6 +487,11 @@
                 count = 0;
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
             }
+            var relativeCameraOffset = new THREE.Vector3(0,100,200);
+            var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
+            camera.position.x = cameraOffset.x;
+            camera.position.y = cameraOffset.y;
+            camera.position.z = cameraOffset.z;
             if ( keyboard.pressed("A") ) {
                 totAngle += rotateAngle;
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
@@ -494,12 +500,7 @@
                 totAngle -= rotateAngle;
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
             }
-            var relativeCameraOffset = new THREE.Vector3(0,100,200);
-            var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
-            camera.position.x = cameraOffset.x;
-            camera.position.y = cameraOffset.y;
-            camera.position.z = cameraOffset.z;
-            camera.lookAt(new THREE.Vector3(MovingCube.position.x,MovingCube.position.y + 30,MovingCube.position.z));
+            camera.lookAt(new THREE.Vector3(MovingCube.position.x,MovingCube.position.y+100,MovingCube.position.z));
         }
         stats.update();
     }
