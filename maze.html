@@ -404,6 +404,136 @@
         floor.rotation.x = Math.PI / 2;
         scene.add(floor);
 
+
+        /////////
+        // SKY //
+        /////////
+        let imagePrefix = "images/";
+        let directions = ["sky0", "sky1", "sky2", "sky3", "sky4", "sky5"];
+        let imageSuffix = ".png";
+        let skyGeometry = new THREE.CubeGeometry(8000, 2000, 8000);
+        let materialArray = [];
+
+        for (let i = 0; i < 6; i++)
+            materialArray.push(new THREE.MeshBasicMaterial({
+                map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
+                side: THREE.BackSide
+            }));
+        let skyMaterial = new THREE.MeshFaceMaterial(materialArray);
+        let skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
+        scene.add(skyBox);
+
+        ///////////
+        // CLOUD //
+        ///////////
+        let mtlLoader = new THREE.MTLLoader();
+        mtlLoader.setBaseUrl('ExportedObj/');
+        mtlLoader.setPath('ExportedObj/');
+        mtlLoader.load('cloud.mtl', function (materials) {
+            materials.preload();
+
+            let objLoader = new THREE.OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.setPath('ExportedObj/');
+            objLoader.load('cloud.obj', function (object) {
+                object.position.set(-1050, 750, 700);
+                object.scale.x = object.scale.z = 10;
+                object.scale.y = 4;
+                scene.add(object);
+
+            });
+
+
+            objLoader.load('cloud.obj', function (object) {
+                object.position.set(-500, 750, 1750);
+                object.scale.x = 10;
+                object.scale.z = 8;
+                object.scale.y = 4;
+                object.rotation.y = 60;
+                scene.add(object);
+
+            });
+
+            objLoader.load('cloud1.obj', function (object) {
+                object.position.set(450, 750, 950);
+                object.scale.x = object.scale.z = 16;
+                object.scale.y = 8;
+                object.rotation.y = 0;
+                scene.add(object);
+
+            });
+
+            objLoader.load('cloud1.obj', function (object) {
+                object.position.set(-1700, 750, 1550);
+                object.scale.x = object.scale.z = 16;
+                object.scale.y = 8;
+                object.rotation.y = 0;
+                scene.add(object);
+
+            });
+
+            objLoader.load('cloud2.obj', function (object) {
+                object.position.set(-800, 750, 1200);
+                object.scale.x = object.scale.z = 10;
+                object.scale.y = 4;
+                object.rotation.y = 0;
+                scene.add(object);
+
+            });
+
+            objLoader.load('cloud2.obj', function (object) {
+                object.position.set(-900, 750, -1700);
+                object.scale.x = object.scale.z = 10;
+                object.scale.y = 4;
+                object.rotation.y = 0;
+                scene.add(object);
+
+            });
+
+            objLoader.load('cloud2.obj', function (object) {
+                object.position.set(-2100, 750, 400);
+                object.scale.x = object.scale.z = 10;
+                object.scale.y = 4;
+                object.rotation.y = 0;
+                scene.add(object);
+
+            });
+
+            objLoader.load('cloud2.obj', function (object) {
+                object.position.set(-1500, 750, 150);
+                object.scale.x = object.scale.z = 10;
+                object.scale.y = 4;
+                object.rotation.y = 0;
+                scene.add(object);
+
+            });
+
+            objLoader.load('cloud2.obj', function (object) {
+                object.position.set(-700, 750, 300);
+                object.scale.x = object.scale.z = 10;
+                object.scale.y = 4;
+                object.rotation.y = 0;
+                scene.add(object);
+
+            });
+            objLoader.load('cloud2.obj', function (object) {
+                object.position.set(0, 750, 0);
+                object.scale.x = object.scale.z = 10;
+                object.scale.y = 4;
+                object.rotation.y = 50;
+                scene.add(object);
+
+            });
+
+            objLoader.load('cloud2.obj', function (object) {
+                object.position.set(550, 750, 150);
+                object.scale.x = object.scale.z = 10;
+                object.scale.y = 4;
+                object.rotation.y = -50;
+                scene.add(object);
+
+            });
+        });
         /////////
         // GUI //
         /////////
