@@ -2,10 +2,91 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40e783f9-c817-4a3f-8b23-1de8365aadb5" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/maze.html" afterPath="$PROJECT_DIR$/maze.html" />
+      <change beforePath="$PROJECT_DIR$/js/CSS3DRenderer.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/FlatMirror.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/GamepadState.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/KeyboardState.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/MarchingCubesData.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/OrbitControls-Touch.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/ParticleEngine.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/ParticleEngineExamples.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Pool.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/RequestAnimationFrame.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/ShaderParticleEmitter.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/ShaderParticleGroup.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/ShaderWater.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Stats.js" afterPath="$PROJECT_DIR$/js/Stats.js" />
+      <change beforePath="$PROJECT_DIR$/js/SubdivisionModifier.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Three56.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Three58.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Three59.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Three59dev.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Three60.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Three62.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Three62dev.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Three63.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Three63Min.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Three66.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/ThreeCSG.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/ThreeDebug.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/TrackballControls.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/Tween.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/effects/AnaglyphEffect.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/gamepad.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/gamepad_no_images.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/gamepad_uncompressed.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/info.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/jquery-1.9.1.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/jquery-ui.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/leap.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/parser.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/peer.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/polyhedra.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/postprocessing/BloomPass.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/postprocessing/DotScreenPass.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/postprocessing/EffectComposer.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/postprocessing/FilmPass.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/postprocessing/MaskPass.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/postprocessing/RenderPass.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/postprocessing/SavePass.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/postprocessing/ShaderPass.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/postprocessing/TexturePass.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/AdditiveBlendShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/BasicShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/BleachBypassShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/BlendShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/BokehShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/BrightnessContrastShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/ColorCorrectionShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/ColorifyShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/ConvolutionShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/CopyShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/DOFMipMapShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/DotScreenShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/EdgeShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/EdgeShader2.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/FXAAShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/FilmShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/FocusShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/FresnelShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/HorizontalBlurShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/HorizontalTiltShiftShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/HueSaturationShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/KaleidoShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/LambertToon.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/LuminosityShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/MirrorShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/NormalMapShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/RGBShiftShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/SSAOShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/SepiaShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/TriangleBlurShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/UnpackDepthRGBAShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/VerticalBlurShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/VerticalTiltShiftShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/shaders/VignetteShader.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/js/topology.js" afterPath="" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -19,14 +100,33 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="maze.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="maze.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/maze.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="140">
-              <caret line="199" column="6" lean-forward="true" selection-start-line="199" selection-start-column="6" selection-end-line="199" selection-end-column="6" />
+            <state relative-caret-position="380">
+              <caret line="19" column="23" lean-forward="false" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OBJLoader.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/OBJLoader.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="THREEx.FullScreen.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/js/THREEx.FullScreen.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="280">
+              <caret line="14" column="3" lean-forward="true" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
               <folding>
-                <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#a#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#!!doc" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -52,10 +152,14 @@
       <find>center</find>
       <find>screen</find>
       <find>mouseEn</find>
+      <find>var</find>
     </findStrings>
+    <replaceStrings>
+      <replace>let</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
-    <option name="UPDATE_TYPE" value="REBASE" />
+    <option name="UPDATE_TYPE" value="MERGE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
@@ -63,6 +167,7 @@
       <list>
         <option value="$PROJECT_DIR$/js/OrbitControls.js" />
         <option value="$PROJECT_DIR$/maze.html" />
+        <option value="$PROJECT_DIR$/js/Stats.js" />
       </list>
     </option>
   </component>
@@ -79,8 +184,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
+    <option name="x" value="1430" />
+    <option name="y" value="22" />
     <option name="width" value="1382" />
     <option name="height" value="784" />
   </component>
@@ -145,7 +250,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -154,10 +258,16 @@
               <item name="Maze" type="b2602c69:ProjectViewProjectNode" />
               <item name="Maze" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="Maze" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Maze" type="462c0819:PsiDirectoryNode" />
+              <item name="js" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -201,7 +311,12 @@
       <workItem from="1513773908801" duration="33000" />
       <workItem from="1513784080558" duration="3566000" />
       <workItem from="1513787841914" duration="503000" />
-      <workItem from="1513839371721" duration="535000" />
+      <workItem from="1513839371721" duration="1469000" />
+      <workItem from="1513841545096" duration="220000" />
+      <workItem from="1513961981761" duration="1681000" />
+      <workItem from="1513964002316" duration="894000" />
+      <workItem from="1514286147962" duration="430000" />
+      <workItem from="1514568905152" duration="22000" />
     </task>
     <task id="LOCAL-00001" summary="Modify screenshot">
       <created>1513787614877</created>
@@ -217,21 +332,27 @@
       <option name="project" value="LOCAL" />
       <updated>1513788287374</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Merge sky and cloud">
+      <created>1513841742829</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1513841742829</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25319000" />
+    <option name="totallyTimeSpent" value="29500000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
-    <editor active="true" />
+    <frame x="1358" y="-8" width="1936" height="1096" extended-state="6" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14714494" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1046875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17545639" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1191446" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -242,7 +363,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3299389" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -274,7 +395,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Modify screenshot" />
     <MESSAGE value="Fix warnings" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix warnings" />
+    <MESSAGE value="Merge sky and cloud" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge sky and cloud" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -285,19 +407,60 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/maze.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="380">
+          <caret line="19" column="23" lean-forward="false" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/OBJLoader.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/THREEx.FullScreen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="14" column="3" lean-forward="true" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
           <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/OrbitControls.js">
+    <entry file="file://$PROJECT_DIR$/maze.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7800">
-          <caret line="390" column="0" lean-forward="false" selection-start-line="390" selection-start-column="0" selection-end-line="390" selection-end-column="0" />
+        <state relative-caret-position="380">
+          <caret line="19" column="23" lean-forward="true" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/OBJLoader.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/THREEx.FullScreen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/maze.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -306,10 +469,38 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/maze.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/maze.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/OrbitControls.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7800">
+          <caret line="390" column="0" lean-forward="false" selection-start-line="390" selection-start-column="0" selection-end-line="390" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/maze.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -317,6 +508,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7800">
           <caret line="390" column="0" lean-forward="true" selection-start-line="390" selection-start-column="0" selection-end-line="390" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/maze.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -325,10 +523,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -336,10 +531,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -347,21 +539,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/maze.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -369,7 +547,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7254">
           <caret line="403" column="0" lean-forward="false" selection-start-line="403" selection-start-column="0" selection-end-line="403" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -377,28 +554,15 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md" />
-    <entry file="file://$PROJECT_DIR$/schedule.md" />
     <entry file="file://$PROJECT_DIR$/js/MTLLoader.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-9166">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/OBJLoader.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-15">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -406,17 +570,69 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="226">
           <caret line="390" column="0" lean-forward="false" selection-start-line="390" selection-start-column="0" selection-end-line="390" selection-end-column="0" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/Three89.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-559826">
+          <caret line="17952" column="0" lean-forward="false" selection-start-line="17952" selection-start-column="0" selection-end-line="17952" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/Stats.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/THREEx.WindowResize.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/THREEx.KeyboardState.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1832">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/schedule.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-192">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/maze.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="199" column="6" lean-forward="true" selection-start-line="199" selection-start-column="6" selection-end-line="199" selection-end-column="6" />
+        <state relative-caret-position="380">
+          <caret line="19" column="23" lean-forward="false" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/OBJLoader.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/THREEx.FullScreen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="14" column="3" lean-forward="true" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
           <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
