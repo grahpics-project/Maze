@@ -3,90 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="40e783f9-c817-4a3f-8b23-1de8365aadb5" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/js/CSS3DRenderer.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/FlatMirror.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/GamepadState.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/KeyboardState.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/MarchingCubesData.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/OrbitControls-Touch.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/ParticleEngine.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/ParticleEngineExamples.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Pool.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/RequestAnimationFrame.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/ShaderParticleEmitter.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/ShaderParticleGroup.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/ShaderWater.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Stats.js" afterPath="$PROJECT_DIR$/js/Stats.js" />
-      <change beforePath="$PROJECT_DIR$/js/SubdivisionModifier.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Three56.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Three58.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Three59.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Three59dev.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Three60.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Three62.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Three62dev.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Three63.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Three63Min.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Three66.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/ThreeCSG.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/ThreeDebug.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/TrackballControls.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/Tween.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/effects/AnaglyphEffect.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/gamepad.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/gamepad_no_images.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/gamepad_uncompressed.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/info.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/jquery-1.9.1.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/jquery-ui.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/leap.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/parser.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/peer.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/polyhedra.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/postprocessing/BloomPass.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/postprocessing/DotScreenPass.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/postprocessing/EffectComposer.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/postprocessing/FilmPass.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/postprocessing/MaskPass.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/postprocessing/RenderPass.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/postprocessing/SavePass.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/postprocessing/ShaderPass.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/postprocessing/TexturePass.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/AdditiveBlendShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/BasicShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/BleachBypassShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/BlendShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/BokehShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/BrightnessContrastShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/ColorCorrectionShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/ColorifyShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/ConvolutionShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/CopyShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/DOFMipMapShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/DotScreenShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/EdgeShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/EdgeShader2.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/FXAAShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/FilmShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/FocusShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/FresnelShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/HorizontalBlurShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/HorizontalTiltShiftShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/HueSaturationShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/KaleidoShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/LambertToon.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/LuminosityShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/MirrorShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/NormalMapShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/RGBShiftShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/SSAOShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/SepiaShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/TriangleBlurShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/UnpackDepthRGBAShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/VerticalBlurShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/VerticalTiltShiftShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/shaders/VignetteShader.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/js/topology.js" afterPath="" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -100,11 +16,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="maze.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="maze.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/maze.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="19" column="23" lean-forward="false" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
+            <state relative-caret-position="320">
+              <caret line="16" column="47" lean-forward="true" selection-start-line="16" selection-start-column="47" selection-end-line="16" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -120,7 +36,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="THREEx.FullScreen.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="THREEx.FullScreen.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/THREEx.FullScreen.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="280">
@@ -316,7 +232,7 @@
       <workItem from="1513961981761" duration="1681000" />
       <workItem from="1513964002316" duration="894000" />
       <workItem from="1514286147962" duration="430000" />
-      <workItem from="1514568905152" duration="22000" />
+      <workItem from="1514568905152" duration="210000" />
     </task>
     <task id="LOCAL-00001" summary="Modify screenshot">
       <created>1513787614877</created>
@@ -339,16 +255,24 @@
       <option name="project" value="LOCAL" />
       <updated>1513841742829</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Delete some library files">
+      <created>1514569001966</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1514569001966</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="29500000" />
+    <option name="totallyTimeSpent" value="29688000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1358" y="-8" width="1936" height="1096" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1046875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1046875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -396,7 +320,8 @@
     <MESSAGE value="Modify screenshot" />
     <MESSAGE value="Fix warnings" />
     <MESSAGE value="Merge sky and cloud" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge sky and cloud" />
+    <MESSAGE value="Delete some library files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Delete some library files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -599,7 +524,7 @@
         <state relative-caret-position="-1832">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -608,14 +533,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-192">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/maze.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="19" column="23" lean-forward="false" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -634,6 +551,14 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/maze.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="16" column="47" lean-forward="true" selection-start-line="16" selection-start-column="47" selection-end-line="16" selection-end-column="47" />
+          <folding />
         </state>
       </provider>
     </entry>
