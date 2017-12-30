@@ -16,7 +16,8 @@ let objFile = ['1_Grass_1.obj', '1_Grass_2.obj', '1_Grass_3.obj', '1_Grass_4.obj
 let floorObj = [];
 let wallFile = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj'];
 let wallObj = [];
-
+let lightchange = false;//光照改变
+let auto = false;//自动走迷宫
 
 
 ///////////////
@@ -173,6 +174,7 @@ function wallGenerate() {
 }
 
 function init() {
+
     ///////////
     // SCENE //
     ///////////
@@ -226,32 +228,31 @@ function init() {
     ///////////
     // LIGHT //
     ///////////
-    let light = new THREE.PointLight(0xffffff);
-    light.position.set(0, 10000, 0);
-    let light_1 = new THREE.PointLight(0xffffff);
-    light_1.position.set(-7000, 10000, -7000);
-    let light_2 = new THREE.PointLight(0xffffff);
-    light_2.position.set(7000, 10000, 7000);
-    let light_3 = new THREE.DirectionalLight(0xffffff, 1);
-    light_3.position.set(1, 0.5, 0);
-    //scene.add(light_3);
-    let light_4 = new THREE.DirectionalLight(0xffffff, 1);
-    light_4.position.set(-1, 0.5, 0);
-    //scene.add(light_4);
-    let light_5 = new THREE.DirectionalLight(0xffffff, 1);
-    light_5.position.set(0, 0.5, 1);
-    scene.add(light_5);
-    let light_6 = new THREE.DirectionalLight(0xffffff, 1);
-    light_6.position.set(0, 0.5, -1);
-    scene.add(light_6);
-    //scene.add(light_2);
-
-    //light in the sun in the sky
-    let cloud_light = new THREE.PointLight(0xffffff);
-    cloud_light.castShadow = true;
-    cloud_light.position.set(3300,1200,0);
-    scene.add(cloud_light);
-
+    let light = new THREE.AmbientLight(0xffffff, 3);
+    scene.add(light);
+    // let light_1 = new THREE.PointLight(0xffffff);
+    // light_1.position.set(-7000, 10000, -7000);
+    // let light_2 = new THREE.PointLight(0xffffff);
+    // light_2.position.set(7000, 10000, 7000);
+    // let light_3 = new THREE.DirectionalLight(0xffffff, 1);
+    // light_3.position.set(1, 0.5, 0);
+    // scene.add(light_3);
+    // let light_4 = new THREE.DirectionalLight(0xffffff, 1);
+    // light_4.position.set(-1, 0.5, 0);
+    // scene.add(light_4);
+    // let light_5 = new THREE.DirectionalLight(0xffffff, 1);
+    // light_5.position.set(0, 0.5, 1);
+    // scene.add(light_5);
+    // let light_6 = new THREE.DirectionalLight(0xffffff, 1);
+    // light_6.position.set(0, 0.5, -1);
+    // scene.add(light_6);
+    // scene.add(light_2);
+    //
+    // light in the sun in the sky
+    // let cloud_light = new THREE.PointLight(0xffffff);
+    // cloud_light.castShadow = true;
+    // cloud_light.position.set(3300,1200,0);
+    // scene.add(cloud_light);
 
 
     ///////////
@@ -298,125 +299,125 @@ function init() {
     ///////////
     // CLOUD //
     ///////////
-    let mtlLoader = new THREE.MTLLoader();
-    mtlLoader.setBaseUrl('ExportedObj/');
-    mtlLoader.setPath('ExportedObj/');
-    mtlLoader.load('cloud.mtl', function (materials) {
-        materials.preload();
-
-        let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/');
-        objLoader.load('cloud.obj', function (object) {
-            object.position.set(-1050, 750, 700);
-            object.scale.x = object.scale.z = 10;
-            object.scale.y = 4;
-            object.castShadow = true;
-            scene.add(object);
-
-        });
-
-
-        objLoader.load('cloud.obj', function (object) {
-            object.position.set(-500, 750, 1750);
-            object.scale.x = 10;
-            object.scale.z = 8;
-            object.scale.y = 4;
-            object.rotation.y = 60;
-            object.castShadow = true;
-            scene.add(object);
-
-        });
-
-        objLoader.load('cloud1.obj', function (object) {
-            object.position.set(450, 750, 950);
-            object.scale.x = object.scale.z = 16;
-            object.scale.y = 8;
-            object.rotation.y = 0;
-            object.castShadow = true;
-            scene.add(object);
-
-        });
-
-        objLoader.load('cloud1.obj', function (object) {
-            object.position.set(-1700, 750, 1550);
-            object.scale.x = object.scale.z = 16;
-            object.scale.y = 8;
-            object.rotation.y = 0;
-            object.castShadow = true;
-            scene.add(object);
-
-        });
-
-        objLoader.load('cloud2.obj', function (object) {
-            object.position.set(-800, 750, 1200);
-            object.scale.x = object.scale.z = 10;
-            object.scale.y = 4;
-            object.rotation.y = 0;
-            object.castShadow = true;
-            scene.add(object);
-
-        });
-
-        objLoader.load('cloud2.obj', function (object) {
-            object.position.set(-900, 750, -1700);
-            object.scale.x = object.scale.z = 10;
-            object.scale.y = 4;
-            object.rotation.y = 0;
-            object.castShadow = true;
-            scene.add(object);
-
-        });
-
-        objLoader.load('cloud2.obj', function (object) {
-            object.position.set(-2100, 750, 400);
-            object.scale.x = object.scale.z = 10;
-            object.scale.y = 4;
-            object.rotation.y = 0;
-            object.castShadow = true;
-            scene.add(object);
-
-        });
-
-        objLoader.load('cloud2.obj', function (object) {
-            object.position.set(-1500, 750, 150);
-            object.scale.x = object.scale.z = 10;
-            object.scale.y = 4;
-            object.rotation.y = 0;
-            object.castShadow = true;
-            scene.add(object);
-
-        });
-
-        objLoader.load('cloud2.obj', function (object) {
-            object.position.set(-700, 750, 300);
-            object.scale.x = object.scale.z = 10;
-            object.scale.y = 4;
-            object.rotation.y = 0;
-            object.castShadow = true;
-            scene.add(object);
-
-        });
-        objLoader.load('cloud2.obj', function (object) {
-            object.position.set(0, 750, 0);
-            object.scale.x = object.scale.z = 10;
-            object.scale.y = 4;
-            object.rotation.y = 50;
-            object.castShadow = true;
-            scene.add(object);
-
-        });
-
-        objLoader.load('cloud2.obj', function (object) {
-            object.position.set(550, 750, 150);
-            object.scale.x = object.scale.z = 10;
-            object.scale.y = 4;
-            object.rotation.y = -50;
-            object.castShadow = true;
-            scene.add(object);
-
-        });
-    });
+    // let mtlLoader = new THREE.MTLLoader();
+    // mtlLoader.setBaseUrl('ExportedObj/');
+    // mtlLoader.setPath('ExportedObj/');
+    // mtlLoader.load('cloud.mtl', function (materials) {
+    //     materials.preload();
+    //
+    //     let objLoader = new THREE.OBJLoader();
+    //     objLoader.setMaterials(materials);
+    //     objLoader.setPath('ExportedObj/');
+    //     objLoader.load('cloud.obj', function (object) {
+    //         object.position.set(-1050, 750, 700);
+    //         object.scale.x = object.scale.z = 10;
+    //         object.scale.y = 4;
+    //         object.castShadow = true;
+    //         scene.add(object);
+    //
+    //     });
+    //
+    //
+    //     objLoader.load('cloud.obj', function (object) {
+    //         object.position.set(-500, 750, 1750);
+    //         object.scale.x = 10;
+    //         object.scale.z = 8;
+    //         object.scale.y = 4;
+    //         object.rotation.y = 60;
+    //         object.castShadow = true;
+    //         scene.add(object);
+    //
+    //     });
+    //
+    //     objLoader.load('cloud1.obj', function (object) {
+    //         object.position.set(450, 750, 950);
+    //         object.scale.x = object.scale.z = 16;
+    //         object.scale.y = 8;
+    //         object.rotation.y = 0;
+    //         object.castShadow = true;
+    //         scene.add(object);
+    //
+    //     });
+    //
+    //     objLoader.load('cloud1.obj', function (object) {
+    //         object.position.set(-1700, 750, 1550);
+    //         object.scale.x = object.scale.z = 16;
+    //         object.scale.y = 8;
+    //         object.rotation.y = 0;
+    //         object.castShadow = true;
+    //         scene.add(object);
+    //
+    //     });
+    //
+    //     objLoader.load('cloud2.obj', function (object) {
+    //         object.position.set(-800, 750, 1200);
+    //         object.scale.x = object.scale.z = 10;
+    //         object.scale.y = 4;
+    //         object.rotation.y = 0;
+    //         object.castShadow = true;
+    //         scene.add(object);
+    //
+    //     });
+    //
+    //     objLoader.load('cloud2.obj', function (object) {
+    //         object.position.set(-900, 750, -1700);
+    //         object.scale.x = object.scale.z = 10;
+    //         object.scale.y = 4;
+    //         object.rotation.y = 0;
+    //         object.castShadow = true;
+    //         scene.add(object);
+    //
+    //     });
+    //
+    //     objLoader.load('cloud2.obj', function (object) {
+    //         object.position.set(-2100, 750, 400);
+    //         object.scale.x = object.scale.z = 10;
+    //         object.scale.y = 4;
+    //         object.rotation.y = 0;
+    //         object.castShadow = true;
+    //         scene.add(object);
+    //
+    //     });
+    //
+    //     objLoader.load('cloud2.obj', function (object) {
+    //         object.position.set(-1500, 750, 150);
+    //         object.scale.x = object.scale.z = 10;
+    //         object.scale.y = 4;
+    //         object.rotation.y = 0;
+    //         object.castShadow = true;
+    //         scene.add(object);
+    //
+    //     });
+    //
+    //     objLoader.load('cloud2.obj', function (object) {
+    //         object.position.set(-700, 750, 300);
+    //         object.scale.x = object.scale.z = 10;
+    //         object.scale.y = 4;
+    //         object.rotation.y = 0;
+    //         object.castShadow = true;
+    //         scene.add(object);
+    //
+    //     });
+    //     objLoader.load('cloud2.obj', function (object) {
+    //         object.position.set(0, 750, 0);
+    //         object.scale.x = object.scale.z = 10;
+    //         object.scale.y = 4;
+    //         object.rotation.y = 50;
+    //         object.castShadow = true;
+    //         scene.add(object);
+    //
+    //     });
+    //
+    //     objLoader.load('cloud2.obj', function (object) {
+    //         object.position.set(550, 750, 150);
+    //         object.scale.x = object.scale.z = 10;
+    //         object.scale.y = 4;
+    //         object.rotation.y = -50;
+    //         object.castShadow = true;
+    //         scene.add(object);
+    //
+    //     });
+    // });
     /////////
     // GUI //
     /////////
@@ -424,7 +425,9 @@ function init() {
     let gui = new dat.GUI();
     let parameters =
         {
-            mv: false,
+            cheatingEn: false,
+            lightEn:false,
+            autoGo:false,
             Screenshot: () => {
                 if (!renderer) return;
                 let img = renderer.domElement.toDataURL('image/png');
@@ -434,16 +437,22 @@ function init() {
                 link.click();
             }
         };
-    let folder1 = gui.addFolder('Cheat');
-    let mvGUI = folder1.add(parameters, 'mv').name("cheat").listen();
-    mvGUI.onChange(function (value) {
-        mouseEn = value;
-    });
-    folder1.open();
     let tools = gui.addFolder('Tools');
     tools.add(parameters, 'Screenshot');
-    tools.open();
-    gui.open();
+    let cheating = tools.add(parameters, 'cheatingEn').name("cheat").listen();
+    cheating.onChange(function (value) {
+        mouseEn = value;
+    });
+    let lightChange = tools.add(parameters, 'lightEn').name("Light").listen();
+    lightChange.onChange(function (value) {
+        lightchange = value;
+    });
+    let autogo = tools.add(parameters, 'autoGo').name("Auto").listen();
+    autogo.onChange(function (value) {
+        auto = value;
+    });
+    // tools.open();
+    // gui.open();
 
 
 }
@@ -524,3 +533,7 @@ function render() {
     renderer.render(scene, camera);
 }
 
+function gameStart() {
+    init();
+    animate();
+}
