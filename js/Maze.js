@@ -17,6 +17,9 @@ let floorObj = [];
 let wallFile = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj'];
 let wallObj = [];
 let lightchange = false;//光照改变
+let skyboxchange = false;
+let skyBox;
+let skyBoxBlack;
 let auto = false;//自动走迷宫
 
 
@@ -281,20 +284,29 @@ function init() {
     /////////
     // SKY //
     /////////
-    let imagePrefix = "images/";
+    let imagePrefixBlack = "images/black";
+    let imagePrefix = "images/"
     let directions = ["posx", "negx", "posy", "negy", "posz", "negz"];
     let imageSuffix = ".png";
     let skyGeometry = new THREE.CubeGeometry(8000, 8000, 8000);
+    let materialArrayBlack = [];
     let materialArray = [];
 
+    for (let i = 0; i < 6; i++)
+        materialArrayBlack.push(new THREE.MeshBasicMaterial({
+            map: THREE.ImageUtils.loadTexture(imagePrefixBlack + directions[i] + imageSuffix),
+            side: THREE.BackSide
+        }));
     for (let i = 0; i < 6; i++)
         materialArray.push(new THREE.MeshBasicMaterial({
             map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
             side: THREE.BackSide
         }));
+    let skyMaterialBlack = new THREE.MeshFaceMaterial(materialArrayBlack);
     let skyMaterial = new THREE.MeshFaceMaterial(materialArray);
-    let skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
-    scene.add(skyBox);
+    skyBoxBlack = new THREE.Mesh(skyGeometry, skyMaterialBlack);
+    skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
+    scene.add(skyBoxBlack);
 
     ///////////
     // CLOUD //
@@ -525,6 +537,20 @@ function update() {
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
         }
         camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 100, MovingCube.position.z));
+    }
+    if(lightchange === true){
+        if(skyboxchange === false){
+            scene.remove(skyBoxBlack);
+            scene.add(skyBox);
+            skyboxchange = true;
+        }
+    }
+    else{
+        if(skyboxchange === true){
+            scene.remove(skyBox);
+            scene.add(skyBoxBlack);
+            skyboxchange = false;
+        }
     }
     stats.update();
 }
