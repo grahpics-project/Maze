@@ -282,9 +282,9 @@ function init() {
     // SKY //
     /////////
     let imagePrefix = "images/";
-    let directions = ["sky0", "sky1", "sky2", "sky3", "sky4", "sky5"];
+    let directions = ["posx", "negx", "posy", "negy", "posz", "negz"];
     let imageSuffix = ".png";
-    let skyGeometry = new THREE.CubeGeometry(8000, 2000, 8000);
+    let skyGeometry = new THREE.CubeGeometry(8000, 8000, 8000);
     let materialArray = [];
 
     for (let i = 0; i < 6; i++)
