@@ -20,7 +20,11 @@ let lightchange = false;//光照改变
 let skyboxchange = false;
 let skyBox;
 let skyBoxBlack;
+let cloud;
+let cloudAngel = -Math.PI;
+let cloudR = -3000;
 let auto = false;//自动走迷宫
+
 
 
 ///////////////
@@ -274,7 +278,25 @@ function init() {
     let sphereMaterial = new THREE.MeshBasicMaterial({color: 0x0000FF});
     MovingCube = new THREE.Mesh(sphereGeometry, sphereMaterial);
     MovingCube.position.set(-2700, 50, -2700);
-    scene.add(MovingCube);
+    //scene.add(MovingCube);
+    let mtlLoaderMan = new THREE.MTLLoader();
+    mtlLoaderMan.setBaseUrl('ExportedObj/Man');
+    mtlLoaderMan.setPath('ExportedObj/Man');
+    mtlLoaderMan.load('mid.mtl', function (materials) {
+        materials.preload();
+    
+        let objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('ExportedObj/Man');
+        objLoader.load('mid.obj', function (object) {
+            object.position.set(cloudR*Math.cos(cloudAngel), 2000, cloudR*Math.sin(cloudAngel));
+            object.scale.x = object.scale.y = object.scale.z = 500;
+            object.castShadow = true;
+            MovingCube = object;
+            scene.add(object);
+    
+        });
+    });
 
     ///////////
     // FLOOR //
@@ -311,125 +333,30 @@ function init() {
     ///////////
     // CLOUD //
     ///////////
-    // let mtlLoader = new THREE.MTLLoader();
-    // mtlLoader.setBaseUrl('ExportedObj/');
-    // mtlLoader.setPath('ExportedObj/');
-    // mtlLoader.load('cloud.mtl', function (materials) {
-    //     materials.preload();
-    //
-    //     let objLoader = new THREE.OBJLoader();
-    //     objLoader.setMaterials(materials);
-    //     objLoader.setPath('ExportedObj/');
-    //     objLoader.load('cloud.obj', function (object) {
-    //         object.position.set(-1050, 750, 700);
-    //         object.scale.x = object.scale.z = 10;
-    //         object.scale.y = 4;
-    //         object.castShadow = true;
-    //         scene.add(object);
-    //
-    //     });
-    //
-    //
-    //     objLoader.load('cloud.obj', function (object) {
-    //         object.position.set(-500, 750, 1750);
-    //         object.scale.x = 10;
-    //         object.scale.z = 8;
-    //         object.scale.y = 4;
-    //         object.rotation.y = 60;
-    //         object.castShadow = true;
-    //         scene.add(object);
-    //
-    //     });
-    //
-    //     objLoader.load('cloud1.obj', function (object) {
-    //         object.position.set(450, 750, 950);
-    //         object.scale.x = object.scale.z = 16;
-    //         object.scale.y = 8;
-    //         object.rotation.y = 0;
-    //         object.castShadow = true;
-    //         scene.add(object);
-    //
-    //     });
-    //
-    //     objLoader.load('cloud1.obj', function (object) {
-    //         object.position.set(-1700, 750, 1550);
-    //         object.scale.x = object.scale.z = 16;
-    //         object.scale.y = 8;
-    //         object.rotation.y = 0;
-    //         object.castShadow = true;
-    //         scene.add(object);
-    //
-    //     });
-    //
-    //     objLoader.load('cloud2.obj', function (object) {
-    //         object.position.set(-800, 750, 1200);
-    //         object.scale.x = object.scale.z = 10;
-    //         object.scale.y = 4;
-    //         object.rotation.y = 0;
-    //         object.castShadow = true;
-    //         scene.add(object);
-    //
-    //     });
-    //
-    //     objLoader.load('cloud2.obj', function (object) {
-    //         object.position.set(-900, 750, -1700);
-    //         object.scale.x = object.scale.z = 10;
-    //         object.scale.y = 4;
-    //         object.rotation.y = 0;
-    //         object.castShadow = true;
-    //         scene.add(object);
-    //
-    //     });
-    //
-    //     objLoader.load('cloud2.obj', function (object) {
-    //         object.position.set(-2100, 750, 400);
-    //         object.scale.x = object.scale.z = 10;
-    //         object.scale.y = 4;
-    //         object.rotation.y = 0;
-    //         object.castShadow = true;
-    //         scene.add(object);
-    //
-    //     });
-    //
-    //     objLoader.load('cloud2.obj', function (object) {
-    //         object.position.set(-1500, 750, 150);
-    //         object.scale.x = object.scale.z = 10;
-    //         object.scale.y = 4;
-    //         object.rotation.y = 0;
-    //         object.castShadow = true;
-    //         scene.add(object);
-    //
-    //     });
-    //
-    //     objLoader.load('cloud2.obj', function (object) {
-    //         object.position.set(-700, 750, 300);
-    //         object.scale.x = object.scale.z = 10;
-    //         object.scale.y = 4;
-    //         object.rotation.y = 0;
-    //         object.castShadow = true;
-    //         scene.add(object);
-    //
-    //     });
-    //     objLoader.load('cloud2.obj', function (object) {
-    //         object.position.set(0, 750, 0);
-    //         object.scale.x = object.scale.z = 10;
-    //         object.scale.y = 4;
-    //         object.rotation.y = 50;
-    //         object.castShadow = true;
-    //         scene.add(object);
-    //
-    //     });
-    //
-    //     objLoader.load('cloud2.obj', function (object) {
-    //         object.position.set(550, 750, 150);
-    //         object.scale.x = object.scale.z = 10;
-    //         object.scale.y = 4;
-    //         object.rotation.y = -50;
-    //         object.castShadow = true;
-    //         scene.add(object);
-    //
-    //     });
-    // });
+    cloud = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    cloud.position.set(2000, 2000, 2000);
+    let mtlLoaderCloud = new THREE.MTLLoader();
+    mtlLoaderCloud.setBaseUrl('ExportedObj/');
+    mtlLoaderCloud.setPath('ExportedObj/');
+    mtlLoaderCloud.load('cloud.mtl', function (materials) {
+        materials.preload();
+    
+        let objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('ExportedObj/');
+        objLoader.load('cloud.obj', function (object) {
+            //cloud = object;
+            object.position.set(cloudR*Math.cos(cloudAngel), 2000, cloudR*Math.sin(cloudAngel));
+            object.scale.x = object.scale.z = 10;
+            object.scale.y = 5;
+            object.castShadow = true;
+            cloud = object;
+            scene.add(object);
+    
+        });
+        //scene.add(cloud);
+
+    });
     /////////
     // GUI //
     /////////
@@ -482,6 +409,13 @@ function update() {
     let tmpx = MovingCube.position.x;
     let tmpy = MovingCube.position.y;
     let tmpz = MovingCube.position.z;
+    cloudAngel += Math.PI/500;
+    if(cloudAngel > Math.PI)
+        cloudAngel = cloudAngel-2*Math.PI;
+    cloudR += 10;
+    if(cloudR > 3000)
+        cloudR = cloudR - 6000;
+    cloud.position.set(cloudR*Math.cos(cloudAngel), 2000, cloudR*Math.sin(cloudAngel));
     if (keyboard.pressed("W"))
         MovingCube.translateZ(-moveDistance);
     if (keyboard.pressed("S"))
