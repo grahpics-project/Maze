@@ -280,19 +280,26 @@ function init() {
     MovingCube.position.set(-2700, 50, -2700);
     //scene.add(MovingCube);
     let mtlLoaderMan = new THREE.MTLLoader();
-    mtlLoaderMan.setBaseUrl('ExportedObj/Man');
-    mtlLoaderMan.setPath('ExportedObj/Man');
+    mtlLoaderMan.setTexturePath('ExportedObj/Man/');
+
+    mtlLoaderMan.setPath('ExportedObj/Man/');
+
     mtlLoaderMan.load('mid.mtl', function (materials) {
         materials.preload();
     
         let objLoader = new THREE.OBJLoader();
         objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/Man');
+        objLoader.setPath('ExportedObj/Man/');
         objLoader.load('mid.obj', function (object) {
-            object.position.set(cloudR*Math.cos(cloudAngel), 2000, cloudR*Math.sin(cloudAngel));
-            object.scale.x = object.scale.y = object.scale.z = 500;
-            object.castShadow = true;
+            object.traverse( function ( child ) {
+                        if ( child instanceof THREE.Mesh ) {  
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.62 * Math.PI );
+                        }  
+                    } ); 
+            object.scale.x = object.scale.y = object.scale.z = 20;
+            object.position.set(-2700 , 50, -2700);
             MovingCube = object;
+
             scene.add(object);
     
         });
@@ -457,7 +464,7 @@ function update() {
             count = 0;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
         }
-        let relativeCameraOffset = new THREE.Vector3(0, 100, 200);
+        let relativeCameraOffset = new THREE.Vector3(0, 10, 30);
         let cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
         camera.position.x = cameraOffset.x;
         camera.position.y = cameraOffset.y;

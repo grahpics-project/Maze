@@ -1,125 +1,126 @@
 newmtl Material__0
-illum 4
+illum 2
 Kd 1.00 1.00 1.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-Ni 1.50
-Ks 0.04 0.04 0.04
+Ka 0.60 0.60 0.60
+Ks 0.9 0.9 0.9
 Ns 0.00
+d  1.0
+
+
 newmtl __asi
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_asi.jpg
-Ni 1.50
-Ks 0.05 0.05 0.05
-Ns 10.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+
 newmtl __asi2
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_asi2.jpg
-Ni 1.50
-Ks 0.05 0.05 0.05
-Ns 10.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
 newmtl __belt_kutu
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_belt_kutu.jpg
-Ni 1.50
-Ks 0.10 0.10 0.10
-Ns 5.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
 newmtl __body
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_body.jpg
-Ni 1.50
-Ks 0.01 0.01 0.01
-Ns 3.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
 newmtl __fuku_kuro
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_kuro.jpg
-Ni 1.50
-Ks 0.10 0.10 0.10
-Ns 5.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
 newmtl __fuku_siro
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_fukusiro.jpg
-Ni 1.50
-Ks 0.10 0.10 0.10
-Ns 3.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
 newmtl __headset
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_headset.jpg
-Ni 1.50
-Ks 0.10 0.10 0.10
-Ns 4.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
 newmtl __kami
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_kami.jpg
-Ni 1.50
-Ks 0.02 0.02 0.02
-Ns 6.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
 newmtl __kami_u
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_kami_u.jpg
-Ni 1.50
-Ks 0.02 0.02 0.02
-Ns 6.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
 newmtl __kao
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_kao.jpg
-Ni 1.50
-Ks 0.01 0.01 0.01
-Ns 3.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
 newmtl __me
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_eyes2.jpg
-Ni 1.50
-Ks 0.02 0.02 0.02
-Ns 6.00
+Ks 0.9 0.9 0.9
+Ns 0
+d  1.0
+
 newmtl __siro
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_siro.jpg
-Ni 1.50
-Ks 0.10 0.10 0.10
-Ns 4.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
 newmtl __ude
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
 map_Kd tex_ude.jpg
-Ni 1.50
-Ks 0.03 0.03 0.03
-Ns 10.00
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
