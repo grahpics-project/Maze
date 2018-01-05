@@ -16,6 +16,10 @@ let objFile = ['1_Grass_1.obj', '1_Grass_2.obj', '1_Grass_3.obj', '1_Grass_4.obj
 let floorObj = [];
 let wallFile = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj'];
 let wallObj = [];
+let manFile = ['left.obj', 'left1.obj', 'mid.obj', 'right1.obj', 'right.obj'];
+let manObj = [];
+let tmpManObj = 3;
+let tmpManObjRight = true
 let lightchange = false;//光照改变
 let skyboxchange = false;
 let skyBox;
@@ -24,6 +28,7 @@ let cloud;
 let cloudAngel = -Math.PI;
 let cloudR = -3000;
 let auto = false;//自动走迷宫
+
 
 
 
@@ -278,19 +283,61 @@ function init() {
     let sphereMaterial = new THREE.MeshBasicMaterial({color: 0x0000FF});
     MovingCube = new THREE.Mesh(sphereGeometry, sphereMaterial);
     MovingCube.position.set(-2700, 50, -2700);
+    for(let k=0; k<5; k++){
+        manObj[k] = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        manObj[k].position.set(-2700, 50, -2700);
+    }
     //scene.add(MovingCube);
     let mtlLoaderMan = new THREE.MTLLoader();
     mtlLoaderMan.setTexturePath('ExportedObj/Man/');
-
     mtlLoaderMan.setPath('ExportedObj/Man/');
-
     mtlLoaderMan.load('mid.mtl', function (materials) {
         materials.preload();
     
         let objLoader = new THREE.OBJLoader();
         objLoader.setMaterials(materials);
         objLoader.setPath('ExportedObj/Man/');
-        objLoader.load('mid.obj', function (object) {
+        objLoader.load(manFile[0], function (object) {
+            object.traverse( function ( child ) {
+                        if ( child instanceof THREE.Mesh ) {  
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), 1.0 * Math.PI );
+                        }  
+                    } ); 
+            object.scale.x = object.scale.y = object.scale.z = 20;
+            object.position.set(-2700 , 50, -2700);
+            manObj[0] = object;
+            //scene.add(manObj[0]);
+            //MovingCube = object;
+    
+        });
+    });
+    mtlLoaderMan.load('mid.mtl', function (materials) {
+        materials.preload();
+    
+        let objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('ExportedObj/Man/');
+        objLoader.load(manFile[1], function (object) {
+            object.traverse( function ( child ) {
+                        if ( child instanceof THREE.Mesh ) {  
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), 1.0 * Math.PI );
+                        }  
+                    } ); 
+            object.scale.x = object.scale.y = object.scale.z = 20;
+            object.position.set(-2700 , 50, -2700);
+            manObj[1] = object;
+            //scene.add(manObj[1]);
+            //MovingCube = object;
+
+        });
+    });    
+    mtlLoaderMan.load('mid.mtl', function (materials) {
+        materials.preload();
+    
+        let objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('ExportedObj/Man/');
+        objLoader.load(manFile[2], function (object) {
             object.traverse( function ( child ) {
                         if ( child instanceof THREE.Mesh ) {  
                             child.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.62 * Math.PI );
@@ -298,13 +345,52 @@ function init() {
                     } ); 
             object.scale.x = object.scale.y = object.scale.z = 20;
             object.position.set(-2700 , 50, -2700);
+            manObj[2] = object;
             MovingCube = object;
-
             scene.add(object);
     
         });
     });
-
+    mtlLoaderMan.load('mid.mtl', function (materials) {
+        materials.preload();
+    
+        let objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('ExportedObj/Man/');
+        objLoader.load(manFile[3], function (object) {
+            object.traverse( function ( child ) {
+                        if ( child instanceof THREE.Mesh ) {  
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.85 * Math.PI );
+                        }  
+                    } ); 
+            object.scale.x = object.scale.y = object.scale.z = 20;
+            object.position.set(-2700 , 50, -2700);
+            manObj[3] = object;
+            //scene.add(manObj[3]);
+            //MovingCube = object;
+    
+        });
+    });
+    mtlLoaderMan.load('mid.mtl', function (materials) {
+        materials.preload();
+    
+        let objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('ExportedObj/Man/');
+        objLoader.load(manFile[4], function (object) {
+            object.traverse( function ( child ) {
+                        if ( child instanceof THREE.Mesh ) {  
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.79 * Math.PI );
+                        }  
+                    } ); 
+            object.scale.x = object.scale.y = object.scale.z = 20;
+            object.position.set(-2700 , 50, -2700);
+            manObj[4] = object;
+            //scene.add(manObj[4]);
+            //MovingCube = object;
+    
+        });
+    });
     ///////////
     // FLOOR //
     ///////////
@@ -416,13 +502,29 @@ function update() {
     let tmpx = MovingCube.position.x;
     let tmpy = MovingCube.position.y;
     let tmpz = MovingCube.position.z;
+    let newtmp;
+    let newtmpright;
     cloudAngel += Math.PI/500;
     if(cloudAngel > Math.PI)
         cloudAngel = cloudAngel-2*Math.PI;
-    cloudR += 10;
+    cloudR += 1;
     if(cloudR > 3000)
         cloudR = cloudR - 6000;
     cloud.position.set(cloudR*Math.cos(cloudAngel), 2000, cloudR*Math.sin(cloudAngel));
+    if(tmpManObjRight)
+        if(tmpManObj<4)
+            newtmp=tmpManObj+1;
+        else{
+            newtmp=tmpManObj-1;
+            newtmpright=false;
+        }
+    else
+        if(tmpManObj>1)
+            newtmp=tmpManObj-1;
+        else{
+            newtmp=tmpManObj+1;
+            newtmpright=true;
+        }
     if (keyboard.pressed("W"))
         MovingCube.translateZ(-moveDistance);
     if (keyboard.pressed("S"))
@@ -454,6 +556,9 @@ function update() {
         count++;
         if (count === 1) {
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -totAngle);
+            for(let k=0; k<5; k++){
+                manObj[k].rotateOnAxis(new THREE.Vector3(0,1, 0), -totAngle);
+            }
             camera.position.set(0, 8000, 0);
             camera.lookAt(scene.position);
         }
@@ -463,19 +568,32 @@ function update() {
         if (count !== 0) {
             count = 0;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
+            for(let k=0; k<5; k++){
+                manObj[k].rotateOnAxis(new THREE.Vector3(0,1, 0), totAngle);
+            }
         }
         let relativeCameraOffset = new THREE.Vector3(0, 10, 30);
-        let cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
+        let cameraOffset;
+        if((MovingCube.position.x !== tmpx)||(MovingCube.position.z !== tmpz))
+            cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
+        else
+            cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
         camera.position.x = cameraOffset.x;
         camera.position.y = cameraOffset.y;
         camera.position.z = cameraOffset.z;
         if (keyboard.pressed("A")) {
             totAngle += rotateAngle;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
+            for(let k=0; k<5; k++){
+                manObj[k].rotateOnAxis(new THREE.Vector3(0,1, 0), rotateAngle);
+            }
         }
         if (keyboard.pressed("D")) {
             totAngle -= rotateAngle;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
+            for(let k=0; k<5; k++){
+                manObj[k].rotateOnAxis(new THREE.Vector3(0,1, 0), -rotateAngle);
+            }
         }
         camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 100, MovingCube.position.z));
     }
@@ -493,6 +611,24 @@ function update() {
             skyboxchange = false;
         }
     }
+    
+    if((MovingCube.position.x === tmpx)&&(MovingCube.position.z === tmpz)){
+        scene.remove(manObj[tmpManObj]);
+        manObj[2].position.set(MovingCube.position.x, 50, MovingCube.position.z);
+        manObj[2].rotation.y = MovingCube.rotation.y;
+        scene.add(manObj[2]);
+        tmpManObj = 2;
+        tmpManObjRight = true;        
+    }
+    else{
+        scene.remove(manObj[tmpManObj]);
+        tmpManObj=newtmp;
+        tmpManObjRight=newtmpright;
+        manObj[tmpManObj].position.set(MovingCube.position.x, 50, MovingCube.position.z);
+        manObj[tmpManObj].rotation.y = MovingCube.rotation.y;
+        scene.add(manObj[tmpManObj]);
+    }
+    
     stats.update();
 }
 
