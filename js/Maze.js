@@ -798,6 +798,14 @@ function update() {
             //线构造
             let line=new THREE.Line(geometry);
             scene.add(line);
+            let geometry2 = new THREE.Geometry();
+            for(let i = 0; i < role.length; i++) {
+                //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
+                geometry2.vertices.push(new THREE.Vector3(role[i].x + MovingCube.position.x, 50, role[i].y + MovingCube.position.z));
+            }
+            //线构造
+            let line2=new THREE.Line(geometry2);
+            scene.add(line2);
             //console.log(fhull.length);
             for(let i = 0; i < role.length; i++)
             {
@@ -900,8 +908,8 @@ function update() {
         for(let i = 0; i < roleHull[2].length; i++)
         {
             role.push({
-                x: roleHull[2][i].x,
-                y: roleHull[2][i].y
+                x: roleHull[2][i].x * Math.cos(manObj[2].rotation.y) - roleHull[2][i].y * Math.sin(manObj[2].rotation.y),
+                y: roleHull[2][i].y * Math.cos(manObj[2].rotation.y) + roleHull[2][i].x * Math.sin(manObj[2].rotation.y)
             })
         }
     }
@@ -916,12 +924,12 @@ function update() {
         for(let i = 0; i < roleHull[tmpManObj].length; i++)
         {
             role.push({
-                x: roleHull[tmpManObj][i].x,
-                y: roleHull[tmpManObj][i].y
+                x: roleHull[tmpManObj][i].x * Math.cos(manObj[tmpManObj].rotation.y) - roleHull[tmpManObj][i].y * Math.sin(manObj[tmpManObj].rotation.y),
+                y: roleHull[tmpManObj][i].y * Math.cos(manObj[tmpManObj].rotation.y) + roleHull[tmpManObj][i].x * Math.sin(manObj[tmpManObj].rotation.y)
             })
         }
     }
-    
+
     stats.update();
 }
 
