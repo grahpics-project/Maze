@@ -15,11 +15,12 @@ let maze;
 let objFile = ['1_Grass_1.obj', '1_Grass_2.obj', '1_Grass_3.obj', '1_Grass_4.obj', '1_Grass_5.obj', '1_Grass_6.obj', '2_Grass_1.obj', '2_Grass_2.obj', '3_Grass_1.obj', '3_Grass_2.obj'];
 let floorObj = [];
 let wallFile = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj'];
+let wallFile2 = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj'];
 let wallObj = [];
 let manFile = ['left.obj', 'left1.obj', 'mid.obj', 'right1.obj', 'right.obj'];
 let manObj = [];
 let tmpManObj = 3;
-let tmpManObjRight = true
+let tmpManObjRight = true;
 let lightchange = false;//光照改变
 let skyboxchange = false;
 let skyBox;
@@ -28,13 +29,80 @@ let cloud;
 let cloudAngel = -Math.PI;
 let cloudR = -3000;
 let auto = false;//自动走迷宫
-
-
-
-
+let role = [];
+let roleHull = [];
+for(let i = 0; i <= 5; i++)
+    roleHull[i] = [];
 ///////////////
 // FUNCTIONS //
 ///////////////
+
+// 可以借助cos a 在0-180之间，单调递减！！！
+// 这里用的是叉积，正弦的判断
+function multiply(p0,p1,p2){
+    return((p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y));
+}
+function distance_no_sqrt(p1,p2)
+{
+    return((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
+}
+function Graham_scan(pointSet,ch,n){
+    // 这里会修改pointSet
+    let i, j, k = 0, top = 2;
+    // 找到一个基点，基本就是保证最下面最左面的点
+    for(i=1;i<n;i++){
+        if( (pointSet[i].y<pointSet[k].y) ||
+            ( (pointSet[i].y===pointSet[k].y) && (pointSet[i].x<pointSet[k].x) )
+        ){
+            k=i;
+        }
+    }
+
+    let tmp = pointSet[0];
+    pointSet[0]=pointSet[k];
+    pointSet[k]=tmp;
+
+    let use=n;
+    for (i=1;i<use-1;i++){
+        k=i;
+        for (j=i+1;j<use;j++){
+            let direct = multiply(pointSet[0], pointSet[k], pointSet[j]);
+            if(direct>0){
+                k=j;
+            }else if(direct===0){
+                // k j 同方向
+                let dis = distance_no_sqrt(pointSet[0], pointSet[j]) - distance_no_sqrt(pointSet[0], pointSet[k]);
+                use--; // 也就是不要了
+                if(dis>0){
+                    // 保留j
+                    // 把 k 就不要了
+                    pointSet[k]=pointSet[j];
+                    pointSet[j]=pointSet[use];
+                    j--;
+                }else{
+                    tmp=pointSet[use];
+                    pointSet[use]=pointSet[j];
+                    pointSet[j]=tmp;
+                }
+            }
+        }
+        tmp=pointSet[i];
+        pointSet[i]=pointSet[k];
+        pointSet[k]=tmp;
+    }
+
+    ch.push(pointSet[0]);
+    ch.push(pointSet[1]);
+    ch.push(pointSet[2]);
+    for (i=3;i<use;i++){
+        while ( !(multiply(pointSet[i],ch[top-1],ch[top]) < 0 ) ){
+            top--;
+            ch.pop();
+        }
+        top++;
+        ch.push(pointSet[i]);
+    }
+}
 
 // Randomly generate the floor.
 function floorGenerate() {
@@ -78,53 +146,71 @@ function floorGenerate() {
 
 // Generate the wall.
 let x = -3000, y = 30, z = -3000;
+let mapArr = [];
 
 function wallGenerate() {
     if (wallFile.length === 0) {
         for (let i = 0; i <= 20; i++) {
+            let arr = [];
             for (let j = 0; j <= 20; j++) {
                 if ((0 === i && 0 === j) || (20 === i && 20 === j) || (1 === i && 0 === j) || (0 === i && 1 === j) || (20 === i && 19 === j) || (19 === i && 20 === j)) {
                     barrier.push({
                         x1: x - 150,
                         y1: z - 150,
                         x2: x + 150,
-                        y2: z + 150
+                        y2: z + 150,
+                        i: i,
+                        j: j,
+                        x: x,
+                        z: z,
+                        r: false
                     });
                     let block = wallObj[Math.floor(Math.random() * 3)];
+                    arr[j] = Math.floor(Math.random() * 3);
                     block.castShadow = true;
                     block.position.set(x, y, z);
                     scene.add(block.clone());
                 }
                 else if (i === 0 || j === 0 || i === 20 || j === 20) {
+                    let r = false;
+                    let block = wallObj[4];
+                    arr[j] = 4;
+                    if (j === 0 || j === 20) {
+                        block.rotation.y = Math.PI / 2;
+                        r = true;
+                    }
+                    else block.rotation.y = 0;
                     barrier.push({
                         x1: x - 150,
                         y1: z - 150,
                         x2: x + 150,
-                        y2: z + 150
+                        y2: z + 150,
+                        i: i,
+                        j: j,
+                        x: x,
+                        z: z,
+                        r: r
                     });
-                    let block = wallObj[4];
-                    if (j === 0 || j === 20) block.rotation.y = Math.PI / 2;
-                    else block.rotation.y = 0;
                     block.castShadow = true;
                     block.position.set(x, y, z);
                     scene.add(block.clone());
                 }
                 else if (maze.mazeDataArray[i][j].value !== 1) {
-                    barrier.push({
-                        x1: x - 150,
-                        y1: z - 150,
-                        x2: x + 150,
-                        y2: z + 150
-                    });
                     if (i >= 1 && i <= 19 && j <= 18 && j >= 1 && maze.mazeDataArray[i][j + 1].value !== 1 && Math.random() > 0.5) {
                         barrier.push({
-                            x1: x + 150,
+                            x1: x - 150,
                             y1: z - 150,
                             x2: x + 450,
-                            y2: z + 150
+                            y2: z + 150,
+                            i: i,
+                            j: j,
+                            x: x + 150,
+                            z: z,
+                            r: false
                         });
                         maze.mazeDataArray[i][j + 1].value = 1;
                         let block = wallObj[Math.floor(Math.random() * 3) + 6];
+                        arr[j] = Math.floor(Math.random() * 3) + 6;
                         block.castShadow = true;
                         block.position.set(x + 150, y, z);
                         scene.add(block.clone());
@@ -132,12 +218,18 @@ function wallGenerate() {
                     else if (i >= 1 && i <= 18 && j <= 19 && j >= 1 && maze.mazeDataArray[i + 1][j].value !== 1 && Math.random() > 0.5) {
                         barrier.push({
                             x1: x - 150,
-                            y1: z + 150,
+                            y1: z - 150,
                             x2: x + 150,
-                            y2: z + 450
+                            y2: z + 450,
+                            i: i,
+                            j: j,
+                            x: x,
+                            z: z + 150,
+                            r: true
                         });
                         maze.mazeDataArray[i + 1][j].value = 1;
                         let block = wallObj[Math.floor(Math.random() * 3) + 6];
+                        arr[j] = Math.floor(Math.random() * 3) + 6;
                         block.position.set(x, y, z + 150);
                         block.rotation.y = Math.PI / 2;
                         block.castShadow = true;
@@ -145,16 +237,28 @@ function wallGenerate() {
                         block.rotation.y = 0;
                     }
                     else {
+                        barrier.push({
+                            x1: x - 150,
+                            y1: z - 150,
+                            x2: x + 150,
+                            y2: z + 150,
+                            i: i,
+                            j: j,
+                            x: x,
+                            z: z,
+                            r: false
+                        });
                         let block = wallObj[Math.floor(Math.random() * 6)];
+                        arr[j] = Math.floor(Math.random() * 6);
                         block.castShadow = true;
                         block.position.set(x, y, z);
                         scene.add(block.clone());
                     }
                     maze.mazeDataArray[i][j].value = 1;
-
                 }
                 x += 300;
             }
+            mapArr[i] = arr;
             z += 300;
             x = -3000;
         }
@@ -274,7 +378,7 @@ function init() {
     maze = new Maze(10, 10, [1, 1], [19, 19]);
     maze.generate();
     wallGenerate();
-
+    console.log(mapArr);
     //////////////
     //  SPHERE  //
     /////////////
@@ -300,12 +404,30 @@ function init() {
         objLoader.load(manFile[0], function (object) {
             object.traverse( function ( child ) {
                         if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), 1.0 * Math.PI );
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI );
                         }  
                     } ); 
             object.scale.x = object.scale.y = object.scale.z = 20;
             object.position.set(-2700 , 50, -2700);
             manObj[0] = object;
+            let arr = [];
+            let url = 'ExportedObj/Man/' + manFile[0];
+            let htmlobj =  $.ajax({url:url,async:false});
+            let dataList = htmlobj.responseText.split("\n");
+            let hull = [];
+            for(let i = 0; i < dataList.length; i++)
+            {
+                let pointList = dataList[i].split(" ");
+                if(pointList[0] === 'v')
+                {
+                    hull.push({
+                        x: parseFloat(pointList[1])*20,
+                        y: parseFloat(pointList[2])*20
+                    });
+                }
+            }
+            Graham_scan(hull, arr, hull.length);
+            roleHull[0] = arr;
             //scene.add(manObj[0]);
             //MovingCube = object;
     
@@ -320,12 +442,30 @@ function init() {
         objLoader.load(manFile[1], function (object) {
             object.traverse( function ( child ) {
                         if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), 1.0 * Math.PI );
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI );
                         }  
                     } ); 
             object.scale.x = object.scale.y = object.scale.z = 20;
             object.position.set(-2700 , 50, -2700);
             manObj[1] = object;
+            let arr = [];
+            let url = 'ExportedObj/Man/' + manFile[1];
+            let htmlobj =  $.ajax({url:url,async:false});
+            let dataList = htmlobj.responseText.split("\n");
+            let hull = [];
+            for(let i = 0; i < dataList.length; i++)
+            {
+                let pointList = dataList[i].split(" ");
+                if(pointList[0] === 'v')
+                {
+                    hull.push({
+                        x: parseFloat(pointList[1])*20,
+                        y: parseFloat(pointList[3])*20
+                    });
+                }
+            }
+            Graham_scan(hull, arr, hull.length);
+            roleHull[1] = arr;
             //scene.add(manObj[1]);
             //MovingCube = object;
 
@@ -348,9 +488,34 @@ function init() {
             manObj[2] = object;
             MovingCube = object;
             scene.add(object);
-    
+            let arr = [];
+            let url = 'ExportedObj/Man/' + manFile[2];
+            let htmlobj =  $.ajax({url:url,async:false});
+            let dataList = htmlobj.responseText.split("\n");
+            let hull = [];
+            for(let i = 0; i < dataList.length; i++)
+            {
+                let pointList = dataList[i].split(" ");
+                if(pointList[0] === 'v')
+                {
+                    hull.push({
+                        x: parseFloat(pointList[1])*20,
+                        y: parseFloat(pointList[3])*20
+                    });
+                }
+            }
+            Graham_scan(hull, arr, hull.length);
+            roleHull[2] = arr;
+            for(let i = 0; i < arr.length; i++)
+            {
+                role.push({
+                    x: arr[i].x,
+                    y: arr[i].y
+                })
+            }
         });
     });
+    console.log(role);
     mtlLoaderMan.load('mid.mtl', function (materials) {
         materials.preload();
     
@@ -366,6 +531,24 @@ function init() {
             object.scale.x = object.scale.y = object.scale.z = 20;
             object.position.set(-2700 , 50, -2700);
             manObj[3] = object;
+            let arr = [];
+            let url = 'ExportedObj/Man/' + manFile[3];
+            let htmlobj =  $.ajax({url:url,async:false});
+            let dataList = htmlobj.responseText.split("\n");
+            let hull = [];
+            for(let i = 0; i < dataList.length; i++)
+            {
+                let pointList = dataList[i].split(" ");
+                if(pointList[0] === 'v')
+                {
+                    hull.push({
+                        x: parseFloat(pointList[1])*20,
+                        y: parseFloat(pointList[3])*20
+                    });
+                }
+            }
+            Graham_scan(hull, arr, hull.length);
+            roleHull[3] = arr;
             //scene.add(manObj[3]);
             //MovingCube = object;
     
@@ -386,6 +569,24 @@ function init() {
             object.scale.x = object.scale.y = object.scale.z = 20;
             object.position.set(-2700 , 50, -2700);
             manObj[4] = object;
+            let arr = [];
+            let url = 'ExportedObj/Man/' + manFile[4];
+            let htmlobj =  $.ajax({url:url,async:false});
+            let dataList = htmlobj.responseText.split("\n");
+            let hull = [];
+            for(let i = 0; i < dataList.length; i++)
+            {
+                let pointList = dataList[i].split(" ");
+                if(pointList[0] === 'v')
+                {
+                    hull.push({
+                        x: parseFloat(pointList[1])*20,
+                        y: parseFloat(pointList[3])*20
+                    });
+                }
+            }
+            Graham_scan(hull, arr, hull.length);
+            roleHull[4] = arr;
             //scene.add(manObj[4]);
             //MovingCube = object;
     
@@ -400,7 +601,7 @@ function init() {
     // SKY //
     /////////
     let imagePrefixBlack = "images/black";
-    let imagePrefix = "images/"
+    let imagePrefix = "images/";
     let directions = ["posx", "negx", "posy", "negy", "posz", "negz"];
     let imageSuffix = ".png";
     let skyGeometry = new THREE.CubeGeometry(8000, 8000, 8000);
@@ -494,7 +695,6 @@ function animate() {
     update();
     requestAnimationFrame(animate);
 }
-
 function update() {
     let delta = clock.getDelta();
     let moveDistance = 400 * delta; // 400 pixels per second
@@ -502,8 +702,8 @@ function update() {
     let tmpx = MovingCube.position.x;
     let tmpy = MovingCube.position.y;
     let tmpz = MovingCube.position.z;
-    let newtmp;
-    let newtmpright;
+    let newtmp = 4;
+    let newtmpright = false;
     cloudAngel += Math.PI/500;
     if(cloudAngel > Math.PI)
         cloudAngel = cloudAngel-2*Math.PI;
@@ -511,20 +711,22 @@ function update() {
     if(cloudR > 3000)
         cloudR = cloudR - 6000;
     cloud.position.set(cloudR*Math.cos(cloudAngel), 2000, cloudR*Math.sin(cloudAngel));
-    if(tmpManObjRight)
-        if(tmpManObj<4)
-            newtmp=tmpManObj+1;
-        else{
-            newtmp=tmpManObj-1;
-            newtmpright=false;
+    if(tmpManObjRight) {
+        if (tmpManObj < 4)
+            newtmp = tmpManObj + 1;
+        else {
+            newtmp = tmpManObj - 1;
+            newtmpright = false;
         }
-    else
-        if(tmpManObj>1)
-            newtmp=tmpManObj-1;
-        else{
-            newtmp=tmpManObj+1;
-            newtmpright=true;
+    }
+    else{
+        if (tmpManObj > 1)
+            newtmp = tmpManObj - 1;
+        else {
+            newtmp = tmpManObj + 1;
+            newtmpright = true;
         }
+    }
     if (keyboard.pressed("W"))
         MovingCube.translateZ(-moveDistance);
     if (keyboard.pressed("S"))
@@ -546,7 +748,83 @@ function update() {
         let tmpx2 = Math.min(item.x2, x2);
         let tmpy2 = Math.min(item.y2, y2);
         if ((tmpx1 < tmpx2) && (tmpy1 < tmpy2)) {
-            tag = 1;
+            //console.log("FUCKING",item.i ,item.j, item.x, item.z);
+            let url = 'ExportedObj/' + wallFile2[mapArr[item.i][item.j]];
+            let htmlobj =  $.ajax({url:url,async:false});
+            let dataList = htmlobj.responseText.split("\n");
+            let hull = [];
+            for(let i = 0; i < dataList.length; i++)
+            {
+                let pointList = dataList[i].split(" ");
+                if(pointList[0] === 'v')
+                {
+                    if(item.r === false) {
+                        if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
+                            hull.push({
+                                x: parseFloat(pointList[1]) * 1500 + item.x,
+                                y: parseFloat(pointList[3]) * 1500 + item.z
+                            });
+                        }
+                        else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
+                            hull.push({
+                                x: parseFloat(pointList[1]) * 1500 * 1.3 + item.x,
+                                y: parseFloat(pointList[3]) * 1500 + item.z
+                            });
+                        }
+                    }
+                    else {
+                        if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
+                            hull.push({
+                                x: -1*(parseFloat(pointList[3]) * 1500)+ item.x,
+                                y: parseFloat(pointList[1]) * 1500 + item.z
+                            });
+                        }
+                        else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
+                            hull.push({
+                                x: -1*(parseFloat(pointList[3]) * 1500) + item.x,
+                                y: parseFloat(pointList[1]) * 1500 * 1.3 + item.z
+                            });
+                        }
+                    }
+                }
+            }
+            let fhull = [];
+            Graham_scan(hull, fhull, hull.length);
+            let geometry = new THREE.Geometry();
+            for(let i = 0; i < fhull.length; i++) {
+                //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
+                geometry.vertices.push(new THREE.Vector3(fhull[i].x, 50, fhull[i].y));
+            }
+            //线构造
+            let line=new THREE.Line(geometry);
+            scene.add(line);
+            //console.log(fhull.length);
+            for(let i = 0; i < role.length; i++)
+            {
+                let tmphull = [];
+                let ftmphull = [];
+                for(let j = 0; j < fhull.length; j++)
+                {
+                    tmphull.push(fhull[j]);
+                }
+                tmphull.push({
+                    x: role[i].x + MovingCube.position.x,
+                    y: role[i].y + MovingCube.position.z
+                });
+                Graham_scan(tmphull, ftmphull, tmphull.length);
+                let tagTmp = 0;
+                for(let j = 0; j < ftmphull.length; j++)
+                {
+                    if(ftmphull[j].x === role[i].x + MovingCube.position.x && ftmphull[j].y === role[i].y + MovingCube.position.z)
+                    {
+                        tagTmp = 1;
+                    }
+                }
+                if(tagTmp === 0)
+                {
+                    tag = 1;
+                }
+            }
         }
     });
     if (tag === 1) {
@@ -611,14 +889,21 @@ function update() {
             skyboxchange = false;
         }
     }
-    
     if((MovingCube.position.x === tmpx)&&(MovingCube.position.z === tmpz)){
         scene.remove(manObj[tmpManObj]);
         manObj[2].position.set(MovingCube.position.x, 50, MovingCube.position.z);
         manObj[2].rotation.y = MovingCube.rotation.y;
         scene.add(manObj[2]);
         tmpManObj = 2;
-        tmpManObjRight = true;        
+        tmpManObjRight = true;
+        role.splice(0,role.length);
+        for(let i = 0; i < roleHull[2].length; i++)
+        {
+            role.push({
+                x: roleHull[2][i].x,
+                y: roleHull[2][i].y
+            })
+        }
     }
     else{
         scene.remove(manObj[tmpManObj]);
@@ -627,6 +912,14 @@ function update() {
         manObj[tmpManObj].position.set(MovingCube.position.x, 50, MovingCube.position.z);
         manObj[tmpManObj].rotation.y = MovingCube.rotation.y;
         scene.add(manObj[tmpManObj]);
+        role.splice(0,role.length);
+        for(let i = 0; i < roleHull[tmpManObj].length; i++)
+        {
+            role.push({
+                x: roleHull[tmpManObj][i].x,
+                y: roleHull[tmpManObj][i].y
+            })
+        }
     }
     
     stats.update();
