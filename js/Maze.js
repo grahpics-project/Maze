@@ -23,6 +23,7 @@ let tmpManObj = 3;
 let tmpManObjRight = true;
 let lightchange = false;//光照改变
 let skyboxchange = false;
+let collisionEn = false;
 let skyBox;
 let skyBoxBlack;
 let cloud;
@@ -33,69 +34,47 @@ let role = [];
 let roleHull = [];
 for(let i = 0; i <= 5; i++)
     roleHull[i] = [];
+let bpoint;
 ///////////////
 // FUNCTIONS //
 ///////////////
 
 // 可以借助cos a 在0-180之间，单调递减！！！
 // 这里用的是叉积，正弦的判断
-function multiply(p0,p1,p2){
+function multiply(p1,p2,p0){
     return((p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y));
 }
 function distance_no_sqrt(p1,p2)
 {
     return((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
 }
+function compare(p1,p2)
+{
+    if((multiply(p1, p2, bpoint) > 0) || (multiply(p1, p2, bpoint) === 0 && distance_no_sqrt(bpoint, p1) < distance_no_sqrt(bpoint, p2)))
+    {
+        return -1;
+    }
+    else return 1;
+}
 function Graham_scan(pointSet,ch,n){
     // 这里会修改pointSet
-    let i, j, k = 0, top = 2;
+    let i, k = 0, top = 2;
     // 找到一个基点，基本就是保证最下面最左面的点
     for(i=1;i<n;i++){
-        if( (pointSet[i].y<pointSet[k].y) ||
-            ( (pointSet[i].y===pointSet[k].y) && (pointSet[i].x<pointSet[k].x) )
-        ){
+        if((pointSet[i].y<pointSet[k].y) || ((pointSet[i].y===pointSet[k].y) && (pointSet[i].x<pointSet[k].x))){
             k=i;
         }
     }
-
     let tmp = pointSet[0];
     pointSet[0]=pointSet[k];
     pointSet[k]=tmp;
-
-    let use=n;
-    for (i=1;i<use-1;i++){
-        k=i;
-        for (j=i+1;j<use;j++){
-            let direct = multiply(pointSet[0], pointSet[k], pointSet[j]);
-            if(direct>0){
-                k=j;
-            }else if(direct===0){
-                // k j 同方向
-                let dis = distance_no_sqrt(pointSet[0], pointSet[j]) - distance_no_sqrt(pointSet[0], pointSet[k]);
-                use--; // 也就是不要了
-                if(dis>0){
-                    // 保留j
-                    // 把 k 就不要了
-                    pointSet[k]=pointSet[j];
-                    pointSet[j]=pointSet[use];
-                    j--;
-                }else{
-                    tmp=pointSet[use];
-                    pointSet[use]=pointSet[j];
-                    pointSet[j]=tmp;
-                }
-            }
-        }
-        tmp=pointSet[i];
-        pointSet[i]=pointSet[k];
-        pointSet[k]=tmp;
-    }
-
+    bpoint = pointSet[0];
+    pointSet.sort(compare);
     ch.push(pointSet[0]);
     ch.push(pointSet[1]);
     ch.push(pointSet[2]);
-    for (i=3;i<use;i++){
-        while ( !(multiply(pointSet[i],ch[top-1],ch[top]) < 0 ) ){
+    for (i=3;i<n;i++){
+        while (top !== 0 && !(multiply(ch[top-1],ch[top],pointSet[i]) > 0)) {
             top--;
             ch.pop();
         }
@@ -103,7 +82,6 @@ function Graham_scan(pointSet,ch,n){
         ch.push(pointSet[i]);
     }
 }
-
 // Randomly generate the floor.
 function floorGenerate() {
     if (objFile.length === 0) {
@@ -429,9 +407,6 @@ function init() {
             }
             Graham_scan(hull, arr, hull.length);
             roleHull[0] = arr;
-            //scene.add(manObj[0]);
-            //MovingCube = object;
-    
         });
     });
     mtlLoaderMan.load('mid.mtl', function (materials) {
@@ -468,9 +443,6 @@ function init() {
             }
             Graham_scan(hull, arr, hull.length);
             roleHull[1] = arr;
-            //scene.add(manObj[1]);
-            //MovingCube = object;
-
         });
     });    
     mtlLoaderMan.load('mid.mtl', function (materials) {
@@ -553,9 +525,6 @@ function init() {
             }
             Graham_scan(hull, arr, hull.length);
             roleHull[3] = arr;
-            //scene.add(manObj[3]);
-            //MovingCube = object;
-    
         });
     });
     mtlLoaderMan.load('mid.mtl', function (materials) {
@@ -592,9 +561,6 @@ function init() {
             }
             Graham_scan(hull, arr, hull.length);
             roleHull[4] = arr;
-            //scene.add(manObj[4]);
-            //MovingCube = object;
-    
         });
     });
     ///////////
@@ -654,7 +620,6 @@ function init() {
     
         });
         //scene.add(cloud);
-
     });
     /////////
     // GUI //
@@ -666,6 +631,7 @@ function init() {
             cheatingEn: false,
             lightEn:false,
             autoGo:false,
+            collisionEn:false,
             Screenshot: () => {
                 if (!renderer) return;
                 let img = renderer.domElement.toDataURL('image/png');
@@ -689,10 +655,10 @@ function init() {
     autogo.onChange(function (value) {
         auto = value;
     });
-    // tools.open();
-    // gui.open();
-
-
+    let collision = tools.add(parameters, 'collisionEn').name("Collision").listen();
+    collision.onChange(function (value) {
+        collisionEn = value;
+    });
 }
 
 function animate() {
@@ -759,90 +725,90 @@ function update() {
         let tmpx2 = Math.min(item.x2, x2);
         let tmpy2 = Math.min(item.y2, y2);
         if ((tmpx1 < tmpx2) && (tmpy1 < tmpy2)) {
-            //console.log("FUCKING",item.i ,item.j, item.x, item.z);
-            let url = 'ExportedObj/' + wallFile2[mapArr[item.i][item.j]];
-            let htmlobj =  $.ajax({url:url,async:false});
-            let dataList = htmlobj.responseText.split("\n");
-            let hull = [];
-            for(let i = 0; i < dataList.length; i++)
+            if(collisionEn === true) {
+                //console.log("FUCKING",item.i ,item.j, item.x, item.z);
+                let url = 'ExportedObj/' + wallFile2[mapArr[item.i][item.j]];
+                let htmlobj = $.ajax({url: url, async: false});
+                let dataList = htmlobj.responseText.split("\n");
+                let hull = [];
+                for (let i = 0; i < dataList.length; i++) {
+                    let pointList = dataList[i].split(" ");
+                    if (pointList[0] === 'v') {
+                        if (item.r === false) {
+                            if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
+                                hull.push({
+                                    x: parseFloat(pointList[1]) * 1500 + item.x,
+                                    y: parseFloat(pointList[3]) * 1500 + item.z
+                                });
+                            }
+                            else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
+                                hull.push({
+                                    x: parseFloat(pointList[1]) * 1500 * 1.3 + item.x,
+                                    y: parseFloat(pointList[3]) * 1500 + item.z
+                                });
+                            }
+                        }
+                        else {
+                            if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
+                                hull.push({
+                                    x: -1 * (parseFloat(pointList[3]) * 1500) + item.x,
+                                    y: parseFloat(pointList[1]) * 1500 + item.z
+                                });
+                            }
+                            else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
+                                hull.push({
+                                    x: -1 * (parseFloat(pointList[3]) * 1500) + item.x,
+                                    y: parseFloat(pointList[1]) * 1500 * 1.3 + item.z
+                                });
+                            }
+                        }
+                    }
+                }
+                let fhull = [];
+                Graham_scan(hull, fhull, hull.length);
+                //console.log(hull);
+                let geometry = new THREE.Geometry();
+                for (let i = 0; i < fhull.length; i++) {
+                    //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
+                    geometry.vertices.push(new THREE.Vector3(fhull[i].x, 50, fhull[i].y));
+                }
+                //线构造
+                let line = new THREE.Line(geometry);
+                //scene.add(line);
+                let geometry2 = new THREE.Geometry();
+                for (let i = 0; i < role.length; i++) {
+                    //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
+                    geometry2.vertices.push(new THREE.Vector3(role[i].x + MovingCube.position.x, 50, role[i].y + MovingCube.position.z));
+                }
+                //线构造
+                let line2 = new THREE.Line(geometry2);
+                //scene.add(line2);
+                //console.log(fhull.length);
+                for (let i = 0; i < role.length; i++) {
+                    let tmphull = [];
+                    let ftmphull = [];
+                    for (let j = 0; j < fhull.length; j++) {
+                        tmphull.push(fhull[j]);
+                    }
+                    tmphull.push({
+                        x: role[i].x + MovingCube.position.x,
+                        y: role[i].y + MovingCube.position.z
+                    });
+                    Graham_scan(tmphull, ftmphull, tmphull.length);
+                    let tagTmp = 0;
+                    for (let j = 0; j < ftmphull.length; j++) {
+                        if (ftmphull[j].x === role[i].x + MovingCube.position.x && ftmphull[j].y === role[i].y + MovingCube.position.z) {
+                            tagTmp = 1;
+                        }
+                    }
+                    if (tagTmp === 0) {
+                        tag = 1;
+                    }
+                }
+            }
+            else
             {
-                let pointList = dataList[i].split(" ");
-                if(pointList[0] === 'v')
-                {
-                    if(item.r === false) {
-                        if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
-                            hull.push({
-                                x: parseFloat(pointList[1]) * 1500 + item.x,
-                                y: parseFloat(pointList[3]) * 1500 + item.z
-                            });
-                        }
-                        else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
-                            hull.push({
-                                x: parseFloat(pointList[1]) * 1500 * 1.3 + item.x,
-                                y: parseFloat(pointList[3]) * 1500 + item.z
-                            });
-                        }
-                    }
-                    else {
-                        if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
-                            hull.push({
-                                x: -1*(parseFloat(pointList[3]) * 1500)+ item.x,
-                                y: parseFloat(pointList[1]) * 1500 + item.z
-                            });
-                        }
-                        else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
-                            hull.push({
-                                x: -1*(parseFloat(pointList[3]) * 1500) + item.x,
-                                y: parseFloat(pointList[1]) * 1500 * 1.3 + item.z
-                            });
-                        }
-                    }
-                }
-            }
-            let fhull = [];
-            Graham_scan(hull, fhull, hull.length);
-            let geometry = new THREE.Geometry();
-            for(let i = 0; i < fhull.length; i++) {
-                //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
-                geometry.vertices.push(new THREE.Vector3(fhull[i].x, 50, fhull[i].y));
-            }
-            //线构造
-            let line=new THREE.Line(geometry);
-            scene.add(line);
-            let geometry2 = new THREE.Geometry();
-            for(let i = 0; i < role.length; i++) {
-                //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
-                geometry2.vertices.push(new THREE.Vector3(role[i].x + MovingCube.position.x, 50, role[i].y + MovingCube.position.z));
-            }
-            //线构造
-            let line2=new THREE.Line(geometry2);
-            scene.add(line2);
-            //console.log(fhull.length);
-            for(let i = 0; i < role.length; i++)
-            {
-                let tmphull = [];
-                let ftmphull = [];
-                for(let j = 0; j < fhull.length; j++)
-                {
-                    tmphull.push(fhull[j]);
-                }
-                tmphull.push({
-                    x: role[i].x + MovingCube.position.x,
-                    y: role[i].y + MovingCube.position.z
-                });
-                Graham_scan(tmphull, ftmphull, tmphull.length);
-                let tagTmp = 0;
-                for(let j = 0; j < ftmphull.length; j++)
-                {
-                    if(ftmphull[j].x === role[i].x + MovingCube.position.x && ftmphull[j].y === role[i].y + MovingCube.position.z)
-                    {
-                        tagTmp = 1;
-                    }
-                }
-                if(tagTmp === 0)
-                {
-                    tag = 1;
-                }
+                tag = 1;
             }
         }
     });
@@ -916,7 +882,7 @@ function update() {
         tmpManObj = 2;
         tmpManObjRight = true;
         role.splice(0,role.length);
-        console.log(2, manObj[2].rotation.y);
+        //console.log(2, manObj[2].rotation.y);
         for(let i = 0; i < roleHull[2].length; i++)
         {
             role.push({
@@ -933,7 +899,7 @@ function update() {
         //manObj[tmpManObj].rotation.y = MovingCube.rotation.y;
         //if(tmpManObj !== 2) manObj[tmpManObj].rotation.y += Math.PI;
         scene.add(manObj[tmpManObj]);
-        console.log(tmpManObj, manObj[tmpManObj].rotation.y);
+        //console.log(tmpManObj, manObj[tmpManObj].rotation.y);
         role.splice(0,role.length);
         for(let i = 0; i < roleHull[tmpManObj].length; i++)
         {

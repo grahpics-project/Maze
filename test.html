@@ -1,6 +1,6 @@
 <html>
 <head>
-    <meta charset = "utf-8" / >
+    <meta charset = "utf-8"/>
     <title>TSP_demo</title>
 </head>
 <body>
@@ -12,7 +12,7 @@
 
     let canvas = document.getElementById("canvas");
     let context = canvas.getContext("2d");
-
+    let bpoint;
     function drawPath(x1, y1, x2, y2, color, width) {
         context.beginPath();
         context.fillStyle = color;
@@ -50,63 +50,40 @@
     }
     // 可以借助cos a 在0-180之间，单调递减！！！
     // 这里用的是叉积，正弦的判断
-    function multiply(p0,p1,p2){
+    function multiply(p1,p2,p0){
         return((p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y));
     }
     function distance_no_sqrt(p1,p2)
     {
         return((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
     }
+    function compare(p1,p2)
+    {
+        if((multiply(p1, p2, bpoint) > 0) || (multiply(p1, p2, bpoint) === 0 && distance_no_sqrt(bpoint, p1) < distance_no_sqrt(bpoint, p2)))
+        {
+            return -1;
+        }
+        else return 1;
+    }
     function Graham_scan(pointSet,ch,n){
         // 这里会修改pointSet
-        let i, j, k = 0, top = 2;
+        let i, k = 0, top = 2;
         // 找到一个基点，基本就是保证最下面最左面的点
         for(i=1;i<n;i++){
-            if( (pointSet[i].y<pointSet[k].y) ||
-                ( (pointSet[i].y===pointSet[k].y) && (pointSet[i].x<pointSet[k].x) )
-            ){
+            if((pointSet[i].y<pointSet[k].y) || ((pointSet[i].y===pointSet[k].y) && (pointSet[i].x<pointSet[k].x))){
                 k=i;
             }
         }
-
         let tmp = pointSet[0];
         pointSet[0]=pointSet[k];
         pointSet[k]=tmp;
-
-        let use=n;
-        for (i=1;i<use-1;i++){
-            k=i;
-            for (j=i+1;j<use;j++){
-                let direct = multiply(pointSet[0], pointSet[k], pointSet[j]);
-                if(direct>0){
-                    k=j;
-                }else if(direct===0){
-                    // k j 同方向
-                    let dis = distance_no_sqrt(pointSet[0], pointSet[j]) - distance_no_sqrt(pointSet[0], pointSet[k]);
-                    use--; // 也就是不要了
-                    if(dis>0){
-                        // 保留j
-                        // 把 k 就不要了
-                        pointSet[k]=pointSet[j];
-                        pointSet[j]=pointSet[use];
-                        j--;
-                    }else{
-                        tmp=pointSet[use];
-                        pointSet[use]=pointSet[j];
-                        pointSet[j]=tmp;
-                    }
-                }
-            }
-            tmp=pointSet[i];
-            pointSet[i]=pointSet[k];
-            pointSet[k]=tmp;
-        }
-
+        bpoint = pointSet[0];
+        pointSet.sort(compare);
         ch.push(pointSet[0]);
         ch.push(pointSet[1]);
         ch.push(pointSet[2]);
-        for (i=3;i<use;i++){
-            while ( !(multiply(pointSet[i],ch[top-1],ch[top]) < 0 ) ){
+        for (i=3;i<n;i++){
+            while (!(multiply(ch[top-1],ch[top],pointSet[i]) > 0)) {
                 top--;
                 ch.pop();
             }
@@ -144,7 +121,7 @@
         }
         drawPath(res[0].x, res[0].y, res[m-1].x, res[m-1].y, "black", 1);
         // canvas 的坐标和我们的不一样
-        drawCities(res)
+        drawCities(res);
     }
 
     Graham_example();
