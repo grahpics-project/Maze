@@ -38,6 +38,17 @@ let bpoint;
 ///////////////
 // FUNCTIONS //
 ///////////////
+let remainLoading = 8;
+function onStart() {
+    document.getElementById("ThreeJS").setAttribute("style", "position: absolute; left:0; top:0;");
+    document.getElementById("Loading").setAttribute("style", "display:none;");
+}
+function onLoadObject() {
+     if(--remainLoading === 0) {
+         document.getElementById("startButton").disabled = false;
+         document.getElementById("startButton").addEventListener('click', onStart ,false);
+    }
+}
 function add(x,y){
     return {x:x.x+y.x,y:x.y+y.y};
 }
@@ -181,6 +192,7 @@ function floorGenerate() {
             object.receiveShadow = true;
             floorObj.push(object);
             floorGenerate();
+            onLoadObject();
         });
     });
 }
@@ -344,7 +356,7 @@ function init() {
     camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
     scene.add(camera);
     camera.position.set(-2800, 200, -2800);
-    camera.lookAt(scene.position);
+    camera.lookAt(-scene.position);
 
     //////////////
     // RENDERER //
