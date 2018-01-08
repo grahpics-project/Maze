@@ -38,7 +38,70 @@ let bpoint;
 ///////////////
 // FUNCTIONS //
 ///////////////
-
+function add(x,y){
+    return {x:x.x+y.x,y:x.y+y.y};
+}
+function sub(x,y){
+    return {x:x.x-y.x,y:x.y-y.y};
+}
+function multi(x,d){
+    return {x:x.x*d,y:x.y*d};
+}
+function div(x,d){
+    return {x:x.x/d,y:x.y/d};
+}
+function dot(x,y){
+    return x.x*y.x+x.y*y.y;
+}
+function det(x,y){
+    return x.x*y.y-x.y*y.x;
+}
+function inter(x,y){
+    let u=div(x.P,y.P);
+    let t=det(u,y.v)/det(y.v,x.v);
+    return add(x.P,multi(x.v,t));
+}
+function parallel(x,y){
+    return det(y.v,x.v)===0;
+}
+function lineleft(x,y){
+    let tp=det(x.v,y.v);
+    return (tp>0)||((tp===0)&&det(x.v,sub(y.P,x.P))>0);
+}
+function ptright(x, y){
+    return det(y.v,sub(x,y.P))<=0;
+}///<=
+function cmp(x,y){//极角排序
+    if(x.v.y===0 && y.v.y===0) return x.v.x<y.v.x;//y都为0
+    if(x.v.y<=0 && y.v.y<=0) return lineleft(x,y);//同在上部
+    if(x.v.y>0  && y.v.y>0 ) return lineleft(x,y);//同在下部
+    return x.v.y<y.v.y;//一上一下
+}
+let l = [];
+let s = [];
+function half_plane_intersection(){//half-plane intersection
+    l.sort(cmp);//sort
+    let m = l.length;
+    let tp=-1;
+    for(let i=0;i<m;i++){
+        if(i===0||!parallel(l[i],l[i-1])) tp++;//平行特判
+        l[tp-1]=l[i];
+    }
+    m=tp;
+    let L=1;
+    let R=2;
+    s[1]=l[0];
+    s[2]=l[1];
+    for(let i=2;i<=m;i++){
+        while(L<R && ptright(inter(s[R],s[R-1]),l[i])) R--;
+        while(L<R && ptright(inter(s[L],s[L+1]),l[i])) L++;
+        console.log(L,R);
+        R++;
+        s[R]=l[i];
+    }
+    while(L<R && ptright(inter(s[R],s[R-1]),s[L])) R--;//最后删除无用平面
+    return R-L>1;
+}
 // 可以借助cos a 在0-180之间，单调递减！！！
 // 这里用的是叉积，正弦的判断
 function multiply(p1,p2,p0){
@@ -766,7 +829,6 @@ function update() {
                 }
                 let fhull = [];
                 Graham_scan(hull, fhull, hull.length);
-                //console.log(hull);
                 let geometry = new THREE.Geometry();
                 for (let i = 0; i < fhull.length; i++) {
                     //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
@@ -805,6 +867,32 @@ function update() {
                         tag = 1;
                     }
                 }
+                l.splice(0,l.length);
+                fhull.reverse();
+                role.reverse();
+                for(let i = 1; i < fhull.length; i++)
+                {
+                   l.push({
+                       P: fhull[i-1],
+                       v: sub(fhull[i], fhull[i-1])
+                   })
+                }
+                l.push({
+                    P: fhull[fhull.length - 1],
+                    v: sub(fhull[0], fhull[fhull.length - 1])
+                });
+                for(let i = 1; i < role.length; i++)
+                {
+                    l.push({
+                        P: role[i-1],
+                        v: sub(role[i], role[i-1])
+                    })
+                }
+                l.push({
+                    P: role[role.length - 1],
+                    v: sub(role[0], role[role.length - 1])
+                });
+                console.log(half_plane_intersection());
             }
             else
             {
@@ -846,14 +934,12 @@ function update() {
         camera.position.z = cameraOffset.z;
         if (keyboard.pressed("A")) {
             totAngle += rotateAngle;
-            //MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
             for(let k=0; k<5; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
             }
         }
         if (keyboard.pressed("D")) {
             totAngle -= rotateAngle;
-            //MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
             for(let k=0; k<5; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
             }
@@ -877,12 +963,10 @@ function update() {
     if((MovingCube.position.x === tmpx)&&(MovingCube.position.z === tmpz)){
         scene.remove(manObj[tmpManObj]);
         manObj[2].position.set(MovingCube.position.x, 50, MovingCube.position.z);
-        //manObj[2].rotation.y = MovingCube.rotation.y;
         scene.add(manObj[2]);
         tmpManObj = 2;
         tmpManObjRight = true;
         role.splice(0,role.length);
-        //console.log(2, manObj[2].rotation.y);
         for(let i = 0; i < roleHull[2].length; i++)
         {
             role.push({
@@ -896,10 +980,7 @@ function update() {
         tmpManObj=newtmp;
         tmpManObjRight=newtmpright;
         manObj[tmpManObj].position.set(MovingCube.position.x, 50, MovingCube.position.z);
-        //manObj[tmpManObj].rotation.y = MovingCube.rotation.y;
-        //if(tmpManObj !== 2) manObj[tmpManObj].rotation.y += Math.PI;
         scene.add(manObj[tmpManObj]);
-        //console.log(tmpManObj, manObj[tmpManObj].rotation.y);
         role.splice(0,role.length);
         for(let i = 0; i < roleHull[tmpManObj].length; i++)
         {
