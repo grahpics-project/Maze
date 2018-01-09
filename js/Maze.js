@@ -8,7 +8,8 @@ let keyboard = new THREEx.KeyboardState();
 let clock = new THREE.Clock();
 let MovingCube;
 let barrier = [];
-let mouseEn = false;
+let mouseEn;
+let lightIntensity = 40;
 let totAngle = 0;
 let count = 0;
 let maze;
@@ -21,7 +22,7 @@ let manFile = ['left.obj', 'left1.obj', 'mid.obj', 'right1.obj', 'right.obj'];
 let manObj = [];
 let tmpManObj = 3;
 let tmpManObjRight = true;
-let lightchange = false;//光照改变
+let isSunny = 'Dark';//场景改变
 let skyboxchange = false;
 let collisionEn = false;
 let skyBox;
@@ -35,6 +36,8 @@ let roleHull = [];
 for(let i = 0; i <= 5; i++)
     roleHull[i] = [];
 let bpoint;
+let light = new THREE.AmbientLight(0xffffff, lightIntensity/10);
+let isLightChange = false;
 ///////////////
 // FUNCTIONS //
 ///////////////
@@ -375,8 +378,7 @@ function init() {
     // EVENTS //
     ////////////
 
-    THREEx.WindowResize(renderer, camera);
-    THREEx.FullScreen.bindKey({charCode: 'm'.charCodeAt(0)});
+    windowResize(renderer, camera);
 
     //////////////
     // CONTROLS //
@@ -397,7 +399,6 @@ function init() {
     ///////////
     // LIGHT //
     ///////////
-    let light = new THREE.AmbientLight(0xffffff, 3);
     scene.add(light);
     // let light_1 = new THREE.PointLight(0xffffff);
     // light_1.position.set(-7000, 10000, -7000);
@@ -704,36 +705,44 @@ function init() {
     let parameters =
         {
             cheatingEn: false,
-            lightEn:false,
+            scene:'Dark',
             autoGo:false,
             collisionEn:false,
+            Intensity:40,
             Screenshot: () => {
                 if (!renderer) return;
                 let img = renderer.domElement.toDataURL('image/png');
                 let link = document.getElementById("screenshot");
                 link.href = img.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
-                link.setAttribute("download", "screenshot.png");
+                let myDate = new Date();
+                link.setAttribute("download", "screenshot"+myDate.getHours().toString()
+                    +myDate.getMinutes().toString()+myDate.getSeconds().toString()+".png");
                 link.click();
             }
         };
-    let tools = gui.addFolder('Tools');
-    tools.add(parameters, 'Screenshot');
-    let cheating = tools.add(parameters, 'cheatingEn').name("cheat").listen();
+    gui.add(parameters, 'Screenshot');
+    let cheating = gui.add(parameters, 'cheatingEn').name("cheat").listen();
     cheating.onChange(function (value) {
         mouseEn = value;
     });
-    let lightChange = tools.add(parameters, 'lightEn').name("Light").listen();
-    lightChange.onChange(function (value) {
-        lightchange = value;
-    });
-    let autogo = tools.add(parameters, 'autoGo').name("Auto").listen();
+    let autogo = gui.add(parameters, 'autoGo').name("Auto").listen();
     autogo.onChange(function (value) {
         auto = value;
     });
-    let collision = tools.add(parameters, 'collisionEn').name("Collision").listen();
+    let collision = gui.add(parameters, 'collisionEn').name("Collision").listen();
     collision.onChange(function (value) {
         collisionEn = value;
     });
+    let issunny = gui.add(parameters, 'scene',['Dark','BlueSky']).name("Scene").listen();
+    issunny.onChange(function (value) {
+        isSunny = value;
+    });
+    let lightChange = gui.add(parameters, 'Intensity', 0, 100).name("Light").listen();
+    lightChange.onChange(function (value) {
+       lightIntensity = value;
+       isLightChange = true;
+    });
+    gui.close();
 }
 
 function animate() {
@@ -958,7 +967,7 @@ function update() {
     }
         camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 100, MovingCube.position.z));
     }
-    if(lightchange === true){
+    if(isSunny==='BlueSky'){
         if(skyboxchange === false){
             scene.remove(skyBoxBlack);
             scene.add(skyBox);
@@ -971,6 +980,14 @@ function update() {
             scene.add(skyBoxBlack);
             skyboxchange = false;
         }
+    }
+
+    if(isLightChange)
+    {
+        scene.remove(light);
+        light = new THREE.AmbientLight(0xffffff, lightIntensity/10);
+        scene.add(light);
+        isLightChange = false;
     }
     if((MovingCube.position.x === tmpx)&&(MovingCube.position.z === tmpz)){
         scene.remove(manObj[tmpManObj]);
@@ -1008,6 +1025,26 @@ function update() {
 
 function render() {
     renderer.render(scene, camera);
+}
+function windowResize(renderer, camera){
+    let callback	= function(){
+        // notify the renderer of the size change
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        // update the camera
+        camera.aspect	= window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+    };
+    // bind the resize event
+    window.addEventListener('resize', callback, false);
+    // return .stop() the function to stop watching window resize
+    return {
+        /**
+         * Stop watching window resize
+         */
+        stop: function(){
+            window.removeEventListener('resize', callback);
+        }
+    };
 }
 
 function gameStart() {
