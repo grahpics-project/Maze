@@ -455,7 +455,7 @@ function init() {
         manObj[k] = new THREE.Mesh(sphereGeometry, sphereMaterial);
         manObj[k].position.set(-2700, 50, -2700);
     }
-    //scene.add(MovingCube);
+    scene.add(MovingCube);
     let mtlLoaderMan = new THREE.MTLLoader();
     mtlLoaderMan.setTexturePath('ExportedObj/Man/');
     mtlLoaderMan.setPath('ExportedObj/Man/');
@@ -547,7 +547,7 @@ function init() {
             object.position.set(-2700 , 50, -2700);
             object.rotation.y = 0;
             manObj[2] = object;
-            MovingCube = object;
+            // MovingCube = object;
             scene.add(object);
             let arr = [];
             let url = 'ExportedObj/Man/' + manFile[2];
@@ -913,7 +913,7 @@ function update() {
     if ((MovingCube.position.x > 2500 && MovingCube.position.z > 2500) || mouseEn === true) {
         count++;
         if (count === 1) {
-            //MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -totAngle);
+            MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -totAngle);
             for(let k=0; k<5; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0,1, 0), -totAngle);
             }
@@ -925,12 +925,12 @@ function update() {
     else if (tag === 0) {
         if (count !== 0) {
             count = 0;
-            //MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
+            MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
             for(let k=0; k<5; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
             }
         }
-        let relativeCameraOffset = new THREE.Vector3(0, 10, 30);
+        let relativeCameraOffset = new THREE.Vector3(0, 200, 600);
         let cameraOffset;
         if((MovingCube.position.x !== tmpx)||(MovingCube.position.z !== tmpz))
             cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
@@ -941,16 +941,19 @@ function update() {
         camera.position.z = cameraOffset.z;
         if (keyboard.pressed("A")) {
             totAngle += rotateAngle;
+            MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
             for(let k=0; k<5; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
             }
         }
         if (keyboard.pressed("D")) {
             totAngle -= rotateAngle;
+            MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
             for(let k=0; k<5; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
             }
     }
+
         camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 100, MovingCube.position.z));
     }
     if(lightchange === true){
