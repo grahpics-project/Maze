@@ -4,12 +4,17 @@
 
 
 let container, scene, camera, renderer, stats, controls;
-let keyboard = new THREEx.KeyboardState();
+let keyboard = {
+    left: false,
+    right: false,
+    up: false,
+    down: false,
+}
 let clock = new THREE.Clock();
 let MovingCube;
 let barrier = [];
 let mouseEn;
-let lightIntensity = 40;
+let lightIntensity = 50;
 let totAngle = 0;
 let count = 0;
 let maze;
@@ -36,7 +41,7 @@ let roleHull = [];
 for(let i = 0; i <= 5; i++)
     roleHull[i] = [];
 let bpoint;
-let light = new THREE.AmbientLight(0xffffff, lightIntensity/10);
+let light = new THREE.AmbientLight(0xFFFFFF, lightIntensity/25);
 let isLightChange = false;
 ///////////////
 // FUNCTIONS //
@@ -719,7 +724,7 @@ function init() {
             scene:'Dark',
             autoGo:false,
             collisionEn:false,
-            Intensity:40,
+            Intensity:50,
             Screenshot: () => {
                 if (!renderer) return;
                 let img = renderer.domElement.toDataURL('image/png');
@@ -799,14 +804,14 @@ function update() {
         newtmp = tmpManObj;
         newtmpright = tmpManObjRight;
     }
-    if (keyboard.pressed("W"))
+    if (keyboard.up)
         MovingCube.translateZ(-moveDistance);
-    if (keyboard.pressed("S"))
+    if (keyboard.down)
         MovingCube.translateZ(moveDistance);
     if ((MovingCube.position.x > 2500 && MovingCube.position.z > 2500) || mouseEn === true) {
-        if (keyboard.pressed("A"))
+        if (keyboard.left)
             MovingCube.translateX(-moveDistance);
-        if (keyboard.pressed("D"))
+        if (keyboard.right)
             MovingCube.translateX(moveDistance);
     }
     let x1 = MovingCube.position.x - 30;
@@ -948,14 +953,14 @@ function update() {
         camera.position.x = cameraOffset.x;
         camera.position.y = cameraOffset.y;
         camera.position.z = cameraOffset.z;
-        if (keyboard.pressed("A")) {
+        if (keyboard.left) {
             totAngle += rotateAngle;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
             for(let k=0; k<5; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
             }
         }
-        if (keyboard.pressed("D")) {
+        if (keyboard.right) {
             totAngle -= rotateAngle;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
             for(let k=0; k<5; k++){
@@ -983,7 +988,7 @@ function update() {
     if(isLightChange)
     {
         scene.remove(light);
-        light = new THREE.AmbientLight(0xffffff, lightIntensity/10);
+        light = new THREE.AmbientLight(0xFFFFFF, lightIntensity/25);
         scene.add(light);
         isLightChange = false;
     }
@@ -1045,7 +1050,45 @@ function windowResize(renderer, camera){
     };
 }
 
+function registerKeyboard() {
+    let [LEFT, RIGHT, UP, DOWN] = [65, 68, 87, 83];
+    document.addEventListener("keydown",(e) =>{
+        switch (e.keyCode) {
+            case LEFT:
+                keyboard.left = true;
+                break;
+            case RIGHT:
+                keyboard.right = true;
+                break;
+            case UP:
+                keyboard.up = true;
+                break;
+            case DOWN:
+                keyboard.down = true;
+                break;
+        }
+    }, false);
+    document.addEventListener("keyup", (e) => {
+        switch (e.keyCode) {
+            case LEFT:
+                keyboard.left = false;
+                break;
+            case RIGHT:
+                keyboard.right = false;
+                break;
+            case UP:
+                keyboard.up = false;
+                break;
+            case DOWN:
+                keyboard.down = false;
+                break;
+        }
+    }, false);
+}
+
+
 function gameStart() {
     init();
+    registerKeyboard();
     animate();
 }
