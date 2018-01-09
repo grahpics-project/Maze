@@ -9,7 +9,7 @@ let keyboard = {
     right: false,
     up: false,
     down: false,
-}
+};
 let clock = new THREE.Clock();
 let MovingCube;
 let barrier = [];
@@ -872,7 +872,7 @@ function update() {
                     geometry.vertices.push(new THREE.Vector3(fhull[i].x, 50, fhull[i].y));
                 }
                 //线构造
-                let line = new THREE.Line(geometry);
+                // let line = new THREE.Line(geometry);
                 //scene.add(line);
                 let geometry2 = new THREE.Geometry();
                 for (let i = 0; i < role.length; i++) {
@@ -880,7 +880,7 @@ function update() {
                     geometry2.vertices.push(new THREE.Vector3(role[i].x + MovingCube.position.x, 50, role[i].y + MovingCube.position.z));
                 }
                 //线构造
-                let line2 = new THREE.Line(geometry2);
+                // let line2 = new THREE.Line(geometry2);
                 //scene.add(line2);
                 let nowRole = [];
                 for(let i = 0; i < role.length; i++)
@@ -1001,9 +1001,10 @@ function update() {
         role.splice(0,role.length);
         for(let i = 0; i < roleHull[2].length; i++)
         {
+            let rotation = manObj[2].rotation.y;
             role.push({
-                x: roleHull[2][i].x * Math.cos(manObj[2].rotation.y) - roleHull[2][i].y * Math.sin(manObj[2].rotation.y),
-                y: roleHull[2][i].y * Math.cos(manObj[2].rotation.y) + roleHull[2][i].x * Math.sin(manObj[2].rotation.y)
+                x: roleHull[2][i].x * Math.cos(rotation) - roleHull[2][i].y * Math.sin(rotation),
+                y: roleHull[2][i].y * Math.cos(rotation) + roleHull[2][i].x * Math.sin(rotation)
             })
         }
     }
@@ -1016,9 +1017,10 @@ function update() {
         role.splice(0,role.length);
         for(let i = 0; i < roleHull[tmpManObj].length; i++)
         {
+            let rotation = manObj[tmpManObj].rotation.y;
             role.push({
-                x: roleHull[tmpManObj][i].x * Math.cos(manObj[tmpManObj].rotation.y) - roleHull[tmpManObj][i].y * Math.sin(manObj[tmpManObj].rotation.y),
-                y: roleHull[tmpManObj][i].y * Math.cos(manObj[tmpManObj].rotation.y) + roleHull[tmpManObj][i].x * Math.sin(manObj[tmpManObj].rotation.y)
+                x: roleHull[tmpManObj][i].x * Math.cos(rotation) - roleHull[tmpManObj][i].y * Math.sin(rotation),
+                y: roleHull[tmpManObj][i].y * Math.cos(rotation) + roleHull[tmpManObj][i].x * Math.sin(rotation)
             })
         }
     }
