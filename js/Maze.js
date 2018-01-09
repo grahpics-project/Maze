@@ -64,14 +64,11 @@ function multi(x,d){
 function div(x,d){
     return {x:x.x/d,y:x.y/d};
 }
-function dot(x,y){
-    return x.x*y.x+x.y*y.y;
-}
 function det(x,y){
     return x.x*y.y-x.y*y.x;
 }
 function inter(x,y){
-    let u=div(x.P,y.P);
+    let u=sub(x.P,y.P);
     let t=det(u,y.v)/det(y.v,x.v);
     return add(x.P,multi(x.v,t));
 }
@@ -86,30 +83,44 @@ function ptright(x, y){
     return det(y.v,sub(x,y.P))<=0;
 }///<=
 function cmp(x,y){//极角排序
-    if(x.v.y===0 && y.v.y===0) return x.v.x<y.v.x;//y都为0
-    if(x.v.y<=0 && y.v.y<=0) return lineleft(x,y);//同在上部
-    if(x.v.y>0  && y.v.y>0 ) return lineleft(x,y);//同在下部
-    return x.v.y<y.v.y;//一上一下
+    if(x.v.y===0 && y.v.y===0) {
+        if(x.v.x<y.v.x) return -1;
+        if(x.v.x === y.v.x) return 0;
+        else return 1;
+    }//y都为0
+    if(x.v.y<=0 && y.v.y<=0) {
+        if(lineleft(x,y)) return -1;
+        else if(x.v === y.v) return 0;
+        else return 1;
+    }//同在上部
+    if(x.v.y>0  && y.v.y>0 ) {
+        if(lineleft(x,y)) return -1;
+        else if(x.v === y.v) return 0;
+        else return 1;
+    }//同在下部
+    if(x.v.y<y.v.y) return -1;
+    if(x.v.y === y.v.y) return 0;
+    else return 1;
 }
 let l = [];
-let s = [];
 function half_plane_intersection(){//half-plane intersection
+
     l.sort(cmp);//sort
     let m = l.length;
     let tp=-1;
     for(let i=0;i<m;i++){
         if(i===0||!parallel(l[i],l[i-1])) tp++;//平行特判
-        l[tp-1]=l[i];
+        l[tp]=l[i];
     }
     m=tp;
     let L=1;
     let R=2;
+    let s = [];
     s[1]=l[0];
     s[2]=l[1];
     for(let i=2;i<=m;i++){
         while(L<R && ptright(inter(s[R],s[R-1]),l[i])) R--;
         while(L<R && ptright(inter(s[L],s[L+1]),l[i])) L++;
-        console.log(L,R);
         R++;
         s[R]=l[i];
     }
@@ -866,31 +877,15 @@ function update() {
                 //线构造
                 let line2 = new THREE.Line(geometry2);
                 //scene.add(line2);
-                //console.log(fhull.length);
-                for (let i = 0; i < role.length; i++) {
-                    let tmphull = [];
-                    let ftmphull = [];
-                    for (let j = 0; j < fhull.length; j++) {
-                        tmphull.push(fhull[j]);
-                    }
-                    tmphull.push({
+                let nowRole = [];
+                for(let i = 0; i < role.length; i++)
+                {
+                    nowRole.push({
                         x: role[i].x + MovingCube.position.x,
                         y: role[i].y + MovingCube.position.z
-                    });
-                    Graham_scan(tmphull, ftmphull, tmphull.length);
-                    let tagTmp = 0;
-                    for (let j = 0; j < ftmphull.length; j++) {
-                        if (ftmphull[j].x === role[i].x + MovingCube.position.x && ftmphull[j].y === role[i].y + MovingCube.position.z) {
-                            tagTmp = 1;
-                        }
-                    }
-                    if (tagTmp === 0) {
-                        tag = 1;
-                    }
+                    })
                 }
                 l.splice(0,l.length);
-                fhull.reverse();
-                role.reverse();
                 for(let i = 1; i < fhull.length; i++)
                 {
                    l.push({
@@ -902,18 +897,18 @@ function update() {
                     P: fhull[fhull.length - 1],
                     v: sub(fhull[0], fhull[fhull.length - 1])
                 });
-                for(let i = 1; i < role.length; i++)
+                for(let i = 1; i < nowRole.length; i++)
                 {
                     l.push({
-                        P: role[i-1],
-                        v: sub(role[i], role[i-1])
+                        P: nowRole[i-1],
+                        v: sub(nowRole[i], nowRole[i-1])
                     })
                 }
                 l.push({
-                    P: role[role.length - 1],
-                    v: sub(role[0], role[role.length - 1])
+                    P: nowRole[nowRole.length - 1],
+                    v: sub(nowRole[0], nowRole[nowRole.length - 1])
                 });
-                console.log(half_plane_intersection());
+                if(half_plane_intersection()) tag = 1;
             }
             else
             {
