@@ -360,6 +360,49 @@ function wallGenerate() {
         });
     });
 }
+// Load man.
+let manNum = 0;
+let manMaterial;
+function manLoader() {
+    if (manFile.length === 0) {
+        return;
+    }
+    let file = manFile.shift();
+    let objLoader = new THREE.OBJLoader();
+    objLoader.setMaterials(manMaterial);
+    objLoader.setPath('ExportedObj/Man/');
+    objLoader.load(file, function (object) {
+        object.traverse( function ( child ) {
+            if ( child instanceof THREE.Mesh ) {  
+                child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*(50 - manNum)/50 );
+            }  
+        } ); 
+        manNum = manNum + 1;
+        object.scale.x = object.scale.y = object.scale.z = 20;
+        object.rotation.y = 0;
+        object.position.set(-2700 , 50, -2700);
+        manObj[manNum] = object;
+        let arr = [];
+        let url = 'ExportedObj/Man/' + file;
+        let htmlobj =  $.ajax({url:url,async:false});
+        let dataList = htmlobj.responseText.split("\n");
+        let hull = [];
+        for(let i = 0; i < dataList.length; i++)
+        {
+            let pointList = dataList[i].split(" ");
+            if(pointList[0] === 'v')
+            {
+                hull.push({
+                    x: parseFloat(pointList[1])*20,
+                    y: parseFloat(pointList[3])*20
+                });
+            }
+        }
+        Graham_scan(hull, arr, hull.length); 
+        roleHull.push(arr);
+        manLoader();
+    });
+}
 
 function init() {
 
@@ -467,378 +510,10 @@ function init() {
     mtlLoaderMan.setPath('ExportedObj/Man/');
     mtlLoaderMan.load('man.mtl', function (materials) {
         materials.preload();
-    
-        let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/Man/');
-        objLoader.load(manFile[0], function (object) {
-            object.traverse( function ( child ) {
-                        if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI );
-                        }  
-                    } ); 
-            object.scale.x = object.scale.y = object.scale.z = 20;
-            object.position.set(-2700 , 50, -2700);
-            object.rotation.y = 0;
-            manObj[0] = object;
-            //scene.add(object);
-            let arr = [];
-            let url = 'ExportedObj/Man/' + manFile[0];
-            let htmlobj =  $.ajax({url:url,async:false});
-            let dataList = htmlobj.responseText.split("\n");
-            let hull = [];
-            for(let i = 0; i < dataList.length; i++)
-            {
-                let pointList = dataList[i].split(" ");
-                if(pointList[0] === 'v')
-                {
-                    hull.push({
-                        x: parseFloat(pointList[1])*20,
-                        y: parseFloat(pointList[2])*20
-                    });
-                }
-            }
-            Graham_scan(hull, arr, hull.length);
-            roleHull[0] = arr;
-        });
+        manMaterial = materials;
+        manLoader();
     });
-    mtlLoaderMan.load('man.mtl', function (materials) {
-        materials.preload();
-    
-        let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/Man/');
-        objLoader.load(manFile[1], function (object) {
-            object.traverse( function ( child ) {
-                        if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*49/50 );
-                        }  
-                    } ); 
-            object.scale.x = object.scale.y = object.scale.z = 20;
-            object.position.set(-2700 , 50, -2700);
-            object.rotation.y = 0;
-            manObj[1] = object;
-            //scene.add(object);
-            let arr = [];
-            let url = 'ExportedObj/Man/' + manFile[1];
-            let htmlobj =  $.ajax({url:url,async:false});
-            let dataList = htmlobj.responseText.split("\n");
-            let hull = [];
-            for(let i = 0; i < dataList.length; i++)
-            {
-                let pointList = dataList[i].split(" ");
-                if(pointList[0] === 'v')
-                {
-                    hull.push({
-                        x: parseFloat(pointList[1])*20,
-                        y: parseFloat(pointList[3])*20
-                    });
-                }
-            }
-            Graham_scan(hull, arr, hull.length);
-            roleHull[1] = arr;
-        });
-    });    
-    mtlLoaderMan.load('man.mtl', function (materials) {
-        materials.preload();
-    
-        let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/Man/');
-        objLoader.load(manFile[2], function (object) {
-            object.traverse( function ( child ) {
-                        if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*48/50 );
-                        }  
-                    } ); 
-            object.scale.x = object.scale.y = object.scale.z = 20;
-            object.position.set(-2700 , 50, -2700);
-            object.rotation.y = 0;
-            manObj[2] = object;
-            // MovingCube = object;
-            //scene.add(object);
-            let arr = [];
-            let url = 'ExportedObj/Man/' + manFile[2];
-            let htmlobj =  $.ajax({url:url,async:false});
-            let dataList = htmlobj.responseText.split("\n");
-            let hull = [];
-            for(let i = 0; i < dataList.length; i++)
-            {
-                let pointList = dataList[i].split(" ");
-                if(pointList[0] === 'v')
-                {
-                    hull.push({
-                        x: parseFloat(pointList[1])*20,
-                        y: parseFloat(pointList[3])*20
-                    });
-                }
-            }
-            Graham_scan(hull, arr, hull.length);
-            roleHull[2] = arr;
-            for(let i = 0; i < arr.length; i++)
-            {
-                role.push({
-                    x: arr[i].x,
-                    y: arr[i].y
-                })
-            }
-        });
-    });
-    console.log(role);
-    mtlLoaderMan.load('man.mtl', function (materials) {
-        materials.preload();
-    
-        let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/Man/');
-        objLoader.load(manFile[3], function (object) {
-            object.traverse( function ( child ) {
-                        if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*47/50 );
-                        }  
-                    } ); 
-            object.scale.x = object.scale.y = object.scale.z = 20;
-            object.position.set(-2700 , 50, -2700);
-            object.rotation.y = 0;
-            manObj[3] = object;
-            let arr = [];
-            let url = 'ExportedObj/Man/' + manFile[3];
-            let htmlobj =  $.ajax({url:url,async:false});
-            let dataList = htmlobj.responseText.split("\n");
-            let hull = [];
-            for(let i = 0; i < dataList.length; i++)
-            {
-                let pointList = dataList[i].split(" ");
-                if(pointList[0] === 'v')
-                {
-                    hull.push({
-                        x: parseFloat(pointList[1])*20,
-                        y: parseFloat(pointList[3])*20
-                    });
-                }
-            }
-            Graham_scan(hull, arr, hull.length);
-            roleHull[3] = arr;
-        });
-    });
-    mtlLoaderMan.load('man.mtl', function (materials) {
-        materials.preload();
-    
-        let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/Man/');
-        objLoader.load(manFile[4], function (object) {
-            object.traverse( function ( child ) {
-                        if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*46/50 );
-                        }  
-                    } ); 
-            object.scale.x = object.scale.y = object.scale.z = 20;
-            object.rotation.y = 0;
-            object.position.set(-2700 , 50, -2700);
-            manObj[4] = object;
-            let arr = [];
-            let url = 'ExportedObj/Man/' + manFile[4];
-            let htmlobj =  $.ajax({url:url,async:false});
-            let dataList = htmlobj.responseText.split("\n");
-            let hull = [];
-            for(let i = 0; i < dataList.length; i++)
-            {
-                let pointList = dataList[i].split(" ");
-                if(pointList[0] === 'v')
-                {
-                    hull.push({
-                        x: parseFloat(pointList[1])*20,
-                        y: parseFloat(pointList[3])*20
-                    });
-                }
-            }
-            Graham_scan(hull, arr, hull.length);
-            roleHull[4] = arr;
-        });
-        
-    });
-    mtlLoaderMan.load('man.mtl', function (materials) {
-        materials.preload();
-    
-        let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/Man/');
-        objLoader.load(manFile[5], function (object) {
-            object.traverse( function ( child ) {
-                        if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*45/50 );
-                        }  
-                    } ); 
-            object.scale.x = object.scale.y = object.scale.z = 20;
-            object.rotation.y = 0;
-            object.position.set(-2700 , 50, -2700);
-            manObj[5] = object;
-            scene.add(object);
-            let arr = [];
-            let url = 'ExportedObj/Man/' + manFile[5];
-            let htmlobj =  $.ajax({url:url,async:false});
-            let dataList = htmlobj.responseText.split("\n");
-            let hull = [];
-            for(let i = 0; i < dataList.length; i++)
-            {
-                let pointList = dataList[i].split(" ");
-                if(pointList[0] === 'v')
-                {
-                    hull.push({
-                        x: parseFloat(pointList[1])*20,
-                        y: parseFloat(pointList[3])*20
-                    });
-                }
-            }
-            Graham_scan(hull, arr, hull.length);
-            roleHull[5] = arr;
-        });
-    });
-    mtlLoaderMan.load('man.mtl', function (materials) {
-        materials.preload();
-    
-        let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/Man/');
-        objLoader.load(manFile[6], function (object) {
-            object.traverse( function ( child ) {
-                        if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*44/50 );
-                        }  
-                    } ); 
-            object.scale.x = object.scale.y = object.scale.z = 20;
-            object.rotation.y = 0;
-            object.position.set(-2700 , 50, -2700);
-            manObj[6] = object;
-            let arr = [];
-            let url = 'ExportedObj/Man/' + manFile[6];
-            let htmlobj =  $.ajax({url:url,async:false});
-            let dataList = htmlobj.responseText.split("\n");
-            let hull = [];
-            for(let i = 0; i < dataList.length; i++)
-            {
-                let pointList = dataList[i].split(" ");
-                if(pointList[0] === 'v')
-                {
-                    hull.push({
-                        x: parseFloat(pointList[1])*20,
-                        y: parseFloat(pointList[3])*20
-                    });
-                }
-            }
-            Graham_scan(hull, arr, hull.length);
-            roleHull[6] = arr;
-        });
-    });   
-    mtlLoaderMan.load('man.mtl', function (materials) {
-        materials.preload();
-    
-        let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/Man/');
-        objLoader.load(manFile[7], function (object) {
-            object.traverse( function ( child ) {
-                        if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*43/50 );
-                        }  
-                    } ); 
-            object.scale.x = object.scale.y = object.scale.z = 20;
-            object.rotation.y = 0;
-            object.position.set(-2700 , 50, -2700);
-            manObj[7] = object;
-            let arr = [];
-            let url = 'ExportedObj/Man/' + manFile[7];
-            let htmlobj =  $.ajax({url:url,async:false});
-            let dataList = htmlobj.responseText.split("\n");
-            let hull = [];
-            for(let i = 0; i < dataList.length; i++)
-            {
-                let pointList = dataList[i].split(" ");
-                if(pointList[0] === 'v')
-                {
-                    hull.push({
-                        x: parseFloat(pointList[1])*20,
-                        y: parseFloat(pointList[3])*20
-                    });
-                }
-            }
-            Graham_scan(hull, arr, hull.length);
-            roleHull[7] = arr;
-        });
-    });
-    mtlLoaderMan.load('man.mtl', function (materials) {
-        materials.preload();
-    
-        let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/Man/');
-        objLoader.load(manFile[8], function (object) {
-            object.traverse( function ( child ) {
-                        if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*42/50 );
-                        }  
-                    } ); 
-            object.scale.x = object.scale.y = object.scale.z = 20;
-            object.rotation.y = 0;
-            object.position.set(-2700 , 50, -2700);
-            manObj[8] = object;
-            let arr = [];
-            let url = 'ExportedObj/Man/' + manFile[8];
-            let htmlobj =  $.ajax({url:url,async:false});
-            let dataList = htmlobj.responseText.split("\n");
-            let hull = [];
-            for(let i = 0; i < dataList.length; i++)
-            {
-                let pointList = dataList[i].split(" ");
-                if(pointList[0] === 'v')
-                {
-                    hull.push({
-                        x: parseFloat(pointList[1])*20,
-                        y: parseFloat(pointList[3])*20
-                    });
-                }
-            }
-            Graham_scan(hull, arr, hull.length);
-            roleHull[8] = arr;
-        });
-    });   
-    mtlLoaderMan.load('man.mtl', function (materials) {
-        materials.preload();
-    
-        let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/Man/');
-        objLoader.load(manFile[9], function (object) {
-            object.traverse( function ( child ) {
-                        if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*41/50 );
-                        }  
-                    } ); 
-            object.scale.x = object.scale.y = object.scale.z = 20;
-            object.rotation.y = 0;
-            object.position.set(-2700 , 50, -2700);
-            manObj[9] = object;
-            let arr = [];
-            let url = 'ExportedObj/Man/' + manFile[9];
-            let htmlobj =  $.ajax({url:url,async:false});
-            let dataList = htmlobj.responseText.split("\n");
-            let hull = [];
-            for(let i = 0; i < dataList.length; i++)
-            {
-                let pointList = dataList[i].split(" ");
-                if(pointList[0] === 'v')
-                {
-                    hull.push({
-                        x: parseFloat(pointList[1])*20,
-                        y: parseFloat(pointList[3])*20
-                    });
-                }
-            }
-            Graham_scan(hull, arr, hull.length);
-            roleHull[9] = arr;
-        });
-    });   
+
     ///////////
     // FLOOR //
     ///////////
