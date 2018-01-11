@@ -23,10 +23,10 @@ let floorObj = [];
 let wallFile = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj', 'BudBuilding_4.obj', 'gate.obj'];
 let wallFile2 = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj', 'BudBuilding_4.obj', 'gate.obj'];
 let wallObj = [];
-let manFile = ['man1.obj', 'man2.obj', 'man3.obj', 'man4.obj', 'man5.obj', 'man6.obj', 'man7.obj', 'man8.obj', 'man9.obj', 'man10.obj'];
+let manFile = ['man1.obj', 'man2.obj', 'man3.obj', 'man4.obj', 'man5.obj', 'man6.obj', 'man7.obj', 'man8.obj', 'man9.obj', 'man10.obj', 'man11.obj', 'man12.obj', 'man13.obj', 'man14.obj', 'man15.obj', 'man16.obj', 'man17.obj', 'man18.obj', 'man19.obj', 'man20.obj', 'man21.obj', 'man22.obj', 'man23.obj', 'man24.obj'];
 let manObj = [];
 let tmpManObj = 5;
-let tmpManObjRight = true;
+//let tmpManObjRight = true;
 let isSunny = 'Dark';//场景改变
 let skyboxchange = false;
 let collisionEn = false;
@@ -396,6 +396,7 @@ function manLoader() {
         object.position.set(-2700 , 50, -2700);
         scene.remove(manObj[manNum]);
         manObj[manNum] = object;
+        if(manNum === 5) scene.add(object);
         let arr = [];
         let url = 'ExportedObj/Man/' + file;
         let htmlobj =  $.ajax({url:url,async:false});
@@ -514,7 +515,7 @@ function init() {
     let sphereMaterial = new THREE.MeshBasicMaterial({color: 0x0000FF});
     MovingCube = new THREE.Mesh(sphereGeometry, sphereMaterial);
     MovingCube.position.set(-2700, 0, -2700);
-    for(let k=0; k<10; k++){
+    for(let k=0; k<24; k++){
         manObj[k] = new THREE.Mesh(sphereGeometry, sphereMaterial);
         manObj[k].position.set(-2700, 0, -2700);
     }
@@ -648,7 +649,7 @@ function update() {
     let tmpy = MovingCube.position.y;
     let tmpz = MovingCube.position.z;
     let newtmp = tmpManObj;
-    let newtmpright = tmpManObjRight;
+    //let newtmpright = tmpManObjRight;
     cloudAngel += Math.PI/500;
     if(cloudAngel > Math.PI)
         cloudAngel = cloudAngel-2*Math.PI;
@@ -656,26 +657,14 @@ function update() {
     if(cloudR > 3000)
         cloudR = cloudR - 6000;
     cloud.position.set(cloudR*Math.cos(cloudAngel), 2000, cloudR*Math.sin(cloudAngel));
-    if(tmpManObjRight && cnt % 2 === 0) {
-        if (tmpManObj < 9)
-            newtmp = tmpManObj + 1;
-        else {
-            newtmp = tmpManObj - 1;
-            newtmpright = false;
-        }
-    }
-    else if(cnt % 2 === 0){
-        if (tmpManObj > 1)
-            newtmp = tmpManObj - 1;
-        else {
-            newtmp = tmpManObj + 1;
-            newtmpright = true;
-        }
+    if(cnt % 2 === 0) {
+        newtmp = tmpManObj + 1;
+        if(newtmp > 23)
+            newtmp = newtmp - 24;
     }
     else
     {
         newtmp = tmpManObj;
-        newtmpright = tmpManObjRight;
     }
     if (keyboard.up)
         MovingCube.translateZ(-moveDistance);
@@ -801,7 +790,7 @@ function update() {
         count++;
         if (count === 1) {
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -totAngle);
-            for(let k=0; k<10; k++){
+            for(let k=0; k<24; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0,1, 0), -totAngle);
             }
             camera.position.set(0, 8000, 0);
@@ -813,7 +802,7 @@ function update() {
         if (count !== 0) {
             count = 0;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
-            for(let k=0; k<10; k++){
+            for(let k=0; k<24; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
             }
         }
@@ -829,14 +818,14 @@ function update() {
         if (keyboard.left) {
             totAngle += rotateAngle;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
-            for(let k=0; k<10; k++){
+            for(let k=0; k<24; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
             }
         }
         if (keyboard.right) {
             totAngle -= rotateAngle;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
-            for(let k=0; k<10; k++){
+            for(let k=0; k<24; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
             }
     }
@@ -870,7 +859,6 @@ function update() {
         manObj[5].position.set(MovingCube.position.x, 50, MovingCube.position.z);
         scene.add(manObj[5]);
         tmpManObj = 5;
-        tmpManObjRight = true;
         role.splice(0,role.length);
         for(let i = 0; i < roleHull[2].length; i++)
         {
@@ -884,7 +872,6 @@ function update() {
     else if((MovingCube.position.x !== tmpx)||(MovingCube.position.z !== tmpz)){
         scene.remove(manObj[tmpManObj]);
         tmpManObj=newtmp;
-        tmpManObjRight=newtmpright;
         manObj[tmpManObj].position.set(MovingCube.position.x, 50, MovingCube.position.z);
         scene.add(manObj[tmpManObj]);
         role.splice(0,role.length);
