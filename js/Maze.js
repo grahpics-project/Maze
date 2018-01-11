@@ -392,7 +392,7 @@ function manLoader() {
             }  
         } ); 
         object.scale.x = object.scale.y = object.scale.z = 20;
-        object.rotation.y = 0;
+        object.rotation.y = MovingCube.rotation.y;
         object.position.set(-2700 , 50, -2700);
         scene.remove(manObj[manNum]);
         manObj[manNum] = object;
@@ -814,7 +814,6 @@ function update() {
             }
             controls.update();
         }
-<<<<<<< HEAD
         else if (tag === 0) {
             if (count !== 0) {
                 count = 0;
@@ -822,24 +821,8 @@ function update() {
                 for(let k=0; k<24; k++){
                     manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
                 }
-=======
-        let relativeCameraOffset = new THREE.Vector3(0, 250, 300);
-        let cameraOffset;
-        if((MovingCube.position.x !== tmpx)||(MovingCube.position.z !== tmpz))
-            cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
-        else
-            cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
-        camera.position.x = cameraOffset.x;
-        camera.position.y = cameraOffset.y;
-        camera.position.z = cameraOffset.z;
-        if (keyboard.left) {
-            totAngle += rotateAngle;
-            MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
-            for(let k=0; k<24; k++){
-                manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
->>>>>>> af6cc4ca03674c6ab7394a7efdf06ba0934b7ff8
             }
-            let relativeCameraOffset = new THREE.Vector3(0, 200, 600);
+            let relativeCameraOffset = new THREE.Vector3(0, 250, 300);
             let cameraOffset;
             if((MovingCube.position.x !== tmpx)||(MovingCube.position.z !== tmpz))
                 cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
@@ -863,11 +846,8 @@ function update() {
                 }
             }   
 
-            camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 100, MovingCube.position.z));
+            camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 180, MovingCube.position.z));
         }
-=======
-        camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 180, MovingCube.position.z));
->>>>>>> af6cc4ca03674c6ab7394a7efdf06ba0934b7ff8
     }
     if(isSunny==='BlueSky'){
         if(skyboxchange === false){
