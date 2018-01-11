@@ -674,8 +674,10 @@ function update() {
             camera.lookAt(scene.position)
         }
         else{
-            camera.position.x = camera.position.x + 10;
-            camera.position.z = camera.position.z + 10;
+            if(camera.position.x < 2000){
+                camera.position.x = camera.position.x + 8;
+                camera.position.z = camera.position.z + 8;
+            }
             //camera.lookAt.x = camera.lookAt.x +10;
             //camera.lookAt.z = camera.lookAt.z +10;
         }
