@@ -1,6 +1,6 @@
 # This file uses centimeters as units for non-parametric coordinates.
 
-mtllib mid.mtl
+mtllib man.mtl
 g skinCluster1Set tweakSet1
 v 0.030877 8.477128 0.446711
 v -0.153809 8.864065 0.002191

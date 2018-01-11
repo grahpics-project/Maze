@@ -18,9 +18,9 @@ let floorObj = [];
 let wallFile = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj'];
 let wallFile2 = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj'];
 let wallObj = [];
-let manFile = ['left.obj', 'left1.obj', 'mid.obj', 'right1.obj', 'right.obj'];
+let manFile = ['man1.obj', 'man2.obj', 'man3.obj', 'man4.obj', 'man5.obj', 'man6.obj', 'man7.obj', 'man8.obj', 'man9.obj', 'man10.obj'];
 let manObj = [];
-let tmpManObj = 3;
+let tmpManObj = 5;
 let tmpManObjRight = true;
 let isSunny = 'Dark';//场景改变
 let skyboxchange = false;
@@ -33,7 +33,7 @@ let cloudR = -3000;
 let auto = false;//自动走迷宫
 let role = [];
 let roleHull = [];
-for(let i = 0; i <= 5; i++)
+for(let i = 0; i <= 10; i++)
     roleHull[i] = [];
 let bpoint;
 let light = new THREE.AmbientLight(0xffffff, lightIntensity/10);
@@ -444,15 +444,15 @@ function init() {
     maze.generate();
     wallGenerate();
     console.log(mapArr);
-    //////////////
-    //  SPHERE  //
-    /////////////
+    /////////
+    // MAN //
+    /////////
 
     let sphereGeometry = new THREE.SphereGeometry(0, 0, 0);
     let sphereMaterial = new THREE.MeshBasicMaterial({color: 0x0000FF});
     MovingCube = new THREE.Mesh(sphereGeometry, sphereMaterial);
     MovingCube.position.set(-2700, 50, -2700);
-    for(let k=0; k<5; k++){
+    for(let k=0; k<10; k++){
         manObj[k] = new THREE.Mesh(sphereGeometry, sphereMaterial);
         manObj[k].position.set(-2700, 50, -2700);
     }
@@ -460,7 +460,7 @@ function init() {
     let mtlLoaderMan = new THREE.MTLLoader();
     mtlLoaderMan.setTexturePath('ExportedObj/Man/');
     mtlLoaderMan.setPath('ExportedObj/Man/');
-    mtlLoaderMan.load('mid.mtl', function (materials) {
+    mtlLoaderMan.load('man.mtl', function (materials) {
         materials.preload();
     
         let objLoader = new THREE.OBJLoader();
@@ -476,6 +476,7 @@ function init() {
             object.position.set(-2700 , 50, -2700);
             object.rotation.y = 0;
             manObj[0] = object;
+            //scene.add(object);
             let arr = [];
             let url = 'ExportedObj/Man/' + manFile[0];
             let htmlobj =  $.ajax({url:url,async:false});
@@ -496,7 +497,7 @@ function init() {
             roleHull[0] = arr;
         });
     });
-    mtlLoaderMan.load('mid.mtl', function (materials) {
+    mtlLoaderMan.load('man.mtl', function (materials) {
         materials.preload();
     
         let objLoader = new THREE.OBJLoader();
@@ -505,13 +506,14 @@ function init() {
         objLoader.load(manFile[1], function (object) {
             object.traverse( function ( child ) {
                         if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI );
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*49/50 );
                         }  
                     } ); 
             object.scale.x = object.scale.y = object.scale.z = 20;
             object.position.set(-2700 , 50, -2700);
             object.rotation.y = 0;
             manObj[1] = object;
+            //scene.add(object);
             let arr = [];
             let url = 'ExportedObj/Man/' + manFile[1];
             let htmlobj =  $.ajax({url:url,async:false});
@@ -532,7 +534,7 @@ function init() {
             roleHull[1] = arr;
         });
     });    
-    mtlLoaderMan.load('mid.mtl', function (materials) {
+    mtlLoaderMan.load('man.mtl', function (materials) {
         materials.preload();
     
         let objLoader = new THREE.OBJLoader();
@@ -541,7 +543,7 @@ function init() {
         objLoader.load(manFile[2], function (object) {
             object.traverse( function ( child ) {
                         if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.62 * Math.PI );
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*48/50 );
                         }  
                     } ); 
             object.scale.x = object.scale.y = object.scale.z = 20;
@@ -549,7 +551,7 @@ function init() {
             object.rotation.y = 0;
             manObj[2] = object;
             // MovingCube = object;
-            scene.add(object);
+            //scene.add(object);
             let arr = [];
             let url = 'ExportedObj/Man/' + manFile[2];
             let htmlobj =  $.ajax({url:url,async:false});
@@ -578,7 +580,7 @@ function init() {
         });
     });
     console.log(role);
-    mtlLoaderMan.load('mid.mtl', function (materials) {
+    mtlLoaderMan.load('man.mtl', function (materials) {
         materials.preload();
     
         let objLoader = new THREE.OBJLoader();
@@ -587,7 +589,7 @@ function init() {
         objLoader.load(manFile[3], function (object) {
             object.traverse( function ( child ) {
                         if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.85 * Math.PI );
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*47/50 );
                         }  
                     } ); 
             object.scale.x = object.scale.y = object.scale.z = 20;
@@ -614,7 +616,7 @@ function init() {
             roleHull[3] = arr;
         });
     });
-    mtlLoaderMan.load('mid.mtl', function (materials) {
+    mtlLoaderMan.load('man.mtl', function (materials) {
         materials.preload();
     
         let objLoader = new THREE.OBJLoader();
@@ -623,7 +625,7 @@ function init() {
         objLoader.load(manFile[4], function (object) {
             object.traverse( function ( child ) {
                         if ( child instanceof THREE.Mesh ) {  
-                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.79 * Math.PI );
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*46/50 );
                         }  
                     } ); 
             object.scale.x = object.scale.y = object.scale.z = 20;
@@ -649,7 +651,189 @@ function init() {
             Graham_scan(hull, arr, hull.length);
             roleHull[4] = arr;
         });
+        
     });
+    mtlLoaderMan.load('man.mtl', function (materials) {
+        materials.preload();
+    
+        let objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('ExportedObj/Man/');
+        objLoader.load(manFile[5], function (object) {
+            object.traverse( function ( child ) {
+                        if ( child instanceof THREE.Mesh ) {  
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*45/50 );
+                        }  
+                    } ); 
+            object.scale.x = object.scale.y = object.scale.z = 20;
+            object.rotation.y = 0;
+            object.position.set(-2700 , 50, -2700);
+            manObj[5] = object;
+            scene.add(object);
+            let arr = [];
+            let url = 'ExportedObj/Man/' + manFile[5];
+            let htmlobj =  $.ajax({url:url,async:false});
+            let dataList = htmlobj.responseText.split("\n");
+            let hull = [];
+            for(let i = 0; i < dataList.length; i++)
+            {
+                let pointList = dataList[i].split(" ");
+                if(pointList[0] === 'v')
+                {
+                    hull.push({
+                        x: parseFloat(pointList[1])*20,
+                        y: parseFloat(pointList[3])*20
+                    });
+                }
+            }
+            Graham_scan(hull, arr, hull.length);
+            roleHull[5] = arr;
+        });
+    });
+    mtlLoaderMan.load('man.mtl', function (materials) {
+        materials.preload();
+    
+        let objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('ExportedObj/Man/');
+        objLoader.load(manFile[6], function (object) {
+            object.traverse( function ( child ) {
+                        if ( child instanceof THREE.Mesh ) {  
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*44/50 );
+                        }  
+                    } ); 
+            object.scale.x = object.scale.y = object.scale.z = 20;
+            object.rotation.y = 0;
+            object.position.set(-2700 , 50, -2700);
+            manObj[6] = object;
+            let arr = [];
+            let url = 'ExportedObj/Man/' + manFile[6];
+            let htmlobj =  $.ajax({url:url,async:false});
+            let dataList = htmlobj.responseText.split("\n");
+            let hull = [];
+            for(let i = 0; i < dataList.length; i++)
+            {
+                let pointList = dataList[i].split(" ");
+                if(pointList[0] === 'v')
+                {
+                    hull.push({
+                        x: parseFloat(pointList[1])*20,
+                        y: parseFloat(pointList[3])*20
+                    });
+                }
+            }
+            Graham_scan(hull, arr, hull.length);
+            roleHull[6] = arr;
+        });
+    });   
+    mtlLoaderMan.load('man.mtl', function (materials) {
+        materials.preload();
+    
+        let objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('ExportedObj/Man/');
+        objLoader.load(manFile[7], function (object) {
+            object.traverse( function ( child ) {
+                        if ( child instanceof THREE.Mesh ) {  
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*43/50 );
+                        }  
+                    } ); 
+            object.scale.x = object.scale.y = object.scale.z = 20;
+            object.rotation.y = 0;
+            object.position.set(-2700 , 50, -2700);
+            manObj[7] = object;
+            let arr = [];
+            let url = 'ExportedObj/Man/' + manFile[7];
+            let htmlobj =  $.ajax({url:url,async:false});
+            let dataList = htmlobj.responseText.split("\n");
+            let hull = [];
+            for(let i = 0; i < dataList.length; i++)
+            {
+                let pointList = dataList[i].split(" ");
+                if(pointList[0] === 'v')
+                {
+                    hull.push({
+                        x: parseFloat(pointList[1])*20,
+                        y: parseFloat(pointList[3])*20
+                    });
+                }
+            }
+            Graham_scan(hull, arr, hull.length);
+            roleHull[7] = arr;
+        });
+    });
+    mtlLoaderMan.load('man.mtl', function (materials) {
+        materials.preload();
+    
+        let objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('ExportedObj/Man/');
+        objLoader.load(manFile[8], function (object) {
+            object.traverse( function ( child ) {
+                        if ( child instanceof THREE.Mesh ) {  
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*42/50 );
+                        }  
+                    } ); 
+            object.scale.x = object.scale.y = object.scale.z = 20;
+            object.rotation.y = 0;
+            object.position.set(-2700 , 50, -2700);
+            manObj[8] = object;
+            let arr = [];
+            let url = 'ExportedObj/Man/' + manFile[8];
+            let htmlobj =  $.ajax({url:url,async:false});
+            let dataList = htmlobj.responseText.split("\n");
+            let hull = [];
+            for(let i = 0; i < dataList.length; i++)
+            {
+                let pointList = dataList[i].split(" ");
+                if(pointList[0] === 'v')
+                {
+                    hull.push({
+                        x: parseFloat(pointList[1])*20,
+                        y: parseFloat(pointList[3])*20
+                    });
+                }
+            }
+            Graham_scan(hull, arr, hull.length);
+            roleHull[8] = arr;
+        });
+    });   
+    mtlLoaderMan.load('man.mtl', function (materials) {
+        materials.preload();
+    
+        let objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('ExportedObj/Man/');
+        objLoader.load(manFile[9], function (object) {
+            object.traverse( function ( child ) {
+                        if ( child instanceof THREE.Mesh ) {  
+                            child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*41/50 );
+                        }  
+                    } ); 
+            object.scale.x = object.scale.y = object.scale.z = 20;
+            object.rotation.y = 0;
+            object.position.set(-2700 , 50, -2700);
+            manObj[9] = object;
+            let arr = [];
+            let url = 'ExportedObj/Man/' + manFile[9];
+            let htmlobj =  $.ajax({url:url,async:false});
+            let dataList = htmlobj.responseText.split("\n");
+            let hull = [];
+            for(let i = 0; i < dataList.length; i++)
+            {
+                let pointList = dataList[i].split(" ");
+                if(pointList[0] === 'v')
+                {
+                    hull.push({
+                        x: parseFloat(pointList[1])*20,
+                        y: parseFloat(pointList[3])*20
+                    });
+                }
+            }
+            Graham_scan(hull, arr, hull.length);
+            roleHull[9] = arr;
+        });
+    });   
     ///////////
     // FLOOR //
     ///////////
@@ -764,7 +948,7 @@ function animate() {
 let cnt = 0;
 function update() {
     let delta = clock.getDelta();
-    let moveDistance = 400 * delta; // 400 pixels per second
+    let moveDistance = 200 * delta; // 400 pixels per second
     let rotateAngle = Math.PI / 2 * delta;
     let tmpx = MovingCube.position.x;
     let tmpy = MovingCube.position.y;
@@ -779,14 +963,14 @@ function update() {
         cloudR = cloudR - 6000;
     cloud.position.set(cloudR*Math.cos(cloudAngel), 2000, cloudR*Math.sin(cloudAngel));
     if(tmpManObjRight && cnt % 6 === 0) {
-        if (tmpManObj < 4)
+        if (tmpManObj < 9)
             newtmp = tmpManObj + 1;
         else {
             newtmp = tmpManObj - 1;
             newtmpright = false;
         }
     }
-    else if(cnt % 8 === 0){
+    else if(cnt % 6 === 0){
         if (tmpManObj > 1)
             newtmp = tmpManObj - 1;
         else {
@@ -923,7 +1107,7 @@ function update() {
         count++;
         if (count === 1) {
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -totAngle);
-            for(let k=0; k<5; k++){
+            for(let k=0; k<10; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0,1, 0), -totAngle);
             }
             camera.position.set(0, 8000, 0);
@@ -935,7 +1119,7 @@ function update() {
         if (count !== 0) {
             count = 0;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
-            for(let k=0; k<5; k++){
+            for(let k=0; k<10; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
             }
         }
@@ -951,14 +1135,14 @@ function update() {
         if (keyboard.pressed("A")) {
             totAngle += rotateAngle;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
-            for(let k=0; k<5; k++){
+            for(let k=0; k<10; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
             }
         }
         if (keyboard.pressed("D")) {
             totAngle -= rotateAngle;
             MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
-            for(let k=0; k<5; k++){
+            for(let k=0; k<10; k++){
                 manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
             }
     }
@@ -987,11 +1171,11 @@ function update() {
         scene.add(light);
         isLightChange = false;
     }
-    if((MovingCube.position.x === tmpx)&&(MovingCube.position.z === tmpz)){
+    if((MovingCube.position.x === tmpx)&&(MovingCube.position.z === tmpz)&&(cnt % 40 === 0)){
         scene.remove(manObj[tmpManObj]);
-        manObj[2].position.set(MovingCube.position.x, 50, MovingCube.position.z);
-        scene.add(manObj[2]);
-        tmpManObj = 2;
+        manObj[5].position.set(MovingCube.position.x, 50, MovingCube.position.z);
+        scene.add(manObj[5]);
+        tmpManObj = 5;
         tmpManObjRight = true;
         role.splice(0,role.length);
         for(let i = 0; i < roleHull[2].length; i++)
@@ -1002,7 +1186,7 @@ function update() {
             })
         }
     }
-    else{
+    else if((MovingCube.position.x !== tmpx)||(MovingCube.position.z !== tmpz)){
         scene.remove(manObj[tmpManObj]);
         tmpManObj=newtmp;
         tmpManObjRight=newtmpright;

@@ -1,0 +1,126 @@
+newmtl Material__0
+illum 2
+Kd 1.00 1.00 1.00
+Ka 0.60 0.60 0.60
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+
+newmtl __asi
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_asi.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+
+newmtl __asi2
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_asi2.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+newmtl __belt_kutu
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_belt_kutu.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+newmtl __body
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_body.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+newmtl __fuku_kuro
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_kuro.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+newmtl __fuku_siro
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_fukusiro.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+newmtl __headset
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_headset.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+newmtl __kami
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_kami.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+newmtl __kami_u
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_kami_u.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+newmtl __kao
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_kao.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+newmtl __me
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_eyes2.jpg
+Ks 0.9 0.9 0.9
+Ns 0
+d  1.0
+
+newmtl __siro
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_siro.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
+
+newmtl __ude
+illum 2
+Kd 0.35 0.35 0.35
+Ka 0.60 0.60 0.60
+map_Kd tex_ude.jpg
+Ks 0.9 0.9 0.9
+Ns 0.00
+d  1.0
