@@ -2,7 +2,7 @@
 THREE.MTLLoader = function ( manager ) {
     this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 };
-THREE.MTLLoader.prototype = {
+THREE.MTLLoader.prototype = {  //mtlloader的方法
     constructor: THREE.MTLLoader,
     load: function ( url, onLoad, onProgress, onError ) {
         var scope = this;
@@ -12,10 +12,10 @@ THREE.MTLLoader.prototype = {
             onLoad( scope.parse( text ) );
         }, onProgress, onError );
     },
-    setPath: function ( path ) {
+    setPath: function ( path ) {  //赋值path
         this.path = path;
     },
-    setTexturePath: function ( path ) {
+    setTexturePath: function ( path ) {  //赋值
         this.texturePath = path;
     },
     setBaseUrl: function ( path ) {
@@ -33,17 +33,15 @@ THREE.MTLLoader.prototype = {
         for ( var i = 0; i < lines.length; i ++ ) {
             var line = lines[ i ];
             line = line.trim();
-            if ( line.length === 0 || line.charAt( 0 ) === '#' ) {
-                // Blank line or comment ignore
+            if ( line.length === 0 || line.charAt( 0 ) === '#' ) {  //跳过注释和空行
                 continue;
             }
-            var pos = line.indexOf( ' ' );
+            var pos = line.indexOf( ' ' ); //找到一行中空格的位置
             var key = ( pos >= 0 ) ? line.substring( 0, pos ) : line;
             key = key.toLowerCase();
             var value = ( pos >= 0 ) ? line.substring( pos + 1 ) : '';
             value = value.trim();
-            if ( key === 'newmtl' ) {
-                // New material
+            if ( key === 'newmtl' ) {   //如果是新的mtl
                 info = { name: value };
                 materialsInfo[ value ] = info;
             } else if ( info ) {
@@ -62,7 +60,7 @@ THREE.MTLLoader.prototype = {
         return materialCreator;
     }
 };
-THREE.MTLLoader.MaterialCreator = function ( baseUrl, options ) {
+THREE.MTLLoader.MaterialCreator = function ( baseUrl, options ) {  //创建材质
     this.baseUrl = baseUrl;
     this.options = options;
     this.materialsInfo = {};
@@ -89,7 +87,6 @@ THREE.MTLLoader.MaterialCreator.prototype = {
         if ( ! this.options ) return materialsInfo;
         var converted = {};
         for ( var mn in materialsInfo ) {
-            // Convert materials info into normalized form based on options
             var mat = materialsInfo[ mn ];
             var covmat = {};
             converted[ mn ] = covmat;
@@ -101,13 +98,11 @@ THREE.MTLLoader.MaterialCreator.prototype = {
                     case 'kd':
                     case 'ka':
                     case 'ks':
-                        // Diffuse color (color under white light) using RGB values
-                        if ( this.options && this.options.normalizeRGB ) {
+                        if ( this.options && this.options.normalizeRGB ) {  //原来的值是0-1,这里把它转换成rgb
                             value = [ value[ 0 ] / 255, value[ 1 ] / 255, value[ 2 ] / 255 ];
                         }
                         if ( this.options && this.options.ignoreZeroRGBs ) {
                             if ( value[ 0 ] === 0 && value[ 1 ] === 0 && value[ 2 ] === 0 ) {
-                                // ignore
                                 save = false;
                             }
                         }
@@ -136,24 +131,43 @@ THREE.MTLLoader.MaterialCreator.prototype = {
         }
         return this.materials[ materialName ];
     },
-    createMaterial_: function ( materialName ) {
-        // Create material
+    createMaterial_: function ( materialName ) {   //创建材质
         var scope = this;
         var mat = this.materialsInfo[ materialName ];
         var params = {
             name: materialName,
             side: this.side
         };
-        function resolveURL( baseUrl, url ) {
+        function resolveURL( baseUrl, url ) { //对传入的url进行处理，使其标准化
             if ( typeof url !== 'string' || url === '' )
                 return '';
-            // Absolute URL
             if ( /^https?:\/\//i.test( url ) ) return url;
             return baseUrl + url;
         }
         function setMapForType( mapType, value ) {
-            if ( params[ mapType ] ) return; // Keep the first encountered texture
-            var texParams = scope.getTextureParams( value, params );
+            if ( params[ mapType ] ) return;
+            var texParams = {
+                scale: new THREE.Vector2( 1, 1 ),
+                offset: new THREE.Vector2( 0, 0 )
+            };
+            var items = value.split( /\s+/ );
+            var pos;
+            pos = items.indexOf( '-bm' );
+            if ( pos >= 0 ) {
+                matParams.bumpScale = parseFloat( items[ pos + 1 ] );
+                items.splice( pos, 2 );
+            }
+            pos = items.indexOf( '-s' );
+            if ( pos >= 0 ) {
+                texParams.scale.set( parseFloat( items[ pos + 1 ] ), parseFloat( items[ pos + 2 ] ) );
+                items.splice( pos, 4 );
+            }
+            pos = items.indexOf( '-o' );
+            if ( pos >= 0 ) {
+                texParams.offset.set( parseFloat( items[ pos + 1 ] ), parseFloat( items[ pos + 2 ] ) );
+                items.splice( pos, 4 );
+            }
+            texParams.url = items.join( ' ' ).trim();
             var map = scope.loadTexture( resolveURL( scope.baseUrl, texParams.url ) );
             map.repeat.copy( texParams.scale );
             map.offset.copy( texParams.offset );
@@ -166,17 +180,13 @@ THREE.MTLLoader.MaterialCreator.prototype = {
             var n;
             if ( value === '' ) continue;
             switch ( prop.toLowerCase() ) {
-                // Ns is material specular exponent
-                case 'kd':
-                    // Diffuse color (color under white light) using RGB values
+                case 'kd': //漫反射光
                     params.color = new THREE.Color().fromArray( value );
                     break;
-                case 'ks':
-                    // Specular color (color when light is reflected from shiny surface) using RGB values
+                case 'ks': //镜面反射光
                     params.specular = new THREE.Color().fromArray( value );
                     break;
                 case 'map_kd':
-                    // Diffuse texture map
                     setMapForType( "map", value );
                     break;
                 case 'map_ks':
@@ -186,22 +196,8 @@ THREE.MTLLoader.MaterialCreator.prototype = {
                 case 'norm':
                     setMapForType( "normalMap", value );
                     break;
-                case 'map_bump':
-                case 'bump':
-                    // Bump texture map
-                    setMapForType( "bumpMap", value );
-                    break;
-                case 'ns':
-                    // The specular exponent (defines the focus of the specular highlight)
-                    // A high exponent results in a tight, concentrated highlight. Ns values normally range from 0 to 1000.
+                case 'ns': //高光
                     params.shininess = parseFloat( value );
-                    break;
-                case 'tr':
-                    n = parseFloat( value );
-                    if ( n > 0 ) {
-                        params.opacity = 1 - n;
-                        params.transparent = true;
-                    }
                     break;
                 default:
                     break;
@@ -209,31 +205,6 @@ THREE.MTLLoader.MaterialCreator.prototype = {
         }
         this.materials[ materialName ] = new THREE.MeshPhongMaterial( params );
         return this.materials[ materialName ];
-    },
-    getTextureParams: function ( value, matParams ) {
-        var texParams = {
-            scale: new THREE.Vector2( 1, 1 ),
-            offset: new THREE.Vector2( 0, 0 )
-        };
-        var items = value.split( /\s+/ );
-        var pos;
-        pos = items.indexOf( '-bm' );
-        if ( pos >= 0 ) {
-            matParams.bumpScale = parseFloat( items[ pos + 1 ] );
-            items.splice( pos, 2 );
-        }
-        pos = items.indexOf( '-s' );
-        if ( pos >= 0 ) {
-            texParams.scale.set( parseFloat( items[ pos + 1 ] ), parseFloat( items[ pos + 2 ] ) );
-            items.splice( pos, 4 ); // we expect 3 parameters here!
-        }
-        pos = items.indexOf( '-o' );
-        if ( pos >= 0 ) {
-            texParams.offset.set( parseFloat( items[ pos + 1 ] ), parseFloat( items[ pos + 2 ] ) );
-            items.splice( pos, 4 ); // we expect 3 parameters here!
-        }
-        texParams.url = items.join( ' ' ).trim();
-        return texParams;
     },
     loadTexture: function ( url, mapping, onLoad, onProgress, onError ) {
         var texture;
@@ -254,12 +225,9 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 */
 THREE.OBJLoader = ( function () {
-	// o object_name | g group_name
-	var object_pattern = /^[og]\s*(.+)?/;
-	// mtllib file_reference
-	var material_library_pattern = /^mtllib /;
-	// usemtl material_name
-	var material_use_pattern = /^usemtl /;
+	var object_pattern = /^[og]\s*(.+)?/;  //o 和 g的匹配
+	var material_library_pattern = /^mtllib /;  //mtllib的匹配
+	var material_use_pattern = /^usemtl /;  //usemtl的匹配
 	function ParserState() {
 		var state = {
 			objects: [],
@@ -270,13 +238,12 @@ THREE.OBJLoader = ( function () {
 			uvs: [],
 			materialLibraries: [],
 			startObject: function ( name, fromDeclaration ) {
-				// If the current object (initial from reset) is not from a g/o declaration in the parsed
-				// file. We need to use it for the first parsed g/o to keep things in sync.
+				/*
 				if ( this.object && this.object.fromDeclaration === false ) {
 					this.object.name = name;
 					this.object.fromDeclaration = ( fromDeclaration !== false );
 					return;
-				}
+				}*/
 				if ( this.object && typeof this.object._finalize === 'function' ) {
 					this.object._finalize( true );
 				}
@@ -293,8 +260,6 @@ THREE.OBJLoader = ( function () {
 					smooth: true,
 					startMaterial: function ( name, libraries ) {
 						var previous = this._finalize( false );
-						// New usemtl declaration overwrites an inherited material, except if faces were declared
-						// after the material, then it must be preserved for proper MultiMaterial continuation.
 						if ( previous && ( previous.inherited || previous.groupCount <= 0 ) ) {
 							this.materials.splice( previous.index, 1 );
 						}
@@ -347,7 +312,7 @@ THREE.OBJLoader = ( function () {
 				}
 			},
 			parseVertexIndex: function ( value, len ) {
-				var index = parseInt( value, 10 );
+				var index = parseInt( value, 10 ); //字符串转int
 				return ( index >= 0 ? index - 1 : index + len / 3 ) * 3;
 			},
 			parseNormalIndex: function ( value, len ) {
@@ -440,7 +405,7 @@ THREE.OBJLoader = ( function () {
 		this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 		this.materials = null;
 	}
-	OBJLoader.prototype = {
+	OBJLoader.prototype = { //objloader的一些方法
 		constructor: OBJLoader,
 		load: function ( url, onLoad, onProgress, onError ) {
 			var scope = this;
@@ -457,22 +422,19 @@ THREE.OBJLoader = ( function () {
 			this.materials = materials;
 			return this;
 		},
-		parse: function ( text ) {
+		parse: function ( text ) { //解析字符串
 			console.time( 'OBJLoader' );
 			var state = new ParserState();
 			if ( text.indexOf( '\r\n' ) !== - 1 ) {
-				// This is faster than String.split with regex that splits on both
 				text = text.replace( /\r\n/g, '\n' );
 			}
 			if ( text.indexOf( '\\\n' ) !== - 1 ) {
-				// join lines separated by a line continuation character (\)
 				text = text.replace( /\\\n/g, '' );
 			}
 			var lines = text.split( '\n' );
 			var line = '', lineFirstChar = '';
 			var lineLength = 0;
 			var result = [];
-			// Faster to just trim left side of the line. Use if available.
 			var trimLeft = ( typeof ''.trimLeft === 'function' );
 			for ( var i = 0; i < lines.length; i ++ ) {
 				line = lines[ i ];
@@ -509,7 +471,6 @@ THREE.OBJLoader = ( function () {
 					var lineData = line.substr( 1 ).trim();
 					var vertexData = lineData.split( /\s+/ );
 					var faceVertices = [];
-					// Parse the face vertex data into an easy to work with format
 					for ( var j = 0; j < vertexData.length; j ++ ) {
 						var vertex = vertexData[ j ];
 						if ( vertex.length > 0 ) {
@@ -517,7 +478,7 @@ THREE.OBJLoader = ( function () {
 							faceVertices.push( vertexParts );
 						}
 					}
-					// Draw an edge between the first vertex and all subsequent vertices to form an n-gon
+					// 在第一个点和其他点之间画线,形成边
 					var v1 = faceVertices[ 0 ];
 					for ( var j = 1; j < faceVertices.length - 1; j ++ ) {
 						var v2 = faceVertices[ j ];
@@ -542,16 +503,11 @@ THREE.OBJLoader = ( function () {
 					}
 					state.addLineGeometry( lineVertices, lineUVs );
 				} else if ( ( result = object_pattern.exec( line ) ) !== null ) {
-					// o object_name
-					// or
-					// g group_name
 					var name = ( " " + result[ 0 ].substr( 1 ).trim() ).substr( 1 );
 					state.startObject( name );
-				} else if ( material_use_pattern.test( line ) ) {
-					// material
+				} else if ( material_use_pattern.test( line ) ) { //材料
 					state.object.startMaterial( line.substring( 7 ).trim(), state.materialLibraries );
-				} else if ( material_library_pattern.test( line ) ) {
-					// mtl file
+				} else if ( material_library_pattern.test( line ) ) { //mtl文件
 					state.materialLibraries.push( line.substring( 7 ).trim() );
 				} else if ( lineFirstChar === 's' ) {
 					result = line.split( ' ' );
@@ -563,8 +519,7 @@ THREE.OBJLoader = ( function () {
 					}
 					var material = state.object.currentMaterial();
 					if ( material ) material.smooth = state.object.smooth;
-				} else {
-					// Handle null terminated files without exception
+				} else {  //处理异常情况
 					if ( line === '\0' ) continue;
 					throw new Error( 'THREE.OBJLoader: Unexpected line: "' + line + '"' );
 				}
@@ -577,7 +532,6 @@ THREE.OBJLoader = ( function () {
 				var geometry = object.geometry;
 				var materials = object.materials;
 				var isLine = ( geometry.type === 'Line' );
-				// Skip o/g line declarations that did not follow with any faces
 				if ( geometry.vertices.length === 0 ) continue;
 				var buffergeometry = new THREE.BufferGeometry();
 				buffergeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( geometry.vertices, 3 ) );
@@ -592,14 +546,12 @@ THREE.OBJLoader = ( function () {
 				if ( geometry.uvs.length > 0 ) {
 					buffergeometry.addAttribute( 'uv', new THREE.Float32BufferAttribute( geometry.uvs, 2 ) );
 				}
-				// Create materials
 				var createdMaterials = [];
-				for ( var mi = 0, miLen = materials.length; mi < miLen; mi ++ ) {
-					var sourceMaterial = materials[ mi ];
-					var material = undefined;
+				for ( var mi = 0; mi < materials.length; mi ++ ) {
+					sourceMaterial = materials[ mi ];
+					material = undefined;
 					if ( this.materials !== null ) {
 						material = this.materials.create( sourceMaterial.name );
-						// mtl etc. loaders probably can't create line materials correctly, copy properties to a line material.
 						if ( isLine && material && ! ( material instanceof THREE.LineBasicMaterial ) ) {
 							var materialLine = new THREE.LineBasicMaterial();
 							materialLine.copy( material );
@@ -612,7 +564,6 @@ THREE.OBJLoader = ( function () {
 					}
 					createdMaterials.push( material );
 				}
-				// Create mesh
 				var mesh;
 				if ( createdMaterials.length > 1 ) {
 					for ( var mi = 0, miLen = materials.length; mi < miLen; mi ++ ) {

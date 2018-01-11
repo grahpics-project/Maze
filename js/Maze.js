@@ -19,10 +19,10 @@ let lightIntensity = 50;
 let totAngle = 0;
 let count = 0;
 let maze;
-let objFile = ['1_Grass_1.obj', '1_Grass_2.obj', '1_Grass_3.obj', '1_Grass_4.obj', '1_Grass_5.obj', '1_Grass_6.obj', '2_Grass_1.obj', '2_Grass_2.obj', '3_Grass_1.obj', '3_Grass_2.obj'];
+let objFile = ['1_Grass_1.obj', '1_Grass_2.obj', '1_Grass_3.obj', '1_Grass_4.obj', '1_Grass_5.obj', '1_Grass_6.obj', '2_Grass_1.obj', '2_Grass_2.obj', '3_Grass_1.obj', '3_Grass_2.obj', '1_Mud_1.obj'];
 let floorObj = [];
-let wallFile = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj'];
-let wallFile2 = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj'];
+let wallFile = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj', 'BudBuilding_4.obj', 'gate.obj'];
+let wallFile2 = ['Mount_1.obj', 'Mount_2.obj', 'Mount_3.obj', 'BudBuilding_1.obj', 'BudBuilding_2.obj', 'BudBuilding_3.obj', 'RockMid_1.obj', 'RockMid_2.obj', 'RockMid_3.obj', 'BudBuilding_4.obj', 'gate.obj'];
 let wallObj = [];
 let manFile = ['man1.obj', 'man2.obj', 'man3.obj', 'man4.obj', 'man5.obj', 'man6.obj', 'man7.obj', 'man8.obj', 'man9.obj', 'man10.obj', 'man11.obj', 'man12.obj', 'man13.obj', 'man14.obj', 'man15.obj', 'man16.obj', 'man17.obj', 'man18.obj', 'man19.obj', 'man20.obj', 'man21.obj', 'man22.obj', 'man23.obj', 'man24.obj'];
 let manObj = [];
@@ -179,11 +179,11 @@ function Graham_scan(pointSet,ch,n){
 // Randomly generate the floor.
 function floorGenerate() {
     if (objFile.length === 0) {
-        for (let i = 0; i < 24; i++) {
-            for (let j = 0; j < 24; j++) {
-                let block = floorObj[Math.floor(Math.random() * floorObj.length)];
+        for (let i = 0; i < 23; i++) {
+            for (let j = 0; j < 23; j++) {
+                let block = floorObj[Math.floor(Math.random() * (floorObj.length - 1))];
+                if(i < 3 && j < 3 && i > 0 && j > 0 || i > 19 && j > 19 && i < 22 && j < 22) block = floorObj[floorObj.length - 1];
                 block.position.set(-3300 + 300 * i, -680, -3300 + 300 * j);
-
                 scene.add(block.clone());
             }
         }
@@ -238,11 +238,22 @@ function wallGenerate() {
                         z: z,
                         r: false
                     });
-                    let block = wallObj[Math.floor(Math.random() * 3)];
-                    arr[j] = Math.floor(Math.random() * 3);
+                    let block;
+                    if(i === j){
+                        block = wallObj[9];
+                        block.position.set(x, y + 200, z);
+                    }
+                    else {
+                        block = wallObj[10];
+                        block.position.set(x, y, z);
+                    }
+                    arr[j] = 9;
                     block.castShadow = true;
-                    block.position.set(x, y, z);
-                    scene.add(block.clone());
+                    let obj = block.clone()
+                    if(i === j) obj.rotation.y = Math.PI / 4;
+                    else if(i === 1 && j === 0) obj.rotation.y = Math.PI / 2;
+                    else if(i === 19 && j === 20) obj.rotation.y = - Math.PI / 2;
+                    scene.add(obj);
                 }
                 else if (i === 0 || j === 0 || i === 20 || j === 20) {
                     let r = false;
@@ -346,6 +357,7 @@ function wallGenerate() {
     if (file.charAt(0) === 'M') mtlFile = 'Mount.mtl';
     else if (file.charAt(0) === 'R') mtlFile = 'RockMid.mtl';
     else if (file.charAt(0) === 'B') mtlFile = 'BudBuilding_' + file.charAt(12) + '.mtl';
+    else if (file.charAt(0) === 'g') mtlFile = 'gate.mtl';
     mtlLoader.load(mtlFile, function (materials) {
         materials.preload();
         let objLoader = new THREE.OBJLoader();
@@ -356,6 +368,7 @@ function wallGenerate() {
             else if (file.charAt(0) === 'R') object.scale.x = 1500 * 1.3;
             object.scale.y = object.scale.z = 1500;
             object.castShadow = true;
+            if(file.charAt(0) === 'g') object.scale.x = object.scale.y = object.scale.z =1500 * 0.11;
             wallObj.push(object);
             wallGenerate();
         });
@@ -381,6 +394,7 @@ function manLoader() {
         object.scale.x = object.scale.y = object.scale.z = 20;
         object.rotation.y = 0;
         object.position.set(-2700 , 50, -2700);
+        scene.remove(manObj[manNum]);
         manObj[manNum] = object;
         if(manNum === 5) scene.add(object);
         manNum = manNum + 1;
@@ -501,10 +515,10 @@ function init() {
     let sphereGeometry = new THREE.SphereGeometry(0, 0, 0);
     let sphereMaterial = new THREE.MeshBasicMaterial({color: 0x0000FF});
     MovingCube = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    MovingCube.position.set(-2700, 50, -2700);
+    MovingCube.position.set(-2700, 0, -2700);
     for(let k=0; k<24; k++){
         manObj[k] = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        manObj[k].position.set(-2700, 50, -2700);
+        manObj[k].position.set(-2700, 0, -2700);
     }
     scene.add(MovingCube);
     let mtlLoaderMan = new THREE.MTLLoader();
@@ -800,6 +814,7 @@ function update() {
             }
             controls.update();
         }
+<<<<<<< HEAD
         else if (tag === 0) {
             if (count !== 0) {
                 count = 0;
@@ -807,6 +822,22 @@ function update() {
                 for(let k=0; k<24; k++){
                     manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
                 }
+=======
+        let relativeCameraOffset = new THREE.Vector3(0, 250, 300);
+        let cameraOffset;
+        if((MovingCube.position.x !== tmpx)||(MovingCube.position.z !== tmpz))
+            cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
+        else
+            cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
+        camera.position.x = cameraOffset.x;
+        camera.position.y = cameraOffset.y;
+        camera.position.z = cameraOffset.z;
+        if (keyboard.left) {
+            totAngle += rotateAngle;
+            MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
+            for(let k=0; k<24; k++){
+                manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
+>>>>>>> af6cc4ca03674c6ab7394a7efdf06ba0934b7ff8
             }
             let relativeCameraOffset = new THREE.Vector3(0, 200, 600);
             let cameraOffset;
@@ -834,6 +865,9 @@ function update() {
 
             camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 100, MovingCube.position.z));
         }
+=======
+        camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 180, MovingCube.position.z));
+>>>>>>> af6cc4ca03674c6ab7394a7efdf06ba0934b7ff8
     }
     if(isSunny==='BlueSky'){
         if(skyboxchange === false){
