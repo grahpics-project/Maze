@@ -953,13 +953,13 @@ function animate() {
 let cnt = 0;
 function update() {
     let delta = clock.getDelta();
-    let moveDistance = 200 * delta; // 400 pixels per second
+    let moveDistance = 150 * delta; // 400 pixels per second
     let rotateAngle = Math.PI / 2 * delta;
     let tmpx = MovingCube.position.x;
     let tmpy = MovingCube.position.y;
     let tmpz = MovingCube.position.z;
-    let newtmp = 2;
-    let newtmpright = false;
+    let newtmp = tmpManObj;
+    let newtmpright = tmpManObjRight;
     cloudAngel += Math.PI/500;
     if(cloudAngel > Math.PI)
         cloudAngel = cloudAngel-2*Math.PI;
@@ -967,7 +967,7 @@ function update() {
     if(cloudR > 3000)
         cloudR = cloudR - 6000;
     cloud.position.set(cloudR*Math.cos(cloudAngel), 2000, cloudR*Math.sin(cloudAngel));
-    if(tmpManObjRight && cnt % 6 === 0) {
+    if(tmpManObjRight && cnt % 2 === 0) {
         if (tmpManObj < 9)
             newtmp = tmpManObj + 1;
         else {
@@ -975,7 +975,7 @@ function update() {
             newtmpright = false;
         }
     }
-    else if(cnt % 6 === 0){
+    else if(cnt % 2 === 0){
         if (tmpManObj > 1)
             newtmp = tmpManObj - 1;
         else {
