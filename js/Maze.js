@@ -14,6 +14,7 @@ let clock = new THREE.Clock();
 let MovingCube;
 let barrier = [];
 let mouseEn;
+let wanderEn;
 let lightIntensity = 50;
 let totAngle = 0;
 let count = 0;
@@ -377,12 +378,12 @@ function manLoader() {
                 child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*(50 - manNum)/50 );
             }  
         } ); 
-        manNum = manNum + 1;
         object.scale.x = object.scale.y = object.scale.z = 20;
         object.rotation.y = 0;
         object.position.set(-2700 , 50, -2700);
         manObj[manNum] = object;
         if(manNum === 5) scene.add(object);
+        manNum = manNum + 1;
         let arr = [];
         let url = 'ExportedObj/Man/' + file;
         let htmlobj =  $.ajax({url:url,async:false});
@@ -581,8 +582,8 @@ function init() {
     let parameters =
         {
             cheatingEn: false,
+            wangdering: false,
             scene:'Dark',
-            autoGo:false,
             collisionEn:false,
             Intensity:50,
             Screenshot: () => {
@@ -601,9 +602,9 @@ function init() {
     cheating.onChange(function (value) {
         mouseEn = value;
     });
-    let autogo = gui.add(parameters, 'autoGo').name("Auto").listen();
-    autogo.onChange(function (value) {
-        auto = value;
+    let wander = gui.add(parameters, 'wangdering').name("Wandering").listen();
+    wander.onChange(function (value) {
+        wanderEn = value;
     });
     let collision = gui.add(parameters, 'collisionEn').name("Collision").listen();
     collision.onChange(function (value) {
@@ -652,171 +653,187 @@ function update() {
     {
         newtmp = tmpManObj;
     }
-    if (keyboard.up)
-        MovingCube.translateZ(-moveDistance);
-    if (keyboard.down)
-        MovingCube.translateZ(moveDistance);
-    if ((MovingCube.position.x > 2500 && MovingCube.position.z > 2500) || mouseEn === true) {
-        if (keyboard.left)
-            MovingCube.translateX(-moveDistance);
-        if (keyboard.right)
-            MovingCube.translateX(moveDistance);
+    if(wanderEn){
+        if(wanderSign === false){
+            wanderSign = true;
+            camera.position.set(-3500, 750, -3500);
+            camera.lookAt(scene.position)
+        }
+        else{
+            camera.position.x = camera.position.x + 10;
+            camera.position.z = camera.position.z + 10;
+            //camera.lookAt.x = camera.lookAt.x +10;
+            //camera.lookAt.z = camera.lookAt.z +10;
+        }
     }
-    let x1 = MovingCube.position.x - 30;
-    let y1 = MovingCube.position.z - 30;
-    let x2 = MovingCube.position.x + 30;
-    let y2 = MovingCube.position.z + 30;
-    let tag = 0;
-    barrier.forEach(function (item) {
-        let tmpx1 = Math.max(item.x1, x1);
-        let tmpy1 = Math.max(item.y1, y1);
-        let tmpx2 = Math.min(item.x2, x2);
-        let tmpy2 = Math.min(item.y2, y2);
-        if ((tmpx1 < tmpx2) && (tmpy1 < tmpy2)) {
-            if(collisionEn === true) {
-                //console.log("FUCKING",item.i ,item.j, item.x, item.z);
-                let url = 'ExportedObj/' + wallFile2[mapArr[item.i][item.j]];
-                let htmlobj = $.ajax({url: url, async: false});
-                let dataList = htmlobj.responseText.split("\n");
-                let hull = [];
-                for (let i = 0; i < dataList.length; i++) {
-                    let pointList = dataList[i].split(" ");
-                    if (pointList[0] === 'v') {
-                        if (item.r === false) {
-                            if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
-                                hull.push({
-                                    x: parseFloat(pointList[1]) * 1500 + item.x,
-                                    y: parseFloat(pointList[3]) * 1500 + item.z
-                                });
+    else{
+        wanderSign = false;
+        if (keyboard.up)
+            MovingCube.translateZ(-moveDistance);
+        if (keyboard.down)
+            MovingCube.translateZ(moveDistance);
+        if ((MovingCube.position.x > 2500 && MovingCube.position.z > 2500) || mouseEn === true) {
+            if (keyboard.left)
+                MovingCube.translateX(-moveDistance);
+            if (keyboard.right)
+                MovingCube.translateX(moveDistance);
+        }
+        let x1 = MovingCube.position.x - 30;
+        let y1 = MovingCube.position.z - 30;
+        let x2 = MovingCube.position.x + 30;
+        let y2 = MovingCube.position.z + 30;
+        let tag = 0;
+        barrier.forEach(function (item) {
+            let tmpx1 = Math.max(item.x1, x1);
+            let tmpy1 = Math.max(item.y1, y1);
+            let tmpx2 = Math.min(item.x2, x2);
+            let tmpy2 = Math.min(item.y2, y2);
+            if ((tmpx1 < tmpx2) && (tmpy1 < tmpy2)) {
+                if(collisionEn === true) {
+                    //console.log("FUCKING",item.i ,item.j, item.x, item.z);
+                    let url = 'ExportedObj/' + wallFile2[mapArr[item.i][item.j]];
+                    let htmlobj = $.ajax({url: url, async: false});
+                    let dataList = htmlobj.responseText.split("\n");
+                    let hull = [];
+                    for (let i = 0; i < dataList.length; i++) {
+                        let pointList = dataList[i].split(" ");
+                        if (pointList[0] === 'v') {
+                            if (item.r === false) {
+                                if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
+                                    hull.push({
+                                        x: parseFloat(pointList[1]) * 1500 + item.x,
+                                        y: parseFloat(pointList[3]) * 1500 + item.z
+                                    });
+                                }
+                                else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
+                                    hull.push({
+                                        x: parseFloat(pointList[1]) * 1500 * 1.3 + item.x,
+                                        y: parseFloat(pointList[3]) * 1500 + item.z
+                                    });
+                                }
                             }
-                            else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
-                                hull.push({
-                                    x: parseFloat(pointList[1]) * 1500 * 1.3 + item.x,
-                                    y: parseFloat(pointList[3]) * 1500 + item.z
-                                });
-                            }
-                        }
-                        else {
-                            if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
-                                hull.push({
-                                    x: -1 * (parseFloat(pointList[3]) * 1500) + item.x,
-                                    y: parseFloat(pointList[1]) * 1500 + item.z
-                                });
-                            }
-                            else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
-                                hull.push({
-                                    x: -1 * (parseFloat(pointList[3]) * 1500) + item.x,
-                                    y: parseFloat(pointList[1]) * 1500 * 1.3 + item.z
-                                });
+                            else {
+                                if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
+                                    hull.push({
+                                        x: -1 * (parseFloat(pointList[3]) * 1500) + item.x,
+                                        y: parseFloat(pointList[1]) * 1500 + item.z
+                                    }); 
+                                }
+                                else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
+                                    hull.push({
+                                        x: -1 * (parseFloat(pointList[3]) * 1500) + item.x,
+                                        y: parseFloat(pointList[1]) * 1500 * 1.3 + item.z
+                                    });
+                                }
                             }
                         }
                     }
-                }
-                let fhull = [];
-                Graham_scan(hull, fhull, hull.length);
-                let geometry = new THREE.Geometry();
-                for (let i = 0; i < fhull.length; i++) {
-                    //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
-                    geometry.vertices.push(new THREE.Vector3(fhull[i].x, 50, fhull[i].y));
-                }
-                //线构造
-                // let line = new THREE.Line(geometry);
-                //scene.add(line);
-                let geometry2 = new THREE.Geometry();
-                for (let i = 0; i < role.length; i++) {
-                    //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
-                    geometry2.vertices.push(new THREE.Vector3(role[i].x + MovingCube.position.x, 50, role[i].y + MovingCube.position.z));
-                }
-                //线构造
-                // let line2 = new THREE.Line(geometry2);
-                //scene.add(line2);
-                let nowRole = [];
-                for(let i = 0; i < role.length; i++)
-                {
-                    nowRole.push({
-                        x: role[i].x + MovingCube.position.x,
-                        y: role[i].y + MovingCube.position.z
-                    })
-                }
-                l.splice(0,l.length);
-                for(let i = 1; i < fhull.length; i++)
-                {
-                   l.push({
-                       P: fhull[i-1],
-                       v: sub(fhull[i], fhull[i-1])
-                   })
-                }
-                l.push({
-                    P: fhull[fhull.length - 1],
-                    v: sub(fhull[0], fhull[fhull.length - 1])
-                });
-                for(let i = 1; i < nowRole.length; i++)
-                {
+                    let fhull = [];
+                    Graham_scan(hull, fhull, hull.length);
+                    let geometry = new THREE.Geometry();
+                    for (let i = 0; i < fhull.length; i++) {
+                        //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
+                        geometry.vertices.push(new THREE.Vector3(fhull[i].x, 50, fhull[i].y));
+                    }   
+                    //线构造
+                    // let line = new THREE.Line(geometry);
+                    //scene.add(line);
+                    let geometry2 = new THREE.Geometry();
+                    for (let i = 0; i < role.length; i++) {
+                        //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
+                        geometry2.vertices.push(new THREE.Vector3(role[i].x + MovingCube.position.x, 50, role[i].y + MovingCube.position.z));
+                    }   
+                    //线构造
+                    // let line2 = new THREE.Line(geometry2);
+                    //scene.add(line2);
+                    let nowRole = [];
+                    for(let i = 0; i < role.length; i++)
+                    {
+                        nowRole.push({
+                            x: role[i].x + MovingCube.position.x,
+                            y: role[i].y + MovingCube.position.z
+                        })
+                    }
+                    l.splice(0,l.length);
+                    for(let i = 1; i < fhull.length; i++)
+                    {
+                        l.push({
+                            P: fhull[i-1],
+                        v: sub(fhull[i], fhull[i-1])
+                        })
+                    }
                     l.push({
-                        P: nowRole[i-1],
-                        v: sub(nowRole[i], nowRole[i-1])
-                    })
+                        P: fhull[fhull.length - 1],
+                        v: sub(fhull[0], fhull[fhull.length - 1])
+                    });
+                    for(let i = 1; i < nowRole.length; i++)
+                    {
+                        l.push({
+                            P: nowRole[i-1],
+                            v: sub(nowRole[i], nowRole[i-1])
+                        })
+                    }
+                    l.push({
+                        P: nowRole[nowRole.length - 1],
+                        v: sub(nowRole[0], nowRole[nowRole.length - 1])
+                    });
+                    if(half_plane_intersection()) tag = 1;
                 }
-                l.push({
-                    P: nowRole[nowRole.length - 1],
-                    v: sub(nowRole[0], nowRole[nowRole.length - 1])
-                });
-                if(half_plane_intersection()) tag = 1;
+                else
+                {
+                    tag = 1;
+                }
             }
+        });
+        if (tag === 1) {
+            MovingCube.position.set(tmpx, tmpy, tmpz);
+        }
+        if ((MovingCube.position.x > 2500 && MovingCube.position.z > 2500) || mouseEn === true) {
+            count++;
+            if (count === 1) {
+                MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -totAngle);
+                for(let k=0; k<24; k++){
+                    manObj[k].rotateOnAxis(new THREE.Vector3(0,1, 0), -totAngle);
+                }
+                camera.position.set(0, 8000, 0);
+                camera.lookAt(scene.position);
+            }
+            controls.update();
+        }
+        else if (tag === 0) {
+            if (count !== 0) {
+                count = 0;
+                MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
+                for(let k=0; k<24; k++){
+                    manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
+                }
+            }
+            let relativeCameraOffset = new THREE.Vector3(0, 200, 600);
+            let cameraOffset;
+            if((MovingCube.position.x !== tmpx)||(MovingCube.position.z !== tmpz))
+                cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
             else
-            {
-                tag = 1;
+                cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
+            camera.position.x = cameraOffset.x;
+            camera.position.y = cameraOffset.y;
+            camera.position.z = cameraOffset.z;
+            if (keyboard.left) {
+                totAngle += rotateAngle;
+                MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
+                for(let k=0; k<24; k++){
+                    manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
+                }
             }
-        }
-    });
-    if (tag === 1) {
-        MovingCube.position.set(tmpx, tmpy, tmpz);
-    }
-    if ((MovingCube.position.x > 2500 && MovingCube.position.z > 2500) || mouseEn === true) {
-        count++;
-        if (count === 1) {
-            MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -totAngle);
-            for(let k=0; k<24; k++){
-                manObj[k].rotateOnAxis(new THREE.Vector3(0,1, 0), -totAngle);
-            }
-            camera.position.set(0, 8000, 0);
-            camera.lookAt(scene.position);
-        }
-        controls.update();
-    }
-    else if (tag === 0) {
-        if (count !== 0) {
-            count = 0;
-            MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
-            for(let k=0; k<24; k++){
-                manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
-            }
-        }
-        let relativeCameraOffset = new THREE.Vector3(0, 200, 600);
-        let cameraOffset;
-        if((MovingCube.position.x !== tmpx)||(MovingCube.position.z !== tmpz))
-            cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
-        else
-            cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
-        camera.position.x = cameraOffset.x;
-        camera.position.y = cameraOffset.y;
-        camera.position.z = cameraOffset.z;
-        if (keyboard.left) {
-            totAngle += rotateAngle;
-            MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
-            for(let k=0; k<24; k++){
-                manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
-            }
-        }
-        if (keyboard.right) {
-            totAngle -= rotateAngle;
-            MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
-            for(let k=0; k<24; k++){
-                manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
-            }
-    }
+            if (keyboard.right) {
+                totAngle -= rotateAngle;
+                MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
+                for(let k=0; k<24; k++){
+                    manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
+                }
+            }   
 
-        camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 100, MovingCube.position.z));
+            camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 100, MovingCube.position.z));
+        }
     }
     if(isSunny==='BlueSky'){
         if(skyboxchange === false){
