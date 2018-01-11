@@ -4,19 +4,6 @@ THREE.MTLLoader = function ( manager ) {
 };
 THREE.MTLLoader.prototype = {
     constructor: THREE.MTLLoader,
-    /**
-     * Loads and parses a MTL asset from a URL.
-     *
-     * @param {String} url - URL to the MTL file.
-     * @param {Function} [onLoad] - Callback invoked with the loaded object.
-     * @param {Function} [onProgress] - Callback for download progress.
-     * @param {Function} [onError] - Callback for download errors.
-     *
-     * @see setPath setTexturePath
-     *
-     * @note In order for relative texture references to resolve correctly
-     * you must call setPath and/or setTexturePath explicitly prior to load.
-     */
     load: function ( url, onLoad, onProgress, onError ) {
         var scope = this;
         var loader = new THREE.FileLoader( this.manager );
@@ -25,33 +12,9 @@ THREE.MTLLoader.prototype = {
             onLoad( scope.parse( text ) );
         }, onProgress, onError );
     },
-    /**
-     * Set base path for resolving references.
-     * If set this path will be prepended to each loaded and found reference.
-     *
-     * @see setTexturePath
-     * @param {String} path
-     *
-     * @example
-     *     mtlLoader.setPath( 'assets/obj/' );
-     *     mtlLoader.load( 'my.mtl', ... );
-     */
     setPath: function ( path ) {
         this.path = path;
     },
-    /**
-     * Set base path for resolving texture references.
-     * If set this path will be prepended found texture reference.
-     * If not set and setPath is, it will be used as texture base path.
-     *
-     * @see setPath
-     * @param {String} path
-     *
-     * @example
-     *     mtlLoader.setPath( 'assets/obj/' );
-     *     mtlLoader.setTexturePath( 'assets/textures/' );
-     *     mtlLoader.load( 'my.mtl', ... );
-     */
     setTexturePath: function ( path ) {
         this.texturePath = path;
     },
@@ -62,17 +25,6 @@ THREE.MTLLoader.prototype = {
     setCrossOrigin: function ( value ) {
         this.crossOrigin = value;
     },
-    /**
-     * Parses a MTL file.
-     *
-     * @param {String} text - Content of MTL file
-     * @return {THREE.MTLLoader.MaterialCreator}
-     *
-     * @see setPath setTexturePath
-     *
-     * @note In order for relative texture references to resolve correctly
-     * you must call setPath and/or setTexturePath explicitly prior to parse.
-     */
     parse: function ( text ) {
         var lines = text.split( '\n' );
         var info = {};
@@ -110,26 +62,11 @@ THREE.MTLLoader.prototype = {
         return materialCreator;
     }
 };
-/**
- * Create a new THREE-MTLLoader.MaterialCreator
- * @param baseUrl - Url relative to which textures are loaded
- * @param options - Set of options on how to construct the materials
- *                  side: Which side to apply the material
- *                        THREE.FrontSide (default), THREE.BackSide, THREE.DoubleSide
- *                  wrap: What type of wrapping to apply for textures
- *                        THREE.RepeatWrapping (default), THREE.ClampToEdgeWrapping, THREE.MirroredRepeatWrapping
- *                  normalizeRGB: RGBs need to be normalized to 0-1 from 0-255
- *                                Default: false, assumed to be already normalized
- *                  ignoreZeroRGBs: Ignore values of RGBs (Ka,Kd,Ks) that are all 0's
- *                                  Default: false
- * @constructor
- */
 THREE.MTLLoader.MaterialCreator = function ( baseUrl, options ) {
-    this.baseUrl = baseUrl || '';
+    this.baseUrl = baseUrl;
     this.options = options;
     this.materialsInfo = {};
     this.materials = {};
-    this.materialsArray = [];
     this.nameLookup = {};
     this.side = ( this.options && this.options.side ) ? this.options.side : THREE.FrontSide;
     this.wrap = ( this.options && this.options.wrap ) ? this.options.wrap : THREE.RepeatWrapping;
@@ -146,7 +83,6 @@ THREE.MTLLoader.MaterialCreator.prototype = {
     setMaterials: function ( materialsInfo ) {
         this.materialsInfo = this.convert( materialsInfo );
         this.materials = {};
-        this.materialsArray = [];
         this.nameLookup = {};
     },
     convert: function ( materialsInfo ) {
@@ -260,13 +196,6 @@ THREE.MTLLoader.MaterialCreator.prototype = {
                     // A high exponent results in a tight, concentrated highlight. Ns values normally range from 0 to 1000.
                     params.shininess = parseFloat( value );
                     break;
-                case 'd':
-                    n = parseFloat( value );
-                    if ( n < 1 ) {
-                        params.opacity = n;
-                        params.transparent = true;
-                    }
-                    break;
                 case 'tr':
                     n = parseFloat( value );
                     if ( n > 0 ) {
@@ -319,8 +248,12 @@ THREE.MTLLoader.MaterialCreator.prototype = {
         return texture;
     }
 };
-THREE.OBJLoader = ( function () {
+/*
 
+ obj
+
+*/
+THREE.OBJLoader = ( function () {
 	// o object_name | g group_name
 	var object_pattern = /^[og]\s*(.+)?/;
 	// mtllib file_reference
@@ -541,13 +474,12 @@ THREE.OBJLoader = ( function () {
 			var result = [];
 			// Faster to just trim left side of the line. Use if available.
 			var trimLeft = ( typeof ''.trimLeft === 'function' );
-			for ( var i = 0, l = lines.length; i < l; i ++ ) {
+			for ( var i = 0; i < lines.length; i ++ ) {
 				line = lines[ i ];
 				line = trimLeft ? line.trimLeft() : line.trim();
 				lineLength = line.length;
 				if ( lineLength === 0 ) continue;
 				lineFirstChar = line.charAt( 0 );
-				// @todo invoke passed in handler if any
 				if ( lineFirstChar === '#' ) continue;
 				if ( lineFirstChar === 'v' ) {
 					var data = line.split( /\s+/ );
@@ -558,13 +490,6 @@ THREE.OBJLoader = ( function () {
 								parseFloat( data[ 2 ] ),
 								parseFloat( data[ 3 ] )
 							);
-							if ( data.length === 8 ) {
-								state.colors.push(
-									parseFloat( data[ 4 ] ),
-									parseFloat( data[ 5 ] ),
-									parseFloat( data[ 6 ] )
-								);
-							}
 							break;
 						case 'vn':
 							state.normals.push(
@@ -585,7 +510,7 @@ THREE.OBJLoader = ( function () {
 					var vertexData = lineData.split( /\s+/ );
 					var faceVertices = [];
 					// Parse the face vertex data into an easy to work with format
-					for ( var j = 0, jl = vertexData.length; j < jl; j ++ ) {
+					for ( var j = 0; j < vertexData.length; j ++ ) {
 						var vertex = vertexData[ j ];
 						if ( vertex.length > 0 ) {
 							var vertexParts = vertex.split( '/' );
@@ -594,7 +519,7 @@ THREE.OBJLoader = ( function () {
 					}
 					// Draw an edge between the first vertex and all subsequent vertices to form an n-gon
 					var v1 = faceVertices[ 0 ];
-					for ( var j = 1, jl = faceVertices.length - 1; j < jl; j ++ ) {
+					for ( var j = 1; j < faceVertices.length - 1; j ++ ) {
 						var v2 = faceVertices[ j ];
 						var v3 = faceVertices[ j + 1 ];
 						state.addFace(
@@ -609,7 +534,7 @@ THREE.OBJLoader = ( function () {
 					if ( line.indexOf( "/" ) === - 1 ) {
 						lineVertices = lineParts;
 					} else {
-						for ( var li = 0, llen = lineParts.length; li < llen; li ++ ) {
+						for ( var li = 0; li < lineParts.length; li ++ ) {
 							var parts = lineParts[ li ].split( "/" );
 							if ( parts[ 0 ] !== "" ) lineVertices.push( parts[ 0 ] );
 							if ( parts[ 1 ] !== "" ) lineUVs.push( parts[ 1 ] );
@@ -630,18 +555,10 @@ THREE.OBJLoader = ( function () {
 					state.materialLibraries.push( line.substring( 7 ).trim() );
 				} else if ( lineFirstChar === 's' ) {
 					result = line.split( ' ' );
-					// smooth shading
-					// @todo Handle files that have varying smooth values for a set of faces inside one geometry,
-					// but does not define a usemtl for each face set.
-					// This should be detected and a dummy material created (later MultiMaterial and geometry groups).
-					// This requires some care to not create extra material on each smooth value for "normal" obj files.
-					// where explicit usemtl defines geometry groups.
-					// Example asset: examples/models/obj/cerberus/Cerberus.obj
 					if ( result.length > 1 ) {
 						var value = result[ 1 ].trim().toLowerCase();
 						state.object.smooth = ( value !== '0' && value !== 'off' );
 					} else {
-						// ZBrush can produce "s" lines #11707
 						state.object.smooth = true;
 					}
 					var material = state.object.currentMaterial();
@@ -693,7 +610,6 @@ THREE.OBJLoader = ( function () {
 						material = ( ! isLine ? new THREE.MeshPhongMaterial() : new THREE.LineBasicMaterial() );
 						material.name = sourceMaterial.name;
 					}
-					material.flatShading = sourceMaterial.smooth ? false : true;
 					createdMaterials.push( material );
 				}
 				// Create mesh
