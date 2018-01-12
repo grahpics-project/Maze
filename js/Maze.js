@@ -48,15 +48,16 @@ let objHull = [];
 ///////////////
 // FUNCTIONS //
 ///////////////
-let remainLoading = 8;
+let remainLoading = 46;
 function onStart() {
     document.getElementById("ThreeJS").setAttribute("style", "position: absolute; left:0; top:0;");
     document.getElementById("Loading").setAttribute("style", "display:none;");
 }
 function onLoadObject() {
-     if(--remainLoading === 0) {
-         document.getElementById("startButton").disabled = false;
-         document.getElementById("startButton").addEventListener('click', onStart ,false);
+    if(--remainLoading === 0) {
+        $("#Loading").finished("#ThreeJS");
+        // document.getElementById("startButton").disabled = false;
+        // document.getElementById("startButton").addEventListener('click', onStart ,false);
     }
 }
 function add(x,y){
@@ -380,6 +381,7 @@ function wallGenerate() {
             if(file.charAt(0) === 'g') object.scale.x = object.scale.y = object.scale.z =1500 * 0.11;
             wallObj.push(object);
             wallGenerate();
+            onLoadObject();
         });
     });
 }
@@ -426,6 +428,7 @@ function manLoader() {
         roleHull[manNum] = arr;
         manNum = manNum + 1;
         manLoader();
+        onLoadObject();
     });
 }
 
