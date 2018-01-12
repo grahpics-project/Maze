@@ -44,6 +44,7 @@ for(let i = 0; i <= 10; i++)
 let bpoint;
 let light = new THREE.AmbientLight(0xFFFFFF, lightIntensity/25);
 let isLightChange = false;
+let objHull = [];
 ///////////////
 // FUNCTIONS //
 ///////////////
@@ -597,6 +598,43 @@ function init() {
         //scene.add(cloud);
     });
     /////////
+    // OBJ //
+    /////////
+
+    for(let num = 0; num <= 10; num++) {
+        let url = 'ExportedObj/' + wallFile2[num];
+        let htmlobj = $.ajax({url: url, async: false});
+        let dataList = htmlobj.responseText.split("\n");
+        let hull = [];
+        for (let i = 0; i < dataList.length; i++) {
+            let pointList = dataList[i].split(" ");
+            if (pointList[0] === 'v') {
+                if (wallFile2[num].charAt(0) === 'M' || wallFile2[num].charAt(0) === 'B') {
+                    hull.push({
+                        x: parseFloat(pointList[1]) * 1500,
+                        y: parseFloat(pointList[3]) * 1500
+                    });
+                }
+                else if (wallFile2[num].charAt(0) === 'R') {
+                    hull.push({
+                        x: parseFloat(pointList[1]) * 1500 * 1.3 ,
+                        y: parseFloat(pointList[3]) * 1500
+                    });
+                }
+                else if (wallFile2[num].charAt(0) === 'g') {
+                    hull.push({
+                        x: parseFloat(pointList[1]) * 1500 * 0.11,
+                        y: parseFloat(pointList[3]) * 1500 * 0.11
+                    });
+                }
+            }
+        }
+        let fhull = [];
+        Graham_scan(hull, fhull, hull.length);
+        objHull[num] = fhull;
+    }
+
+    /////////
     // GUI //
     /////////
 
@@ -714,74 +752,66 @@ function update() {
             let tmpy2 = Math.min(item.y2, y2);
             if ((tmpx1 < tmpx2) && (tmpy1 < tmpy2)) {
                 if(collisionEn === true) {
-                    //console.log("FUCKING",item.i ,item.j, item.x, item.z);
-                    let url = 'ExportedObj/' + wallFile2[mapArr[item.i][item.j]];
-                    let htmlobj = $.ajax({url: url, async: false});
-                    let dataList = htmlobj.responseText.split("\n");
-                    let hull = [];
-                    for (let i = 0; i < dataList.length; i++) {
-                        let pointList = dataList[i].split(" ");
-                        if (pointList[0] === 'v') {
-                            if (item.r === false) {
-                                if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
-                                    hull.push({
-                                        x: parseFloat(pointList[1]) * 1500 + item.x,
-                                        y: parseFloat(pointList[3]) * 1500 + item.z
-                                    });
-                                }
-                                else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
-                                    hull.push({
-                                        x: parseFloat(pointList[1]) * 1500 * 1.3 + item.x,
-                                        y: parseFloat(pointList[3]) * 1500 + item.z
-                                    });
-                                }
-                                else if(wallFile2[mapArr[item.i][item.j]].charAt(0) === 'g') {
-                                    hull.push({
-                                        x: parseFloat(pointList[1]) * 1500 * 0.11 + item.x,
-                                        y: parseFloat(pointList[3]) * 1500 * 0.11 + item.z
-                                    });
-                                }
+                    let fhull = [];
+                    for(let i = 0; i < objHull[mapArr[item.i][item.j]].length; i++)
+                    {
+                        if (item.r === false) {
+                            if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
+                                fhull.push({
+                                    x: objHull[mapArr[item.i][item.j]][i].x + item.x,
+                                    y: objHull[mapArr[item.i][item.j]][i].y + item.z
+                                });
                             }
-                            else {
-                                if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
-                                    hull.push({
-                                        x: -1 * (parseFloat(pointList[3]) * 1500) + item.x,
-                                        y: parseFloat(pointList[1]) * 1500 + item.z
-                                    }); 
-                                }
-                                else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
-                                    hull.push({
-                                        x: -1 * (parseFloat(pointList[3]) * 1500) + item.x,
-                                        y: parseFloat(pointList[1]) * 1500 * 1.3 + item.z
-                                    });
-                                }
-                                else if(wallFile2[mapArr[item.i][item.j]].charAt(0) === 'g') {
-                                    hull.push({
-                                        x: -1 * (parseFloat(pointList[3]) * 1500 * 0.11) + item.x,
-                                        y: parseFloat(pointList[1]) * 1500 * 0.11 + item.z
-                                    });
-                                }
+                            else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
+                                fhull.push({
+                                    x: objHull[mapArr[item.i][item.j]][i].x + item.x,
+                                    y: objHull[mapArr[item.i][item.j]][i].y + item.z
+                                });
+                            }
+                            else if(wallFile2[mapArr[item.i][item.j]].charAt(0) === 'g') {
+                                fhull.push({
+                                    x: objHull[mapArr[item.i][item.j]][i].x + item.x,
+                                    y: objHull[mapArr[item.i][item.j]][i].y + item.z
+                                });
+                            }
+                        }
+                        else {
+                            if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
+                                fhull.push({
+                                    x: -1 * objHull[mapArr[item.i][item.j]][i].y + item.x,
+                                    y: objHull[mapArr[item.i][item.j]][i].x + item.z
+                                });
+                            }
+                            else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'R') {
+                                fhull.push({
+                                    x: -1 * objHull[mapArr[item.i][item.j]][i].y + item.x,
+                                    y: objHull[mapArr[item.i][item.j]][i].x + item.z
+                                });
+                            }
+                            else if(wallFile2[mapArr[item.i][item.j]].charAt(0) === 'g') {
+                                fhull.push({
+                                    x: -1 * objHull[mapArr[item.i][item.j]][i].y + item.x,
+                                    y: objHull[mapArr[item.i][item.j]][i].x + item.z
+                                });
                             }
                         }
                     }
-                    let fhull = [];
-                    Graham_scan(hull, fhull, hull.length);
-                    //let geometry = new THREE.Geometry();
-                    /*for (let i = 0; i < fhull.length; i++) {
+                    /*let geometry = new THREE.Geometry();
+                    for (let i = 0; i < fhull.length; i++) {
                         //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
                         geometry.vertices.push(new THREE.Vector3(fhull[i].x, 50, fhull[i].y));
-                    }*/
+                    }
                     //线构造
-                    //let line = new THREE.Line(geometry);
-                    //scene.add(line);
-                    /*let geometry2 = new THREE.Geometry();
+                    let line = new THREE.Line(geometry);
+                    scene.add(line);
+                    let geometry2 = new THREE.Geometry();
                     for (let i = 0; i < role.length; i++) {
                         //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
                         geometry2.vertices.push(new THREE.Vector3(role[i].x + MovingCube.position.x, 50, role[i].y + MovingCube.position.z));
-                    } */
+                    }
                     //线构造
-                    //let line2 = new THREE.Line(geometry2);
-                    //scene.add(line2);
+                    let line2 = new THREE.Line(geometry2);
+                    scene.add(line2);*/
                     //console.log(roleHull);
                     //console.log(role.length);
                     let nowRole = [];
