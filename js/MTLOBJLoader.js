@@ -7,20 +7,20 @@ THREE.MTLLoader.prototype = {  //mtlloader的方法
     load: function ( url, onLoad, onProgress, onError ) {
         var scope = this;
         var loader = new THREE.FileLoader( this.manager );
-        loader.setPath( this.path );
+        loader.setFilePath( this.path );
         loader.load( url, function ( text ) {
             onLoad( scope.parse( text ) );
         }, onProgress, onError );
     },
-    setPath: function ( path ) {  //赋值path
+    setFilePath: function ( path ) {  //赋值path
         this.path = path;
     },
-    setTexturePath: function ( path ) {  //赋值
+    setTextureFile: function ( path ) {  //赋值
         this.texturePath = path;
     },
     setBaseUrl: function ( path ) {
-        console.warn( 'THREE.MTLLoader: .setBaseUrl() is deprecated. Use .setTexturePath( path ) for texture path or .setPath( path ) for general base path instead.' );
-        this.setTexturePath( path );
+        console.warn( 'THREE.MTLLoader: .setBaseUrl() is deprecated. Use .setTextureFile( path ) for texture path or .setFilePath( path ) for general base path instead.' );
+        this.setTextureFile( path );
     },
     setCrossOrigin: function ( value ) {
         this.crossOrigin = value;
@@ -56,7 +56,7 @@ THREE.MTLLoader.prototype = {  //mtlloader的方法
         var materialCreator = new THREE.MTLLoader.MaterialCreator( this.texturePath || this.path, this.materialOptions );
         materialCreator.setCrossOrigin( this.crossOrigin );
         materialCreator.setManager( this.manager );
-        materialCreator.setMaterials( materialsInfo );
+        materialCreator.loadMaterial( materialsInfo );
         return materialCreator;
     }
 };
@@ -78,7 +78,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
     setManager: function ( value ) {
         this.manager = value;
     },
-    setMaterials: function ( materialsInfo ) {
+    loadMaterial: function ( materialsInfo ) {
         this.materialsInfo = this.convert( materialsInfo );
         this.materials = {};
         this.nameLookup = {};
@@ -190,7 +190,6 @@ THREE.MTLLoader.MaterialCreator.prototype = {
                     setMapForType( "map", value );
                     break;
                 case 'map_ks':
-                    // Specular map
                     setMapForType( "specularMap", value );
                     break;
                 case 'norm':
@@ -237,13 +236,7 @@ THREE.OBJLoader = ( function () {
 			colors: [],
 			uvs: [],
 			materialLibraries: [],
-			startObject: function ( name, fromDeclaration ) {
-				/*
-				if ( this.object && this.object.fromDeclaration === false ) {
-					this.object.name = name;
-					this.object.fromDeclaration = ( fromDeclaration !== false );
-					return;
-				}*/
+			initObject: function ( name, fromDeclaration ) {
 				if ( this.object && typeof this.object._finalize === 'function' ) {
 					this.object._finalize( true );
 				}
@@ -258,7 +251,7 @@ THREE.OBJLoader = ( function () {
 					},
 					materials: [],
 					smooth: true,
-					startMaterial: function ( name, libraries ) {
+					initMaterial: function ( name, libraries ) {
 						var previous = this._finalize( false );
 						if ( previous && ( previous.inherited || previous.groupCount <= 0 ) ) {
 							this.materials.splice( previous.index, 1 );
@@ -288,14 +281,14 @@ THREE.OBJLoader = ( function () {
 						this.materials.push( material );
 						return material;
 					},
-					currentMaterial: function () {
+					nowMaterial: function () {
 						if ( this.materials.length > 0 ) {
 							return this.materials[ this.materials.length - 1 ];
 						}
 						return undefined;
 					},
 					_finalize: function () {
-						var lastMultiMaterial = this.currentMaterial();
+						var lastMultiMaterial = this.nowMaterial();
 						if ( lastMultiMaterial && lastMultiMaterial.groupEnd === - 1 ) {
 							lastMultiMaterial.groupEnd = this.geometry.vertices.length / 3;
 							lastMultiMaterial.groupCount = lastMultiMaterial.groupEnd - lastMultiMaterial.groupStart;
@@ -311,19 +304,19 @@ THREE.OBJLoader = ( function () {
 					this.object._finalize( true );
 				}
 			},
-			parseVertexIndex: function ( value, len ) {
+			getVertexIndex: function ( value, len ) {
 				var index = parseInt( value, 10 ); //字符串转int
 				return ( index >= 0 ? index - 1 : index + len / 3 ) * 3;
 			},
-			parseNormalIndex: function ( value, len ) {
+			getNormalIndex: function ( value, len ) {
 				var index = parseInt( value, 10 );
 				return ( index >= 0 ? index - 1 : index + len / 3 ) * 3;
 			},
-			parseUVIndex: function ( value, len ) {
+			getUvIndex: function ( value, len ) {
 				var index = parseInt( value, 10 );
 				return ( index >= 0 ? index - 1 : index + len / 2 ) * 2;
 			},
-			addVertex: function ( a, b, c ) {
+			pushVertex: function ( a, b, c ) {
 				var src = this.vertices;
 				var dst = this.object.geometry.vertices;
 				dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
@@ -342,63 +335,63 @@ THREE.OBJLoader = ( function () {
 				dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
 				dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
 			},
-			addColor: function ( a, b, c ) {
+			pushColor: function ( a, b, c ) {
 				var src = this.colors;
 				var dst = this.object.geometry.colors;
 				dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
 				dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
 				dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
 			},
-			addUV: function ( a, b, c ) {
+			pushUV: function ( a, b, c ) {
 				var src = this.uvs;
 				var dst = this.object.geometry.uvs;
 				dst.push( src[ a + 0 ], src[ a + 1 ] );
 				dst.push( src[ b + 0 ], src[ b + 1 ] );
 				dst.push( src[ c + 0 ], src[ c + 1 ] );
 			},
-			addUVLine: function ( a ) {
+			pushUVLine: function ( a ) {
 				var src = this.uvs;
 				var dst = this.object.geometry.uvs;
 				dst.push( src[ a + 0 ], src[ a + 1 ] );
 			},
 			addFace: function ( a, b, c, ua, ub, uc, na, nb, nc ) {
 				var vLen = this.vertices.length;
-				var ia = this.parseVertexIndex( a, vLen );
-				var ib = this.parseVertexIndex( b, vLen );
-				var ic = this.parseVertexIndex( c, vLen );
-				this.addVertex( ia, ib, ic );
+				var ia = this.getVertexIndex( a, vLen );
+				var ib = this.getVertexIndex( b, vLen );
+				var ic = this.getVertexIndex( c, vLen );
+				this.pushVertex( ia, ib, ic );
 				if ( ua !== undefined ) {
 					var uvLen = this.uvs.length;
-					ia = this.parseUVIndex( ua, uvLen );
-					ib = this.parseUVIndex( ub, uvLen );
-					ic = this.parseUVIndex( uc, uvLen );
-					this.addUV( ia, ib, ic );
+					ia = this.getUvIndex( ua, uvLen );
+					ib = this.getUvIndex( ub, uvLen );
+					ic = this.getUvIndex( uc, uvLen );
+					this.pushUV( ia, ib, ic );
 				}
 				if ( na !== undefined ) {
 					// Normals are many times the same. If so, skip function call and parseInt.
 					var nLen = this.normals.length;
-					ia = this.parseNormalIndex( na, nLen );
-					ib = na === nb ? ia : this.parseNormalIndex( nb, nLen );
-					ic = na === nc ? ia : this.parseNormalIndex( nc, nLen );
+					ia = this.getNormalIndex( na, nLen );
+					ib = na === nb ? ia : this.getNormalIndex( nb, nLen );
+					ic = na === nc ? ia : this.getNormalIndex( nc, nLen );
 					this.addNormal( ia, ib, ic );
 				}
 				if ( this.colors.length > 0 ) {
-					this.addColor( ia, ib, ic );
+					this.pushColor( ia, ib, ic );
 				}
 			},
-			addLineGeometry: function ( vertices, uvs ) {
+			pushLineGeometry: function ( vertices, uvs ) {
 				this.object.geometry.type = 'Line';
 				var vLen = this.vertices.length;
 				var uvLen = this.uvs.length;
 				for ( var vi = 0, l = vertices.length; vi < l; vi ++ ) {
-					this.addVertexLine( this.parseVertexIndex( vertices[ vi ], vLen ) );
+					this.addVertexLine( this.getVertexIndex( vertices[ vi ], vLen ) );
 				}
 				for ( var uvi = 0, l = uvs.length; uvi < l; uvi ++ ) {
-					this.addUVLine( this.parseUVIndex( uvs[ uvi ], uvLen ) );
+					this.pushUVLine( this.getUvIndex( uvs[ uvi ], uvLen ) );
 				}
 			}
 		};
-		state.startObject( '', false );
+		state.initObject( '', false );
 		return state;
 	}
 	function OBJLoader( manager ) {
@@ -410,15 +403,15 @@ THREE.OBJLoader = ( function () {
 		load: function ( url, onLoad, onProgress, onError ) {
 			var scope = this;
 			var loader = new THREE.FileLoader( scope.manager );
-			loader.setPath( this.path );
+			loader.setFilePath( this.path );
 			loader.load( url, function ( text ) {
 				onLoad( scope.parse( text ) );
 			}, onProgress, onError );
 		},
-		setPath: function ( value ) {
+		setFilePath: function ( value ) {
 			this.path = value;
 		},
-		setMaterials: function ( materials ) {
+		loadMaterial: function ( materials ) {
 			this.materials = materials;
 			return this;
 		},
@@ -501,12 +494,12 @@ THREE.OBJLoader = ( function () {
 							if ( parts[ 1 ] !== "" ) lineUVs.push( parts[ 1 ] );
 						}
 					}
-					state.addLineGeometry( lineVertices, lineUVs );
+					state.pushLineGeometry( lineVertices, lineUVs );
 				} else if ( ( result = object_pattern.exec( line ) ) !== null ) {
 					var name = ( " " + result[ 0 ].substr( 1 ).trim() ).substr( 1 );
-					state.startObject( name );
+					state.initObject( name );
 				} else if ( material_use_pattern.test( line ) ) { //材料
-					state.object.startMaterial( line.substring( 7 ).trim(), state.materialLibraries );
+					state.object.initMaterial( line.substring( 7 ).trim(), state.materialLibraries );
 				} else if ( material_library_pattern.test( line ) ) { //mtl文件
 					state.materialLibraries.push( line.substring( 7 ).trim() );
 				} else if ( lineFirstChar === 's' ) {
@@ -517,7 +510,7 @@ THREE.OBJLoader = ( function () {
 					} else {
 						state.object.smooth = true;
 					}
-					var material = state.object.currentMaterial();
+					var material = state.object.nowMaterial();
 					if ( material ) material.smooth = state.object.smooth;
 				} else {  //处理异常情况
 					if ( line === '\0' ) continue;
