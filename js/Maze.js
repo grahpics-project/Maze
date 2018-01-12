@@ -220,13 +220,36 @@ function floorGenerate() {
 // Generate the wall.
 let x = -3000, y = 30, z = -3000;
 let mapArr = [];
-
+let roleStd = [];
 function wallGenerate() {
     if (wallFile.length === 0) {
         for (let i = 0; i <= 20; i++) {
             let arr = [];
             for (let j = 0; j <= 20; j++) {
                 if ((0 === i && 0 === j) || (20 === i && 20 === j) || (1 === i && 0 === j) || (0 === i && 1 === j) || (20 === i && 19 === j) || (19 === i && 20 === j)) {
+                    let r = false;
+                    let block;
+                    if(i === j){
+                        block = wallObj[9];
+                        block.position.set(x, y + 200, z);
+                        arr[j] = 9;
+                    }
+                    else {
+                        block = wallObj[10];
+                        block.position.set(x, y, z);
+                        arr[j] = 10;
+                    }
+                    block.castShadow = true;
+                    let obj = block.clone();
+                    if(i === j) obj.rotation.y = Math.PI / 4;
+                    else if(i === 1 && j === 0) {
+                        obj.rotation.y = Math.PI / 2;
+                        r = true;
+                    }
+                    else if(i === 19 && j === 20) {
+                        obj.rotation.y = - Math.PI / 2;
+                        r = true;
+                    }
                     barrier.push({
                         x1: x - 150,
                         y1: z - 150,
@@ -236,23 +259,8 @@ function wallGenerate() {
                         j: j,
                         x: x,
                         z: z,
-                        r: false
+                        r: r
                     });
-                    let block;
-                    if(i === j){
-                        block = wallObj[9];
-                        block.position.set(x, y + 200, z);
-                    }
-                    else {
-                        block = wallObj[10];
-                        block.position.set(x, y, z);
-                    }
-                    arr[j] = 9;
-                    block.castShadow = true;
-                    let obj = block.clone()
-                    if(i === j) obj.rotation.y = Math.PI / 4;
-                    else if(i === 1 && j === 0) obj.rotation.y = Math.PI / 2;
-                    else if(i === 19 && j === 20) obj.rotation.y = - Math.PI / 2;
                     scene.add(obj);
                 }
                 else if (i === 0 || j === 0 || i === 20 || j === 20) {
@@ -397,7 +405,6 @@ function manLoader() {
         scene.remove(manObj[manNum]);
         manObj[manNum] = object;
         if(manNum === 5) scene.add(object);
-        manNum = manNum + 1;
         let arr = [];
         let url = 'ExportedObj/Man/' + file;
         let htmlobj =  $.ajax({url:url,async:false});
@@ -415,7 +422,8 @@ function manLoader() {
             }
         }
         Graham_scan(hull, arr, hull.length); 
-        roleHull.push(arr);
+        roleHull[manNum] = arr;
+        manNum = manNum + 1;
         manLoader();
     });
 }
@@ -727,6 +735,12 @@ function update() {
                                         y: parseFloat(pointList[3]) * 1500 + item.z
                                     });
                                 }
+                                else if(wallFile2[mapArr[item.i][item.j]].charAt(0) === 'g') {
+                                    hull.push({
+                                        x: parseFloat(pointList[1]) * 1500 * 0.11 + item.x,
+                                        y: parseFloat(pointList[3]) * 1500 * 0.11 + item.z
+                                    });
+                                }
                             }
                             else {
                                 if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
@@ -741,27 +755,35 @@ function update() {
                                         y: parseFloat(pointList[1]) * 1500 * 1.3 + item.z
                                     });
                                 }
+                                else if(wallFile2[mapArr[item.i][item.j]].charAt(0) === 'g') {
+                                    hull.push({
+                                        x: -1 * (parseFloat(pointList[3]) * 1500 * 0.11) + item.x,
+                                        y: parseFloat(pointList[1]) * 1500 * 0.11 + item.z
+                                    });
+                                }
                             }
                         }
                     }
                     let fhull = [];
                     Graham_scan(hull, fhull, hull.length);
-                    let geometry = new THREE.Geometry();
-                    for (let i = 0; i < fhull.length; i++) {
+                    //let geometry = new THREE.Geometry();
+                    /*for (let i = 0; i < fhull.length; i++) {
                         //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
                         geometry.vertices.push(new THREE.Vector3(fhull[i].x, 50, fhull[i].y));
-                    }   
+                    }*/
                     //线构造
-                    // let line = new THREE.Line(geometry);
+                    //let line = new THREE.Line(geometry);
                     //scene.add(line);
-                    let geometry2 = new THREE.Geometry();
+                    /*let geometry2 = new THREE.Geometry();
                     for (let i = 0; i < role.length; i++) {
                         //给空白几何体添加点信息，这里写3个点，geometry会把这些点自动组合成线，面。
                         geometry2.vertices.push(new THREE.Vector3(role[i].x + MovingCube.position.x, 50, role[i].y + MovingCube.position.z));
-                    }   
+                    } */
                     //线构造
-                    // let line2 = new THREE.Line(geometry2);
+                    //let line2 = new THREE.Line(geometry2);
                     //scene.add(line2);
+                    //console.log(roleHull);
+                    //console.log(role.length);
                     let nowRole = [];
                     for(let i = 0; i < role.length; i++)
                     {
@@ -770,6 +792,8 @@ function update() {
                             y: role[i].y + MovingCube.position.z
                         })
                     }
+                    //console.log(tmpManObj);
+                    //console.log(role.length);
                     l.splice(0,l.length);
                     for(let i = 1; i < fhull.length; i++)
                     {
@@ -793,7 +817,44 @@ function update() {
                         P: nowRole[nowRole.length - 1],
                         v: sub(nowRole[0], nowRole[nowRole.length - 1])
                     });
-                    if(half_plane_intersection()) tag = 1;
+                    let tagTmp = 0;
+                    if(half_plane_intersection()) tagTmp++;
+
+                    nowRole.splice(0,nowRole.length);
+                    for(let i = 0; i < roleStd.length; i++)
+                    {
+                        nowRole.push({
+                            x: roleStd[i].x + MovingCube.position.x,
+                            y: roleStd[i].y + MovingCube.position.z
+                        })
+                    }
+                    l.splice(0,l.length);
+                    for(let i = 1; i < fhull.length; i++)
+                    {
+                        l.push({
+                            P: fhull[i-1],
+                            v: sub(fhull[i], fhull[i-1])
+                        })
+                    }
+                    l.push({
+                        P: fhull[fhull.length - 1],
+                        v: sub(fhull[0], fhull[fhull.length - 1])
+                    });
+                    for(let i = 1; i < nowRole.length; i++)
+                    {
+                        l.push({
+                            P: nowRole[i-1],
+                            v: sub(nowRole[i], nowRole[i-1])
+                        })
+                    }
+                    l.push({
+                        P: nowRole[nowRole.length - 1],
+                        v: sub(nowRole[0], nowRole[nowRole.length - 1])
+                    });
+                    if(half_plane_intersection()) tagTmp++;
+
+                    if(tagTmp !== 0) tag = 1;
+
                 }
                 else
                 {
@@ -878,13 +939,24 @@ function update() {
         manObj[5].position.set(MovingCube.position.x, 50, MovingCube.position.z);
         scene.add(manObj[5]);
         tmpManObj = 5;
+
         role.splice(0,role.length);
-        for(let i = 0; i < roleHull[2].length; i++)
+        for(let i = 0; i < roleHull[tmpManObj].length; i++)
         {
-            let rotation = manObj[2].rotation.y;
+            let rotation = manObj[tmpManObj].rotation.y;
             role.push({
-                x: roleHull[2][i].x * Math.cos(rotation) - roleHull[2][i].y * Math.sin(rotation),
-                y: roleHull[2][i].y * Math.cos(rotation) + roleHull[2][i].x * Math.sin(rotation)
+                x: roleHull[tmpManObj][i].x * Math.cos(rotation) - roleHull[tmpManObj][i].y * Math.sin(rotation),
+                y: roleHull[tmpManObj][i].y * Math.cos(rotation) + roleHull[tmpManObj][i].x * Math.sin(rotation)
+            })
+        }
+
+        roleStd.splice(0,roleStd.length);
+        for(let i = 0; i < roleHull[5].length; i++)
+        {
+            let rotation = manObj[5].rotation.y;
+            roleStd.push({
+                x: roleHull[5][i].x * Math.cos(rotation) - roleHull[5][i].y * Math.sin(rotation),
+                y: roleHull[5][i].y * Math.cos(rotation) + roleHull[5][i].x * Math.sin(rotation)
             })
         }
     }
@@ -900,6 +972,16 @@ function update() {
             role.push({
                 x: roleHull[tmpManObj][i].x * Math.cos(rotation) - roleHull[tmpManObj][i].y * Math.sin(rotation),
                 y: roleHull[tmpManObj][i].y * Math.cos(rotation) + roleHull[tmpManObj][i].x * Math.sin(rotation)
+            })
+        }
+
+        roleStd.splice(0,roleStd.length);
+        for(let i = 0; i < roleHull[5].length; i++)
+        {
+            let rotation = manObj[5].rotation.y;
+            roleStd.push({
+                x: roleHull[5][i].x * Math.cos(rotation) - roleHull[5][i].y * Math.sin(rotation),
+                y: roleHull[5][i].y * Math.cos(rotation) + roleHull[5][i].x * Math.sin(rotation)
             })
         }
     }
