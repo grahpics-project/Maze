@@ -983,7 +983,7 @@ function update() {
         roleStd.splice(0,roleStd.length);
         for(let i = 0; i < roleHull[5].length; i++)
         {
-            let rotation = manObj[5].rotation.y;
+            let rotation = manObj[tmpManObj].rotation.y;
             roleStd.push({
                 x: roleHull[5][i].x * Math.cos(rotation) - roleHull[5][i].y * Math.sin(rotation),
                 y: roleHull[5][i].y * Math.cos(rotation) + roleHull[5][i].x * Math.sin(rotation)
@@ -1008,7 +1008,29 @@ function update() {
         roleStd.splice(0,roleStd.length);
         for(let i = 0; i < roleHull[5].length; i++)
         {
-            let rotation = manObj[5].rotation.y;
+            let rotation = manObj[tmpManObj].rotation.y;
+            roleStd.push({
+                x: roleHull[5][i].x * Math.cos(rotation) - roleHull[5][i].y * Math.sin(rotation),
+                y: roleHull[5][i].y * Math.cos(rotation) + roleHull[5][i].x * Math.sin(rotation)
+            })
+        }
+    }
+    else
+    {
+        role.splice(0,role.length);
+        for(let i = 0; i < roleHull[tmpManObj].length; i++)
+        {
+            let rotation = manObj[tmpManObj].rotation.y;
+            role.push({
+                x: roleHull[tmpManObj][i].x * Math.cos(rotation) - roleHull[tmpManObj][i].y * Math.sin(rotation),
+                y: roleHull[tmpManObj][i].y * Math.cos(rotation) + roleHull[tmpManObj][i].x * Math.sin(rotation)
+            })
+        }
+
+        roleStd.splice(0,roleStd.length);
+        for(let i = 0; i < roleHull[5].length; i++)
+        {
+            let rotation = manObj[tmpManObj].rotation.y;
             roleStd.push({
                 x: roleHull[5][i].x * Math.cos(rotation) - roleHull[5][i].y * Math.sin(rotation),
                 y: roleHull[5][i].y * Math.cos(rotation) + roleHull[5][i].x * Math.sin(rotation)
