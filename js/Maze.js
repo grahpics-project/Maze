@@ -195,16 +195,16 @@ function floorGenerate() {
     let mtlFile;
     let mtlLoader = new THREE.MTLLoader();
 
-    mtlLoader.setTexturePath('ExportedObj/');
-    mtlLoader.setPath('ExportedObj/');
+    mtlLoader.setTextureFile('ExportedObj/');
+    mtlLoader.setFilePath('ExportedObj/');
     if (file.charAt(2) === 'G') mtlFile = 'Grass.mtl';
     else if (file.charAt(2) === 'F') mtlFile = 'Flagging.mtl';
     else if (file.charAt(2) === 'M') mtlFile = 'Mud.mtl';
     mtlLoader.load(mtlFile, function (materials) {
         materials.preload();
         let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/');
+        objLoader.loadMaterial(materials);
+        objLoader.setFilePath('ExportedObj/');
         objLoader.load(file, function (object) {
             if (file.charAt(0) === '1') object.scale.x = object.scale.z = 5000;
             else if (file.charAt(0) === '2') object.scale.x = object.scale.z = 2500;
@@ -362,8 +362,8 @@ function wallGenerate() {
     let mtlFile;
     let mtlLoader = new THREE.MTLLoader();
 
-    mtlLoader.setTexturePath('ExportedObj/');
-    mtlLoader.setPath('ExportedObj/');
+    mtlLoader.setTextureFile('ExportedObj/');
+    mtlLoader.setFilePath('ExportedObj/');
     if (file.charAt(0) === 'M') mtlFile = 'Mount.mtl';
     else if (file.charAt(0) === 'R') mtlFile = 'RockMid.mtl';
     else if (file.charAt(0) === 'B') mtlFile = 'BudBuilding_' + file.charAt(12) + '.mtl';
@@ -371,8 +371,8 @@ function wallGenerate() {
     mtlLoader.load(mtlFile, function (materials) {
         materials.preload();
         let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/');
+        objLoader.loadMaterial(materials);
+        objLoader.setFilePath('ExportedObj/');
         objLoader.load(file, function (object) {
             if (file.charAt(0) === 'M' || file.charAt(0) === 'B') object.scale.x = 1500;
             else if (file.charAt(0) === 'R') object.scale.x = 1500 * 1.3;
@@ -394,8 +394,8 @@ function manLoader() {
     }
     let file = manFile.shift();
     let objLoader = new THREE.OBJLoader();
-    objLoader.setMaterials(manMaterial);
-    objLoader.setPath('ExportedObj/Man/');
+    objLoader.loadMaterial(manMaterial);
+    objLoader.setFilePath('ExportedObj/Man/');
     objLoader.load(file, function (object) {
         object.traverse( function ( child ) {
             if ( child instanceof THREE.Mesh ) {  
@@ -534,8 +534,8 @@ function init() {
     }
     scene.add(MovingCube);
     let mtlLoaderMan = new THREE.MTLLoader();
-    mtlLoaderMan.setTexturePath('ExportedObj/Man/');
-    mtlLoaderMan.setPath('ExportedObj/Man/');
+    mtlLoaderMan.setTextureFile('ExportedObj/Man/');
+    mtlLoaderMan.setFilePath('ExportedObj/Man/');
     mtlLoaderMan.load('man.mtl', function (materials) {
         materials.preload();
         manMaterial = materials;
@@ -581,13 +581,13 @@ function init() {
     cloud.position.set(2000, 2000, 2000);
     let mtlLoaderCloud = new THREE.MTLLoader();
     mtlLoaderCloud.setBaseUrl('ExportedObj/');
-    mtlLoaderCloud.setPath('ExportedObj/');
+    mtlLoaderCloud.setFilePath('ExportedObj/');
     mtlLoaderCloud.load('cloud.mtl', function (materials) {
         materials.preload();
     
         let objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('ExportedObj/');
+        objLoader.loadMaterial(materials);
+        objLoader.setFilePath('ExportedObj/');
         objLoader.load('cloud.obj', function (object) {
             //cloud = object;
             object.position.set(cloudR*Math.cos(cloudAngel), 2000, cloudR*Math.sin(cloudAngel));

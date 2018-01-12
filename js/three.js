@@ -30881,7 +30881,7 @@
 
 		},
 
-		setPath: function ( value ) {
+		setFilePath: function ( value ) {
 
 			this.path = value;
 			return this;
@@ -30945,7 +30945,7 @@
 			texture.image = images;
 
 			var loader = new FileLoader( this.manager );
-			loader.setPath( this.path );
+			loader.setFilePath( this.path );
 			loader.setResponseType( 'arraybuffer' );
 
 			function loadTexture( i ) {
@@ -31043,7 +31043,7 @@
 
 		},
 
-		setPath: function ( value ) {
+		setFilePath: function ( value ) {
 
 			this.path = value;
 			return this;
@@ -31232,7 +31232,7 @@
 
 		},
 
-		setPath: function ( value ) {
+		setFilePath: function ( value ) {
 
 			this.path = value;
 			return this;
@@ -31261,7 +31261,7 @@
 
 			var loader = new ImageLoader( this.manager );
 			loader.setCrossOrigin( this.crossOrigin );
-			loader.setPath( this.path );
+			loader.setFilePath( this.path );
 
 			var loaded = 0;
 
@@ -31302,7 +31302,7 @@
 
 		},
 
-		setPath: function ( value ) {
+		setFilePath: function ( value ) {
 
 			this.path = value;
 			return this;
@@ -31331,7 +31331,7 @@
 
 			var loader = new ImageLoader( this.manager );
 			loader.setCrossOrigin( this.crossOrigin );
-			loader.setPath( this.path );
+			loader.setFilePath( this.path );
 
 			loader.load( url, function ( image ) {
 
@@ -31362,7 +31362,7 @@
 
 		},
 
-		setPath: function ( value ) {
+		setFilePath: function ( value ) {
 
 			this.path = value;
 			return this;
@@ -37663,7 +37663,7 @@
 
 		},
 
-		setPath: function ( value ) {
+		setFilePath: function ( value ) {
 
 			this.path = value;
 			return this;
@@ -38135,7 +38135,7 @@
 			var scope = this;
 
 			var loader = new FileLoader( this.manager );
-			loader.setPath( this.path );
+			loader.setFilePath( this.path );
 			loader.load( url, function ( text ) {
 
 				var json;
@@ -38165,7 +38165,7 @@
 
 		},
 
-		setPath: function ( value ) {
+		setFilePath: function ( value ) {
 
 			this.path = value;
 			return this;
