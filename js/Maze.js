@@ -16,7 +16,7 @@ let barrier = [];
 let mouseEn;
 let wanderEn;
 let wanderSign = false;
-let lightIntensity = 60;
+let lightIntensity = 75;
 let totAngle = 0;
 let count = 0;
 let maze;
@@ -43,7 +43,7 @@ let roleHull = [];
 for(let i = 0; i <= 10; i++)
     roleHull[i] = [];
 let bpoint;
-let light = new THREE.DirectionalLight(0xFFFFFF, lightIntensity/50);
+let light = new THREE.AmbientLight(0xFFFFFF, lightIntensity/30);
 let isLightChange = false;
 let objHull = [];
 let isgameEnd = false;
@@ -487,10 +487,10 @@ function init() {
     // LIGHT //
     ///////////
     light.castShadow = true;
-    light.position.set(0, 0.3, 1);
+    // light.position.set(0, 0.3, 1);
     scene.add(light);
-    let ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
-    scene.add(ambientLight);
+    // let ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+    // scene.add(ambientLight);
     // let light_1 = new THREE.PointLight(0xffffff);
     // light_1.position.set(-7000, 10000, -7000);
     // let light_2 = new THREE.PointLight(0xffffff);
@@ -652,7 +652,7 @@ function init() {
             wangdering: false,
             scene:'Dark',
             collisionEn:false,
-            Intensity:60,
+            Intensity:75,
             Screenshot: () => {
                 if (!renderer) return;
                 let img = renderer.domElement.toDataURL('image/png');
@@ -697,7 +697,7 @@ function animate() {
 let cnt = 0;
 function update() {
     let delta = clock.getDelta();
-    let moveDistance = 150 * delta; // 400 pixels per second
+    let moveDistance = 250 * delta; // 400 pixels per second
     let rotateAngle = Math.PI / 2 * delta;
     let tmpx = MovingCube.position.x;
     let tmpy = MovingCube.position.y;
@@ -972,8 +972,8 @@ function update() {
     if(isLightChange)
     {
         scene.remove(light);
-        light = new THREE.DirectionalLight(0xFFFFFF, lightIntensity/50);
-        light.position.set(0, 0.3, 1);
+        light = new THREE.AmbientLight(0xFFFFFF, lightIntensity/30);
+        // light.position.set(0, 0.3, 1);
         light.castShadow = true;
         scene.add(light);
         isLightChange = false;
