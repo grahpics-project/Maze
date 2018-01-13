@@ -16,7 +16,7 @@ let barrier = [];
 let mouseEn;
 let wanderEn;
 let wanderSign = false;
-let lightIntensity = 50;
+let lightIntensity = 60;
 let totAngle = 0;
 let count = 0;
 let maze;
@@ -43,8 +43,7 @@ let roleHull = [];
 for(let i = 0; i <= 10; i++)
     roleHull[i] = [];
 let bpoint;
-let light = new THREE.AmbientLight(0xFFFFFF, lightIntensity/25);
-//let light = new THREE.DirectionalLight(0xFFFFFF, lightIntensity/100);
+let light = new THREE.DirectionalLight(0xFFFFFF, lightIntensity/50);
 let isLightChange = false;
 let objHull = [];
 let isgameEnd = false;
@@ -196,7 +195,7 @@ function floorGenerate() {
     }
     let file = objFile.shift();
     let mtlFile;
-    let mtlImport = new THREE.IMPORTMTL();
+    let mtlImport = new IMPORTMTL();
 
     mtlImport.setTextureFile('ExportedObj/');
     mtlImport.setFilePath('ExportedObj/');
@@ -205,7 +204,7 @@ function floorGenerate() {
     else if (file.charAt(2) === 'M') mtlFile = 'Mud.mtl';
     mtlImport.load(mtlFile, function (materials) {
         materials.preload();
-        let objImport = new THREE.IMPORTOBJ();
+        let objImport = new IMPORTOBJ();
         objImport.loadMaterial(materials);
         objImport.setFilePath('ExportedObj/');
         objImport.load(file, function (object) {
@@ -362,7 +361,7 @@ function wallGenerate() {
     }
     let file = wallFile.shift();
     let mtlFile;
-    let mtlImport = new THREE.IMPORTMTL();
+    let mtlImport = new IMPORTMTL();
 
     mtlImport.setTextureFile('ExportedObj/');
     mtlImport.setFilePath('ExportedObj/');
@@ -372,7 +371,7 @@ function wallGenerate() {
     else if (file.charAt(0) === 'g') mtlFile = 'gate.mtl';
     mtlImport.load(mtlFile, function (materials) {
         materials.preload();
-        let objImport = new THREE.IMPORTOBJ();
+        let objImport = new IMPORTOBJ();
         objImport.loadMaterial(materials);
         objImport.setFilePath('ExportedObj/');
         objImport.load(file, function (object) {
@@ -394,7 +393,7 @@ function manLoader() {
         return;
     }
     let file = manFile.shift();
-    let objImport = new THREE.IMPORTOBJ();
+    let objImport = new IMPORTOBJ();
     objImport.loadMaterial(manMaterial);
     objImport.setFilePath('ExportedObj/Man/');
     objImport.load(file, function (object) {
@@ -488,10 +487,10 @@ function init() {
     // LIGHT //
     ///////////
     light.castShadow = true;
-    //light.position.set(0, 0.3, 1);
+    light.position.set(0, 0.3, 1);
     scene.add(light);
-    // let ambientLight = new THREE.AmbientLight(0xffffff, 2);
-    // scene.add(ambientLight);
+    let ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+    scene.add(ambientLight);
     // let light_1 = new THREE.PointLight(0xffffff);
     // light_1.position.set(-7000, 10000, -7000);
     // let light_2 = new THREE.PointLight(0xffffff);
@@ -538,7 +537,7 @@ function init() {
         manObj[k].position.set(-2700, 0, -2700);
     }
     scene.add(MovingCube);
-    let mtlImportMan = new THREE.IMPORTMTL();
+    let mtlImportMan = new IMPORTMTL();
     mtlImportMan.setTextureFile('ExportedObj/Man/');
     mtlImportMan.setFilePath('ExportedObj/Man/');
     mtlImportMan.load('man.mtl', function (materials) {
@@ -584,13 +583,13 @@ function init() {
     ///////////
     cloud = new THREE.Mesh(sphereGeometry, sphereMaterial);
     cloud.position.set(2000, 2000, 2000);
-    let mtlImportCloud = new THREE.IMPORTMTL();
+    let mtlImportCloud = new IMPORTMTL();
     mtlImportCloud.setBaseUrl('ExportedObj/');
     mtlImportCloud.setFilePath('ExportedObj/');
     mtlImportCloud.load('cloud.mtl', function (materials) {
         materials.preload();
     
-        let objImport = new THREE.IMPORTOBJ();
+        let objImport = new IMPORTOBJ();
         objImport.loadMaterial(materials);
         objImport.setFilePath('ExportedObj/');
         objImport.load('cloud.obj', function (object) {
@@ -653,7 +652,7 @@ function init() {
             wangdering: false,
             scene:'Dark',
             collisionEn:false,
-            Intensity:50,
+            Intensity:60,
             Screenshot: () => {
                 if (!renderer) return;
                 let img = renderer.domElement.toDataURL('image/png');
@@ -698,7 +697,7 @@ function animate() {
 let cnt = 0;
 function update() {
     let delta = clock.getDelta();
-    let moveDistance = 250 * delta ; // 400 pixels per second
+    let moveDistance = 150 * delta; // 400 pixels per second
     let rotateAngle = Math.PI / 2 * delta;
     let tmpx = MovingCube.position.x;
     let tmpy = MovingCube.position.y;
@@ -973,8 +972,8 @@ function update() {
     if(isLightChange)
     {
         scene.remove(light);
-        light = new THREE.AmbientLight(0xFFFFFF, lightIntensity/30);
-        // light.position.set(0, 0.3, 1);
+        light = new THREE.DirectionalLight(0xFFFFFF, lightIntensity/50);
+        light.position.set(0, 0.3, 1);
         light.castShadow = true;
         scene.add(light);
         isLightChange = false;
