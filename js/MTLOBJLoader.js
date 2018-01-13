@@ -1,9 +1,9 @@
 
-THREE.IMPORTMTL = function ( manager ) {
+IMPORTMTL = function ( manager ) {
     this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 };
-THREE.IMPORTMTL.prototype = {  //mtlloader的方法
-    constructor: THREE.IMPORTMTL,
+IMPORTMTL.prototype = {  //IMPORTMTL的方法
+    constructor: IMPORTMTL,
     load: function ( url, onLoad, onProgress, onError ) {
         var scope = this;
         var loader = new THREE.FileLoader( this.manager );
@@ -19,7 +19,7 @@ THREE.IMPORTMTL.prototype = {  //mtlloader的方法
         this.texturePath = path;
     },
     setBaseUrl: function ( path ) {
-        console.warn( 'THREE.IMPORTMTL: .setBaseUrl() is deprecated. Use .setTextureFile( path ) for texture path or .setFilePath( path ) for general base path instead.' );
+        console.warn( 'IMPORTMTL: .setBaseUrl() is deprecated. Use .setTextureFile( path ) for texture path or .setFilePath( path ) for general base path instead.' );
         this.setTextureFile( path );
     },
     setCrossOrigin: function ( value ) {
@@ -53,14 +53,14 @@ THREE.IMPORTMTL.prototype = {  //mtlloader的方法
                 }
             }
         }
-        var materialCreator = new THREE.IMPORTMTL.MaterialCreator( this.texturePath || this.path, this.materialOptions );
+        var materialCreator = new IMPORTMTL.MaterialCreator( this.texturePath || this.path, this.materialOptions );
         materialCreator.setCrossOrigin( this.crossOrigin );
         materialCreator.setManager( this.manager );
         materialCreator.loadMaterial( materialsInfo );
         return materialCreator;
     }
 };
-THREE.IMPORTMTL.MaterialCreator = function ( baseUrl, options ) {  //创建材质
+IMPORTMTL.MaterialCreator = function ( baseUrl, options ) {  //创建材质
     this.baseUrl = baseUrl;
     this.options = options;
     this.materialsInfo = {};
@@ -69,8 +69,8 @@ THREE.IMPORTMTL.MaterialCreator = function ( baseUrl, options ) {  //创建材�
     this.side = ( this.options && this.options.side ) ? this.options.side : THREE.FrontSide;
     this.wrap = ( this.options && this.options.wrap ) ? this.options.wrap : THREE.RepeatWrapping;
 };
-THREE.IMPORTMTL.MaterialCreator.prototype = {
-    constructor: THREE.IMPORTMTL.MaterialCreator,
+IMPORTMTL.MaterialCreator.prototype = {
+    constructor: IMPORTMTL.MaterialCreator,
     crossOrigin: 'Anonymous',
     setCrossOrigin: function ( value ) {
         this.crossOrigin = value;
@@ -223,7 +223,7 @@ THREE.IMPORTMTL.MaterialCreator.prototype = {
  obj
 
 */
-THREE.IMPORTOBJ = ( function () {
+IMPORTOBJ = ( function () {
 	var object_pattern = /^[og]\s*(.+)?/;  //o 和 g的匹配
 	var material_library_pattern = /^mtllib /;  //mtllib的匹配
 	var material_use_pattern = /^usemtl /;  //usemtl的匹配
@@ -323,12 +323,12 @@ THREE.IMPORTOBJ = ( function () {
 				dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
 				dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
 			},
-			addVertexLine: function ( a ) {
+			pushVertexLine: function ( a ) {
 				var src = this.vertices;
 				var dst = this.object.geometry.vertices;
 				dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
 			},
-			addNormal: function ( a, b, c ) {
+			pushNormal: function ( a, b, c ) {
 				var src = this.normals;
 				var dst = this.object.geometry.normals;
 				dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
@@ -354,7 +354,7 @@ THREE.IMPORTOBJ = ( function () {
 				var dst = this.object.geometry.uvs;
 				dst.push( src[ a + 0 ], src[ a + 1 ] );
 			},
-			addFace: function ( a, b, c, ua, ub, uc, na, nb, nc ) {
+			pushFace: function ( a, b, c, ua, ub, uc, na, nb, nc ) {
 				var vLen = this.vertices.length;
 				var ia = this.getVertexIndex( a, vLen );
 				var ib = this.getVertexIndex( b, vLen );
@@ -373,7 +373,7 @@ THREE.IMPORTOBJ = ( function () {
 					ia = this.getNormalIndex( na, nLen );
 					ib = na === nb ? ia : this.getNormalIndex( nb, nLen );
 					ic = na === nc ? ia : this.getNormalIndex( nc, nLen );
-					this.addNormal( ia, ib, ic );
+					this.pushNormal( ia, ib, ic );
 				}
 				if ( this.colors.length > 0 ) {
 					this.pushColor( ia, ib, ic );
@@ -384,7 +384,7 @@ THREE.IMPORTOBJ = ( function () {
 				var vLen = this.vertices.length;
 				var uvLen = this.uvs.length;
 				for ( var vi = 0, l = vertices.length; vi < l; vi ++ ) {
-					this.addVertexLine( this.getVertexIndex( vertices[ vi ], vLen ) );
+					this.pushVertexLine( this.getVertexIndex( vertices[ vi ], vLen ) );
 				}
 				for ( var uvi = 0, l = uvs.length; uvi < l; uvi ++ ) {
 					this.pushUVLine( this.getUvIndex( uvs[ uvi ], uvLen ) );
@@ -476,7 +476,7 @@ THREE.IMPORTOBJ = ( function () {
 					for ( var j = 1; j < faceVertices.length - 1; j ++ ) {
 						var v2 = faceVertices[ j ];
 						var v3 = faceVertices[ j + 1 ];
-						state.addFace(
+						state.pushFace(
 							v1[ 0 ], v2[ 0 ], v3[ 0 ],
 							v1[ 1 ], v2[ 1 ], v3[ 1 ],
 							v1[ 2 ], v2[ 2 ], v3[ 2 ]
@@ -514,7 +514,7 @@ THREE.IMPORTOBJ = ( function () {
 					if ( material ) material.smooth = state.object.smooth;
 				} else {  //处理异常情况
 					if ( line === '\0' ) continue;
-					throw new Error( 'THREE.IMPORTOBJ: Unexpected line: "' + line + '"' );
+					throw new Error( 'IMPORTOBJ: Unexpected line: "' + line + '"' );
 				}
 			}
 			state.finalize();
