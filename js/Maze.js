@@ -194,19 +194,19 @@ function floorGenerate() {
     }
     let file = objFile.shift();
     let mtlFile;
-    let mtlLoader = new THREE.MTLLoader();
+    let mtlImport = new THREE.IMPORTMTL();
 
-    mtlLoader.setTextureFile('ExportedObj/');
-    mtlLoader.setFilePath('ExportedObj/');
+    mtlImport.setTextureFile('ExportedObj/');
+    mtlImport.setFilePath('ExportedObj/');
     if (file.charAt(2) === 'G') mtlFile = 'Grass.mtl';
     else if (file.charAt(2) === 'F') mtlFile = 'Flagging.mtl';
     else if (file.charAt(2) === 'M') mtlFile = 'Mud.mtl';
-    mtlLoader.load(mtlFile, function (materials) {
+    mtlImport.load(mtlFile, function (materials) {
         materials.preload();
-        let objLoader = new THREE.OBJLoader();
-        objLoader.loadMaterial(materials);
-        objLoader.setFilePath('ExportedObj/');
-        objLoader.load(file, function (object) {
+        let objImport = new THREE.IMPORTOBJ();
+        objImport.loadMaterial(materials);
+        objImport.setFilePath('ExportedObj/');
+        objImport.load(file, function (object) {
             if (file.charAt(0) === '1') object.scale.x = object.scale.z = 5000;
             else if (file.charAt(0) === '2') object.scale.x = object.scale.z = 2500;
             else if (file.charAt(0) === '3') object.scale.x = object.scale.z = 5000 / 3;
@@ -361,20 +361,20 @@ function wallGenerate() {
     }
     let file = wallFile.shift();
     let mtlFile;
-    let mtlLoader = new THREE.MTLLoader();
+    let mtlImport = new THREE.IMPORTMTL();
 
-    mtlLoader.setTextureFile('ExportedObj/');
-    mtlLoader.setFilePath('ExportedObj/');
+    mtlImport.setTextureFile('ExportedObj/');
+    mtlImport.setFilePath('ExportedObj/');
     if (file.charAt(0) === 'M') mtlFile = 'Mount.mtl';
     else if (file.charAt(0) === 'R') mtlFile = 'RockMid.mtl';
     else if (file.charAt(0) === 'B') mtlFile = 'BudBuilding_' + file.charAt(12) + '.mtl';
     else if (file.charAt(0) === 'g') mtlFile = 'gate.mtl';
-    mtlLoader.load(mtlFile, function (materials) {
+    mtlImport.load(mtlFile, function (materials) {
         materials.preload();
-        let objLoader = new THREE.OBJLoader();
-        objLoader.loadMaterial(materials);
-        objLoader.setFilePath('ExportedObj/');
-        objLoader.load(file, function (object) {
+        let objImport = new THREE.IMPORTOBJ();
+        objImport.loadMaterial(materials);
+        objImport.setFilePath('ExportedObj/');
+        objImport.load(file, function (object) {
             if (file.charAt(0) === 'M' || file.charAt(0) === 'B') object.scale.x = 1500;
             else if (file.charAt(0) === 'R') object.scale.x = 1500 * 1.3;
             object.scale.y = object.scale.z = 1500;
@@ -394,10 +394,10 @@ function manLoader() {
         return;
     }
     let file = manFile.shift();
-    let objLoader = new THREE.OBJLoader();
-    objLoader.loadMaterial(manMaterial);
-    objLoader.setFilePath('ExportedObj/Man/');
-    objLoader.load(file, function (object) {
+    let objImport = new THREE.IMPORTOBJ();
+    objImport.loadMaterial(manMaterial);
+    objImport.setFilePath('ExportedObj/Man/');
+    objImport.load(file, function (object) {
         object.traverse( function ( child ) {
             if ( child instanceof THREE.Mesh ) {  
                 child.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI*(50 - manNum)/50 );
@@ -539,10 +539,10 @@ function init() {
         manObj[k].position.set(-2700, 0, -2700);
     }
     scene.add(MovingCube);
-    let mtlLoaderMan = new THREE.MTLLoader();
-    mtlLoaderMan.setTextureFile('ExportedObj/Man/');
-    mtlLoaderMan.setFilePath('ExportedObj/Man/');
-    mtlLoaderMan.load('man.mtl', function (materials) {
+    let mtlImportMan = new THREE.IMPORTMTL();
+    mtlImportMan.setTextureFile('ExportedObj/Man/');
+    mtlImportMan.setFilePath('ExportedObj/Man/');
+    mtlImportMan.load('man.mtl', function (materials) {
         materials.preload();
         manMaterial = materials;
         manLoader();
@@ -585,16 +585,16 @@ function init() {
     ///////////
     cloud = new THREE.Mesh(sphereGeometry, sphereMaterial);
     cloud.position.set(2000, 2000, 2000);
-    let mtlLoaderCloud = new THREE.MTLLoader();
-    mtlLoaderCloud.setBaseUrl('ExportedObj/');
-    mtlLoaderCloud.setFilePath('ExportedObj/');
-    mtlLoaderCloud.load('cloud.mtl', function (materials) {
+    let mtlImportCloud = new THREE.IMPORTMTL();
+    mtlImportCloud.setBaseUrl('ExportedObj/');
+    mtlImportCloud.setFilePath('ExportedObj/');
+    mtlImportCloud.load('cloud.mtl', function (materials) {
         materials.preload();
     
-        let objLoader = new THREE.OBJLoader();
-        objLoader.loadMaterial(materials);
-        objLoader.setFilePath('ExportedObj/');
-        objLoader.load('cloud.obj', function (object) {
+        let objImport = new THREE.IMPORTOBJ();
+        objImport.loadMaterial(materials);
+        objImport.setFilePath('ExportedObj/');
+        objImport.load('cloud.obj', function (object) {
             //cloud = object;
             object.position.set(cloudR*Math.cos(cloudAngel), 2000, cloudR*Math.sin(cloudAngel));
             object.scale.x = object.scale.z = 10;
