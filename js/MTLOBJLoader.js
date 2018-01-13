@@ -1,9 +1,9 @@
 
-THREE.MTLLoader = function ( manager ) {
+THREE.IMPORTMTL = function ( manager ) {
     this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 };
-THREE.MTLLoader.prototype = {  //mtlloader的方法
-    constructor: THREE.MTLLoader,
+THREE.IMPORTMTL.prototype = {  //mtlloader的方法
+    constructor: THREE.IMPORTMTL,
     load: function ( url, onLoad, onProgress, onError ) {
         var scope = this;
         var loader = new THREE.FileLoader( this.manager );
@@ -19,7 +19,7 @@ THREE.MTLLoader.prototype = {  //mtlloader的方法
         this.texturePath = path;
     },
     setBaseUrl: function ( path ) {
-        console.warn( 'THREE.MTLLoader: .setBaseUrl() is deprecated. Use .setTextureFile( path ) for texture path or .setFilePath( path ) for general base path instead.' );
+        console.warn( 'THREE.IMPORTMTL: .setBaseUrl() is deprecated. Use .setTextureFile( path ) for texture path or .setFilePath( path ) for general base path instead.' );
         this.setTextureFile( path );
     },
     setCrossOrigin: function ( value ) {
@@ -53,14 +53,14 @@ THREE.MTLLoader.prototype = {  //mtlloader的方法
                 }
             }
         }
-        var materialCreator = new THREE.MTLLoader.MaterialCreator( this.texturePath || this.path, this.materialOptions );
+        var materialCreator = new THREE.IMPORTMTL.MaterialCreator( this.texturePath || this.path, this.materialOptions );
         materialCreator.setCrossOrigin( this.crossOrigin );
         materialCreator.setManager( this.manager );
         materialCreator.loadMaterial( materialsInfo );
         return materialCreator;
     }
 };
-THREE.MTLLoader.MaterialCreator = function ( baseUrl, options ) {  //创建材质
+THREE.IMPORTMTL.MaterialCreator = function ( baseUrl, options ) {  //创建材质
     this.baseUrl = baseUrl;
     this.options = options;
     this.materialsInfo = {};
@@ -69,8 +69,8 @@ THREE.MTLLoader.MaterialCreator = function ( baseUrl, options ) {  //创建材�
     this.side = ( this.options && this.options.side ) ? this.options.side : THREE.FrontSide;
     this.wrap = ( this.options && this.options.wrap ) ? this.options.wrap : THREE.RepeatWrapping;
 };
-THREE.MTLLoader.MaterialCreator.prototype = {
-    constructor: THREE.MTLLoader.MaterialCreator,
+THREE.IMPORTMTL.MaterialCreator.prototype = {
+    constructor: THREE.IMPORTMTL.MaterialCreator,
     crossOrigin: 'Anonymous',
     setCrossOrigin: function ( value ) {
         this.crossOrigin = value;
@@ -223,7 +223,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
  obj
 
 */
-THREE.OBJLoader = ( function () {
+THREE.IMPORTOBJ = ( function () {
 	var object_pattern = /^[og]\s*(.+)?/;  //o 和 g的匹配
 	var material_library_pattern = /^mtllib /;  //mtllib的匹配
 	var material_use_pattern = /^usemtl /;  //usemtl的匹配
@@ -394,12 +394,12 @@ THREE.OBJLoader = ( function () {
 		state.initObject( '', false );
 		return state;
 	}
-	function OBJLoader( manager ) {
+	function IMPORTOBJ( manager ) {
 		this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 		this.materials = null;
 	}
-	OBJLoader.prototype = { //objloader的一些方法
-		constructor: OBJLoader,
+	IMPORTOBJ.prototype = { //objloader的一些方法
+		constructor: IMPORTOBJ,
 		load: function ( url, onLoad, onProgress, onError ) {
 			var scope = this;
 			var loader = new THREE.FileLoader( scope.manager );
@@ -416,7 +416,7 @@ THREE.OBJLoader = ( function () {
 			return this;
 		},
 		parse: function ( text ) { //解析字符串
-			console.time( 'OBJLoader' );
+			console.time( 'IMPORTOBJ' );
 			var state = new ParserState();
 			if ( text.indexOf( '\r\n' ) !== - 1 ) {
 				text = text.replace( /\r\n/g, '\n' );
@@ -514,7 +514,7 @@ THREE.OBJLoader = ( function () {
 					if ( material ) material.smooth = state.object.smooth;
 				} else {  //处理异常情况
 					if ( line === '\0' ) continue;
-					throw new Error( 'THREE.OBJLoader: Unexpected line: "' + line + '"' );
+					throw new Error( 'THREE.IMPORTOBJ: Unexpected line: "' + line + '"' );
 				}
 			}
 			state.finalize();
@@ -570,9 +570,9 @@ THREE.OBJLoader = ( function () {
 				mesh.name = object.name;
 				container.add( mesh );
 			}
-			console.timeEnd( 'OBJLoader' );
+			console.timeEnd( 'IMPORTOBJ' );
 			return container;
 		}
 	};
-	return OBJLoader;
+	return IMPORTOBJ;
 } )();
