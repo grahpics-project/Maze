@@ -16,7 +16,7 @@ let barrier = [];
 let mouseEn;
 let wanderEn;
 let wanderSign = false;
-let lightIntensity = 50;
+let lightIntensity = 60;
 let totAngle = 0;
 let count = 0;
 let maze;
@@ -37,15 +37,16 @@ let skyBoxBlack;
 let cloud;
 let cloudAngel = -Math.PI;
 let cloudR = -3000;
-let auto = false;//自动走迷宫
+let auto = false;//漫游
 let role = [];
 let roleHull = [];
 for(let i = 0; i <= 10; i++)
     roleHull[i] = [];
 let bpoint;
-let light = new THREE.DirectionalLight(0xFFFFFF, lightIntensity/25);
+let light = new THREE.DirectionalLight(0xFFFFFF, lightIntensity/50);
 let isLightChange = false;
 let objHull = [];
+let isgameEnd = false;
 ///////////////
 // FUNCTIONS //
 ///////////////
@@ -212,7 +213,6 @@ function floorGenerate() {
             else if (file.charAt(0) === '3') object.scale.x = object.scale.z = 5000 / 3;
             object.scale.y = 5000;
             object.position.set(-2700 + 300 * objFile.length, -680, -2700);
-            object.receiveShadow = true;
             floorObj.push(object);
             floorGenerate();
             onLoadObject();
@@ -378,7 +378,6 @@ function wallGenerate() {
             if (file.charAt(0) === 'M' || file.charAt(0) === 'B') object.scale.x = 1500;
             else if (file.charAt(0) === 'R') object.scale.x = 1500 * 1.3;
             object.scale.y = object.scale.z = 1500;
-            object.castShadow = true;
             if(file.charAt(0) === 'g') object.scale.x = object.scale.y = object.scale.z =1500 * 0.11;
             wallObj.push(object);
             wallGenerate();
@@ -406,7 +405,6 @@ function manLoader() {
         object.scale.x = object.scale.y = object.scale.z = 20;
         object.rotation.y = MovingCube.rotation.y;
         object.position.set(-2700 , 50, -2700);
-        object.castShadow = true;
         scene.remove(manObj[manNum]);
         manObj[manNum] = object;
         if(manNum === 5) scene.add(object);
@@ -473,7 +471,7 @@ function init() {
     // CONTROLS //
     //////////////
 
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls = new THREE.MouseControls(camera, renderer.domElement);
 
     ///////////
     // STATS //
@@ -489,7 +487,7 @@ function init() {
     // LIGHT //
     ///////////
     light.castShadow = true;
-    light.position.set(1, 0.2, 0);
+    light.position.set(0, 0.3, 1);
     scene.add(light);
     let ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
     scene.add(ambientLight);
@@ -654,7 +652,7 @@ function init() {
             wangdering: false,
             scene:'Dark',
             collisionEn:false,
-            Intensity:50,
+            Intensity:60,
             Screenshot: () => {
                 if (!renderer) return;
                 let img = renderer.domElement.toDataURL('image/png');
@@ -723,19 +721,24 @@ function update() {
         newtmp = tmpManObj;
     }
 
-    if (wanderEn) {
+    if (wanderEn || isgameEnd) {
         if (wanderSign === false) {
             wanderSign = true;
             camera.position.set(-3500, 750, -3500);
-            camera.lookAt(scene.position)
+            camera.lookAt(scene.position);
         }
         else {
-            if (camera.position.x < 2000) {
+            if (camera.position.x < 1800) {
                 camera.position.x = camera.position.x + 8;
                 camera.position.z = camera.position.z + 8;
             }
             //camera.lookAt.x = camera.lookAt.x +10;
             //camera.lookAt.z = camera.lookAt.z +10;
+            else if(isgameEnd === true)
+            {
+                isgameEnd = false;
+                gameEnd();
+            }
         }
     }
     else {
@@ -897,7 +900,7 @@ function update() {
         if (tag === 1) {
             MovingCube.position.set(tmpx, tmpy, tmpz);
         }
-        if ((MovingCube.position.x > 2500 && MovingCube.position.z > 2500) || mouseEn === true) {
+        if (mouseEn === true) {
             count++;
             if (count === 1) {
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -totAngle);
@@ -944,6 +947,11 @@ function update() {
             camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 180, MovingCube.position.z));
         }
     }
+
+    if((MovingCube.position.x > 2500 && MovingCube.position.z > 2500))
+    {
+        isgameEnd = true;
+    }
     if(isSunny==='BlueSky'){
         if(skyboxchange === false){
             scene.remove(skyBoxBlack);
@@ -964,8 +972,8 @@ function update() {
     if(isLightChange)
     {
         scene.remove(light);
-        light = new THREE.DirectionalLight(0xFFFFFF, lightIntensity/25);
-        light.position.set(0, 0.2, 1);
+        light = new THREE.DirectionalLight(0xFFFFFF, lightIntensity/50);
+        light.position.set(0, 0.3, 1);
         light.castShadow = true;
         scene.add(light);
         isLightChange = false;
@@ -1091,4 +1099,8 @@ function gameStart() {
     init();
     registerKeyboard();
     animate();
+}
+
+function gameEnd() {
+    $("#finish").fadeIn();
 }

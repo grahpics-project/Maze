@@ -1,11 +1,4 @@
-/**
- * @author qiao / https://github.com/qiao
- * @author mrdoob / http://mrdoob.com
- * @author alteredq / http://alteredqualia.com/
- * @author WestLangley / http://github.com/WestLangley
- */
-
-THREE.OrbitControls = function ( object, domElement ) {
+THREE.MouseControls = function ( object, domElement ) {
 
     this.object = object;
     this.domElement = ( domElement !== undefined ) ? domElement : document;
@@ -39,31 +32,31 @@ THREE.OrbitControls = function ( object, domElement ) {
 
     // internals
 
-    var scope = this;
+    let scope = this;
 
-    var EPS = 0.000001;
-    var PIXELS_PER_ROUND = 1800;
+    let EPS = 0.000001;
+    let PIXELS_PER_ROUND = 1800;
 
-    var rotateStart = new THREE.Vector2();
-    var rotateEnd = new THREE.Vector2();
-    var rotateDelta = new THREE.Vector2();
+    let rotateStart = new THREE.Vector2();
+    let rotateEnd = new THREE.Vector2();
+    let rotateDelta = new THREE.Vector2();
 
-    var zoomStart = new THREE.Vector2();
-    var zoomEnd = new THREE.Vector2();
-    var zoomDelta = new THREE.Vector2();
+    let zoomStart = new THREE.Vector2();
+    let zoomEnd = new THREE.Vector2();
+    let zoomDelta = new THREE.Vector2();
 
-    var phiDelta = 0;
-    var thetaDelta = 0;
-    var scale = 1;
+    let phiDelta = 0;
+    let thetaDelta = 0;
+    let scale = 1;
 
-    var lastPosition = new THREE.Vector3();
+    let lastPosition = new THREE.Vector3();
 
-    var STATE = { NONE: -1, ROTATE: 0, ZOOM: 1, PAN: 2 };
-    var state = STATE.NONE;
+    let STATE = { NONE: -1, ROTATE: 0, ZOOM: 1, PAN: 2 };
+    let state = STATE.NONE;
 
     // events
 
-    var changeEvent = { type: 'change' };
+    let changeEvent = { type: 'change' };
 
 
     this.rotateLeft = function ( angle ) {
@@ -78,17 +71,17 @@ THREE.OrbitControls = function ( object, domElement ) {
 
     };
 
-    this.rotateRight = function ( angle ) {
-
-        if ( angle === undefined ) {
-
-            angle = getAutoRotationAngle();
-
-        }
-
-        thetaDelta += angle;
-
-    };
+    // this.rotateRight = function ( angle ) {
+    //
+    //     if ( angle === undefined ) {
+    //
+    //         angle = getAutoRotationAngle();
+    //
+    //     }
+    //
+    //     thetaDelta += angle;
+    //
+    // };
 
     this.rotateUp = function ( angle ) {
 
@@ -102,17 +95,17 @@ THREE.OrbitControls = function ( object, domElement ) {
 
     };
 
-    this.rotateDown = function ( angle ) {
-
-        if ( angle === undefined ) {
-
-            angle = getAutoRotationAngle();
-
-        }
-
-        phiDelta += angle;
-
-    };
+    // this.rotateDown = function ( angle ) {
+    //
+    //     if ( angle === undefined ) {
+    //
+    //         angle = getAutoRotationAngle();
+    //
+    //     }
+    //
+    //     phiDelta += angle;
+    //
+    // };
 
     this.zoomIn = function ( zoomScale ) {
 
@@ -150,16 +143,18 @@ THREE.OrbitControls = function ( object, domElement ) {
 
     this.update = function () {
 
-        var position = this.object.position;
-        var offset = position.clone().sub( this.center );
+        let position = this.object.position;
+        let offset = position.clone().sub( this.center );
 
         // angle from z-axis around y-axis
+        let offsetx = offset.x;
+        let offsety = offset.y;
 
-        var theta = Math.atan2( offset.x, offset.z );
+        let theta = Math.atan2( offsetx, offset.z );
 
         // angle from y-axis
 
-        var phi = Math.atan2( Math.sqrt( offset.x * offset.x + offset.z * offset.z ), offset.y );
+        let phi = Math.atan2( Math.sqrt( offset.x * offset.x + offset.z * offset.z ), offsety );
 
         if ( this.autoRotate ) {
 
@@ -176,7 +171,7 @@ THREE.OrbitControls = function ( object, domElement ) {
         // restrict phi to be betwee EPS and PI-EPS
         phi = Math.max( EPS, Math.min( Math.PI - EPS, phi ) );
 
-        var radius = offset.length() * scale;
+        let radius = offset.length() * scale;
 
         // restrict radius to be between desired limits
         radius = Math.max( this.minDistance, Math.min( this.maxDistance, radius ) );
@@ -294,8 +289,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 
         } else if ( state === STATE.PAN ) {
 
-            var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-            var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+            let movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+            let movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
             scope.pan( new THREE.Vector3( - movementX, movementY, 0 ) );
 
@@ -320,7 +315,7 @@ THREE.OrbitControls = function ( object, domElement ) {
         if ( scope.enabled === false ) return;
         if ( scope.userZoom === false ) return;
 
-        var delta = 0;
+        let delta = 0;
 
         if ( event.wheelDelta ) { // WebKit / Opera / Explorer 9
 
@@ -394,10 +389,9 @@ THREE.OrbitControls = function ( object, domElement ) {
     this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
     this.domElement.addEventListener( 'mousedown', onMouseDown, false );
     this.domElement.addEventListener( 'mousewheel', onMouseWheel, false );
-    this.domElement.addEventListener( 'DOMMouseScroll', onMouseWheel, false ); // firefox
     window.addEventListener( 'keydown', onKeyDown, false );
     window.addEventListener( 'keyup', onKeyUp, false );
 
 };
 
-THREE.OrbitControls.prototype = Object.create( THREE.EventDispatcher.prototype );
+THREE.MouseControls.prototype = Object.create( THREE.EventDispatcher.prototype );
