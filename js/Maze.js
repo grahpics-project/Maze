@@ -15,6 +15,7 @@ let MovingCube;
 let barrier = [];
 let mouseEn;
 let wanderEn;
+let wanderSign = false;
 let lightIntensity = 50;
 let totAngle = 0;
 let count = 0;
@@ -42,7 +43,7 @@ let roleHull = [];
 for(let i = 0; i <= 10; i++)
     roleHull[i] = [];
 let bpoint;
-let light = new THREE.AmbientLight(0xFFFFFF, lightIntensity/25);
+let light = new THREE.DirectionalLight(0xFFFFFF, lightIntensity/25);
 let isLightChange = false;
 let objHull = [];
 ///////////////
@@ -405,6 +406,7 @@ function manLoader() {
         object.scale.x = object.scale.y = object.scale.z = 20;
         object.rotation.y = MovingCube.rotation.y;
         object.position.set(-2700 , 50, -2700);
+        object.castShadow = true;
         scene.remove(manObj[manNum]);
         manObj[manNum] = object;
         if(manNum === 5) scene.add(object);
@@ -486,7 +488,11 @@ function init() {
     ///////////
     // LIGHT //
     ///////////
+    light.castShadow = true;
+    light.position.set(1, 0.2, 0);
     scene.add(light);
+    let ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+    scene.add(ambientLight);
     // let light_1 = new THREE.PointLight(0xffffff);
     // light_1.position.set(-7000, 10000, -7000);
     // let light_2 = new THREE.PointLight(0xffffff);
@@ -595,7 +601,7 @@ function init() {
             object.scale.y = 5;
             object.castShadow = true;
             cloud = object;
-            scene.add(object);
+            //scene.add(object);
     
         });
         //scene.add(cloud);
@@ -661,7 +667,7 @@ function init() {
             }
         };
     gui.add(parameters, 'Screenshot');
-    let cheating = gui.add(parameters, 'cheatingEn').name("cheat").listen();
+    let cheating = gui.add(parameters, 'cheatingEn').name("Cheat").listen();
     cheating.onChange(function (value) {
         mouseEn = value;
     });
@@ -716,14 +722,15 @@ function update() {
     {
         newtmp = tmpManObj;
     }
-    if(wanderEn){
-        if(wanderSign === false){
+
+    if (wanderEn) {
+        if (wanderSign === false) {
             wanderSign = true;
             camera.position.set(-3500, 750, -3500);
             camera.lookAt(scene.position)
         }
-        else{
-            if(camera.position.x < 2000){
+        else {
+            if (camera.position.x < 2000) {
                 camera.position.x = camera.position.x + 8;
                 camera.position.z = camera.position.z + 8;
             }
@@ -731,7 +738,7 @@ function update() {
             //camera.lookAt.z = camera.lookAt.z +10;
         }
     }
-    else{
+    else {
         wanderSign = false;
         if (keyboard.up)
             MovingCube.translateZ(-moveDistance);
@@ -754,10 +761,9 @@ function update() {
             let tmpx2 = Math.min(item.x2, x2);
             let tmpy2 = Math.min(item.y2, y2);
             if ((tmpx1 < tmpx2) && (tmpy1 < tmpy2)) {
-                if(collisionEn === true) {
+                if (collisionEn === true) {
                     let fhull = [];
-                    for(let i = 0; i < objHull[mapArr[item.i][item.j]].length; i++)
-                    {
+                    for (let i = 0; i < objHull[mapArr[item.i][item.j]].length; i++) {
                         if (item.r === false) {
                             if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'M' || wallFile2[mapArr[item.i][item.j]].charAt(0) === 'B') {
                                 fhull.push({
@@ -771,7 +777,7 @@ function update() {
                                     y: objHull[mapArr[item.i][item.j]][i].y + item.z
                                 });
                             }
-                            else if(wallFile2[mapArr[item.i][item.j]].charAt(0) === 'g') {
+                            else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'g') {
                                 fhull.push({
                                     x: objHull[mapArr[item.i][item.j]][i].x + item.x,
                                     y: objHull[mapArr[item.i][item.j]][i].y + item.z
@@ -791,7 +797,7 @@ function update() {
                                     y: objHull[mapArr[item.i][item.j]][i].x + item.z
                                 });
                             }
-                            else if(wallFile2[mapArr[item.i][item.j]].charAt(0) === 'g') {
+                            else if (wallFile2[mapArr[item.i][item.j]].charAt(0) === 'g') {
                                 fhull.push({
                                     x: -1 * objHull[mapArr[item.i][item.j]][i].y + item.x,
                                     y: objHull[mapArr[item.i][item.j]][i].x + item.z
@@ -818,8 +824,7 @@ function update() {
                     //console.log(roleHull);
                     //console.log(role.length);
                     let nowRole = [];
-                    for(let i = 0; i < role.length; i++)
-                    {
+                    for (let i = 0; i < role.length; i++) {
                         nowRole.push({
                             x: role[i].x + MovingCube.position.x,
                             y: role[i].y + MovingCube.position.z
@@ -827,23 +832,21 @@ function update() {
                     }
                     //console.log(tmpManObj);
                     //console.log(role.length);
-                    l.splice(0,l.length);
-                    for(let i = 1; i < fhull.length; i++)
-                    {
+                    l.splice(0, l.length);
+                    for (let i = 1; i < fhull.length; i++) {
                         l.push({
-                            P: fhull[i-1],
-                        v: sub(fhull[i], fhull[i-1])
+                            P: fhull[i - 1],
+                            v: sub(fhull[i], fhull[i - 1])
                         })
                     }
                     l.push({
                         P: fhull[fhull.length - 1],
                         v: sub(fhull[0], fhull[fhull.length - 1])
                     });
-                    for(let i = 1; i < nowRole.length; i++)
-                    {
+                    for (let i = 1; i < nowRole.length; i++) {
                         l.push({
-                            P: nowRole[i-1],
-                            v: sub(nowRole[i], nowRole[i-1])
+                            P: nowRole[i - 1],
+                            v: sub(nowRole[i], nowRole[i - 1])
                         })
                     }
                     l.push({
@@ -851,46 +854,42 @@ function update() {
                         v: sub(nowRole[0], nowRole[nowRole.length - 1])
                     });
                     let tagTmp = 0;
-                    if(half_plane_intersection()) tagTmp++;
+                    if (half_plane_intersection()) tagTmp++;
 
-                    nowRole.splice(0,nowRole.length);
-                    for(let i = 0; i < roleStd.length; i++)
-                    {
+                    nowRole.splice(0, nowRole.length);
+                    for (let i = 0; i < roleStd.length; i++) {
                         nowRole.push({
                             x: roleStd[i].x + MovingCube.position.x,
                             y: roleStd[i].y + MovingCube.position.z
                         })
                     }
-                    l.splice(0,l.length);
-                    for(let i = 1; i < fhull.length; i++)
-                    {
+                    l.splice(0, l.length);
+                    for (let i = 1; i < fhull.length; i++) {
                         l.push({
-                            P: fhull[i-1],
-                            v: sub(fhull[i], fhull[i-1])
+                            P: fhull[i - 1],
+                            v: sub(fhull[i], fhull[i - 1])
                         })
                     }
                     l.push({
                         P: fhull[fhull.length - 1],
                         v: sub(fhull[0], fhull[fhull.length - 1])
                     });
-                    for(let i = 1; i < nowRole.length; i++)
-                    {
+                    for (let i = 1; i < nowRole.length; i++) {
                         l.push({
-                            P: nowRole[i-1],
-                            v: sub(nowRole[i], nowRole[i-1])
+                            P: nowRole[i - 1],
+                            v: sub(nowRole[i], nowRole[i - 1])
                         })
                     }
                     l.push({
                         P: nowRole[nowRole.length - 1],
                         v: sub(nowRole[0], nowRole[nowRole.length - 1])
                     });
-                    if(half_plane_intersection()) tagTmp++;
+                    if (half_plane_intersection()) tagTmp++;
 
-                    if(tagTmp !== 0) tag = 1;
+                    if (tagTmp !== 0) tag = 1;
 
                 }
-                else
-                {
+                else {
                     tag = 1;
                 }
             }
@@ -902,8 +901,8 @@ function update() {
             count++;
             if (count === 1) {
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -totAngle);
-                for(let k=0; k<24; k++){
-                    manObj[k].rotateOnAxis(new THREE.Vector3(0,1, 0), -totAngle);
+                for (let k = 0; k < 24; k++) {
+                    manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), -totAngle);
                 }
                 camera.position.set(0, 8000, 0);
                 camera.lookAt(scene.position);
@@ -914,13 +913,13 @@ function update() {
             if (count !== 0) {
                 count = 0;
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
-                for(let k=0; k<24; k++){
+                for (let k = 0; k < 24; k++) {
                     manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), totAngle);
                 }
             }
             let relativeCameraOffset = new THREE.Vector3(0, 250, 300);
             let cameraOffset;
-            if((MovingCube.position.x !== tmpx)||(MovingCube.position.z !== tmpz))
+            if ((MovingCube.position.x !== tmpx) || (MovingCube.position.z !== tmpz))
                 cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
             else
                 cameraOffset = relativeCameraOffset.applyMatrix4(MovingCube.matrixWorld);
@@ -930,17 +929,17 @@ function update() {
             if (keyboard.left) {
                 totAngle += rotateAngle;
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
-                for(let k=0; k<24; k++){
+                for (let k = 0; k < 24; k++) {
                     manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
                 }
             }
             if (keyboard.right) {
                 totAngle -= rotateAngle;
                 MovingCube.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
-                for(let k=0; k<24; k++){
+                for (let k = 0; k < 24; k++) {
                     manObj[k].rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
                 }
-            }   
+            }
 
             camera.lookAt(new THREE.Vector3(MovingCube.position.x, MovingCube.position.y + 180, MovingCube.position.z));
         }
@@ -949,6 +948,7 @@ function update() {
         if(skyboxchange === false){
             scene.remove(skyBoxBlack);
             scene.add(skyBox);
+            scene.add(cloud);
             skyboxchange = true;
         }
     }
@@ -956,6 +956,7 @@ function update() {
         if(skyboxchange === true){
             scene.remove(skyBox);
             scene.add(skyBoxBlack);
+            scene.remove(cloud);
             skyboxchange = false;
         }
     }
@@ -963,7 +964,9 @@ function update() {
     if(isLightChange)
     {
         scene.remove(light);
-        light = new THREE.AmbientLight(0xFFFFFF, lightIntensity/25);
+        light = new THREE.DirectionalLight(0xFFFFFF, lightIntensity/25);
+        light.position.set(0, 0.2, 1);
+        light.castShadow = true;
         scene.add(light);
         isLightChange = false;
     }
@@ -1024,6 +1027,7 @@ function update() {
 
 function render() {
     renderer.render(scene, camera);
+    renderer.shadowMap.enabled = true;
 }
 function windowResize(renderer, camera){
     let callback	= function(){
