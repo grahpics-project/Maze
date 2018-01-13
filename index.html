@@ -11,7 +11,7 @@
 
 <script src="js/three.js"></script>
 <script src="js/Stats.js"></script>
-<script src="js/OrbitControls.js"></script>
+<script src="js/MouseControls.js"></script>
 <script src="js/MTLOBJLoader.js"></script>
 <script src="js/MazeGenerator.js"></script>
 <script src='js/DAT.GUI.min.js'></script>
@@ -19,10 +19,14 @@
 <script src="js/jquery.js"></script>
 <script src="js/IndexLoader.js"></script>
 <div id="ThreeJS" style="display:none">
-    <a style="display: none" id="screenshot"></a> <!--screeshot-->
+    <a style="display: none" id="screenshot"></a>
+</div>
+<div id="finish" style="position: absolute; width: 100%; height: 100%; left:0; top:0; display: none; background-color: rgba(0, 0, 0, 0)">
+    <img src="images/congratulation.png" style="display: block; margin: 0 auto;"/>
 </div>
 <div id="Loading" style="position: absolute; width: 100%; height: 100%; left:0; top:0;">
 </div>
+
 <script type="text/javascript">
     $("#Loading").load();
 </script>
